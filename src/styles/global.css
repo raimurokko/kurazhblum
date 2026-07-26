@@ -49,6 +49,13 @@
   --page: 78rem;
   --page-narrow: 46rem;
 
+  /* Schwebende Schaltflächen am Bildschirmrand — Barrierefreiheits-Menü und
+     „Zum Seitenanfang“. Gemeinsame Maße, damit sie sich auf schmalen Geräten
+     sauber übereinander stapeln statt sich zu überdecken. */
+  --fab-size: 3rem;
+  --fab-inset: clamp(0.75rem, 0.4rem + 1vw, 1.25rem);
+  --fab-gap: 0.75rem;
+
   --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
 }
 

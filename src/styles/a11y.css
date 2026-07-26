@@ -56,15 +56,15 @@
 
 .a11y-toggle {
   position: fixed;
-  right: clamp(0.75rem, 0.4rem + 1vw, 1.25rem);
+  right: var(--fab-inset);
   top: 50%;
   transform: translateY(-50%);
   z-index: 90;
   display: grid;
   place-items: center;
   /* WCAG 2.2 Zielgröße: deutlich über 24 × 24 px */
-  width: 3rem;
-  height: 3rem;
+  width: var(--fab-size);
+  height: var(--fab-size);
   padding: 0;
   border: 1px solid var(--gold-dim);
   border-radius: 50%;
@@ -86,7 +86,7 @@
 
 .a11y-panel {
   position: fixed;
-  right: clamp(0.75rem, 0.4rem + 1vw, 1.25rem);
+  right: var(--fab-inset);
   top: 50%;
   transform: translateY(-50%);
   z-index: 95;
@@ -464,17 +464,19 @@ html.a11y-size-3 .brand img {
   width: min(8rem, 40vw);
 }
 
-/* Panel und Knopf weichen dem Inhalt auf schmalen Geräten aus */
+/* Panel und Knopf weichen dem Inhalt auf schmalen Geräten aus. Der Knopf
+   rutscht dabei in die untere rechte Ecke — „Zum Seitenanfang“ stapelt sich
+   darüber (siehe ScrollTop.astro). */
 @media (width < 30rem) {
   .a11y-toggle {
     top: auto;
-    bottom: 1rem;
+    bottom: var(--fab-inset);
     transform: none;
   }
 
   .a11y-panel {
     top: auto;
-    bottom: 1rem;
+    bottom: var(--fab-inset);
     transform: none;
     max-height: calc(100vh - 2rem);
   }

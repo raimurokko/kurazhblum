@@ -1,0 +1,157 @@
+---
+import type { Locale } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const _ = useTranslations(lang);
+---
+
+{/*
+  Erscheint erst, wenn mehr als eine Bildschirmhöhe gescrollt wurde — vorher
+  wäre er nur im Weg. Bis das Skript läuft, bleibt er versteckt (`hidden`),
+  damit er auf kurzen Seiten und ohne JavaScript gar nicht erst auftaucht.
+*/}
+<button type="button" id="scroll-top" class="scroll-top" aria-label={_('common.top')} hidden>
+  <svg
+    viewBox="0 0 24 24"
+    width="20"
+    height="20"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+<style>
+  .scroll-top {
+    position: fixed;
+    right: var(--fab-inset);
+    bottom: var(--fab-inset);
+    z-index: 90;
+    display: grid;
+    place-items: center;
+    /* Gleiche Zielgröße wie der Barrierefreiheits-Knopf, deutlich über den
+       24 × 24 px, die WCAG 2.2 als Minimum nennt. */
+    width: var(--fab-size);
+    height: var(--fab-size);
+    padding: 0;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    background: var(--ink-2);
+    color: var(--cream-2);
+    cursor: pointer;
+    box-shadow: var(--shadow);
+
+    /*
+      Ein- und ausgeblendet wird über `visibility`, nicht über `display`:
+      zwischen `display: none` und sichtbar animiert kein Browser, der Knopf
+      würde aufpoppen. `visibility` nimmt ihn zusätzlich aus der
+      Tab-Reihenfolge — ein unsichtbarer Knopf, den man antabben kann, ist
+      schlimmer als gar keiner.
+    */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(0.5rem);
+    pointer-events: none;
+    transition:
+      opacity 0.25s var(--ease),
+      transform 0.25s var(--ease),
+      border-color 0.2s var(--ease),
+      color 0.2s var(--ease),
+      /* Sichtbarkeit erst am Ende der Ausblendung umschalten. */ visibility 0s linear 0.25s;
+  }
+
+  .scroll-top[data-visible] {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    pointer-events: auto;
+    transition:
+      opacity 0.25s var(--ease),
+      transform 0.25s var(--ease),
+      border-color 0.2s var(--ease),
+      color 0.2s var(--ease),
+      visibility 0s;
+  }
+
+  .scroll-top:hover {
+    border-color: var(--gold-lit);
+    color: var(--gold-lit);
+  }
+
+  /* Auf schmalen Geräten sitzt das Barrierefreiheits-Menü in derselben Ecke —
+     dann stapelt sich „Zum Seitenanfang“ darüber. */
+  @media (width < 30rem) {
+    .scroll-top {
+      bottom: calc(var(--fab-inset) + var(--fab-size) + var(--fab-gap));
+    }
+  }
+</style>
+
+<script>
+  const found = document.getElementById('scroll-top');
+
+  if (found) {
+    const button = found;
+
+    // Ohne JavaScript bleibt der Knopf über das `hidden`-Attribut komplett
+    // weg — er könnte dort ohnehin nichts tun. Läuft das Skript, übernimmt
+    // ab hier das CSS die Sichtbarkeit.
+    button.hidden = false;
+
+    // „Hinreichend tief“ = mehr als eine Bildschirmhöhe. Auf kurzen Seiten,
+    // die gar nicht so weit scrollen, erscheint der Knopf damit nie.
+    const threshold = () => Math.max(window.innerHeight, 600);
+
+    // Der Zustand wird gemerkt, damit der Scroll-Handler nur dann das DOM
+    // anfasst, wenn sich tatsächlich etwas ändert — sonst liefe bei jedem
+    // Scroll-Ereignis eine Schreiboperation.
+    let shown: boolean | null = null;
+
+    function update() {
+      const show = window.scrollY > threshold();
+      if (show === shown) return;
+      shown = show;
+
+      if (show) {
+        button.dataset.visible = '';
+      } else {
+        delete button.dataset.visible;
+      }
+    }
+
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+
+    /*
+      Ein ausgeschriebenes `behavior: 'smooth'` überschreibt die CSS-Regel
+      `scroll-behavior: auto` — die Option „Animationen reduzieren“ und die
+      Systemeinstellung `prefers-reduced-motion` würden sonst genau hier
+      ignoriert. Deshalb wird beides vor jedem Sprung abgefragt.
+    */
+    const reduziert = () =>
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      document.documentElement.classList.contains('a11y-motion');
+
+    button.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: reduziert() ? 'auto' : 'smooth' });
+
+      // Auch die Tastatur soll oben ankommen, nicht nur der Blick.
+      const main = document.getElementById('main');
+      if (main) {
+        main.focus({ preventScroll: true });
+      }
+    });
+
+    update();
+  }
+</script>

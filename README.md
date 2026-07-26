@@ -235,6 +235,13 @@ Der Zustand liegt in `localStorage` unter `kb-a11y` — nie in Cookies. Ein
 Inline-Skript im `<head>` (BaseLayout) wendet ihn vor dem ersten Paint an,
 sonst blitzt beim Laden kurz die Standarddarstellung auf.
 
+**„Zum Seitenanfang“** (`src/components/ScrollTop.astro`) sitzt unten rechts
+und erscheint erst, wenn mehr als eine Bildschirmhöhe gescrollt wurde. Auf
+schmalen Geräten rutscht das Barrierefreiheits-Menü in dieselbe Ecke — beide
+teilen sich die Maße `--fab-size`, `--fab-inset` und `--fab-gap` aus
+`global.css` und stapeln sich dann übereinander. Der Knopf setzt nach dem
+Sprung den Fokus auf `#main`, damit auch die Tastatur oben ankommt.
+
 **Die Erklärung** steht in allen vier Sprachen unter `/[lang]/barrierefreiheit/`;
 der Inhalt liegt in `src/data/accessibility.ts`. Wird die Website verändert,
 gehören `LAST_REVIEW` und der Abschnitt „Bekannte Lücken“ mitgepflegt.
@@ -251,6 +258,10 @@ Zwei Fallen, die beim Bauen aufgefallen sind und leicht wieder zuschlagen:
 - **Media Queries rechnen mit der ursprünglichen Schriftgröße**, nicht mit der
   hochgesetzten. Die Kopfzeile kann deshalb nicht per Breakpoint umbauen — sie
   reagiert auf die Klassen `a11y-size-1/2/3` am `<html>`.
+- **`behavior: 'smooth'` in `scrollTo()` schlägt die CSS-Regel
+  `scroll-behavior`.** Wer irgendwo animiert scrollt, muss
+  `prefers-reduced-motion` und die Klasse `a11y-motion` selbst abfragen —
+  sonst läuft die Animation trotz abgeschalteter Animationen.
 
 Nach Layoutänderungen einmal gegenprüfen: 320 px Breite, Textgröße 150 %,
 Dyslexie-Modus an — die Seite darf nicht seitlich scrollen (WCAG 1.4.10).

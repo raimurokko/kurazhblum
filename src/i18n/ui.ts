@@ -237,6 +237,7 @@ export const ui = {
     'common.notfound.title': 'Diese Seite gibt es nicht.',
     'common.notfound.text': 'Vielleicht ist sie verblüht. Zurück zur Startseite?',
     'common.home': 'Startseite',
+    'common.top': 'Zum Seitenanfang',
   },
 
   uk: {
@@ -459,6 +460,7 @@ export const ui = {
     'common.notfound.title': 'Такої сторінки немає.',
     'common.notfound.text': 'Можливо, вона відцвіла. Повернутися на головну?',
     'common.home': 'Головна',
+    'common.top': 'Догори сторінки',
   },
 
   en: {
@@ -681,6 +683,7 @@ export const ui = {
     'common.notfound.title': 'This page does not exist.',
     'common.notfound.text': 'It may have wilted. Back to the start?',
     'common.home': 'Home',
+    'common.top': 'Back to top',
   },
 
   ru: {
@@ -903,6 +906,7 @@ export const ui = {
     'common.notfound.title': 'Такой страницы нет.',
     'common.notfound.text': 'Возможно, она отцвела. Вернуться на главную?',
     'common.home': 'Главная',
+    'common.top': 'Наверх страницы',
   },
 } as const;
 

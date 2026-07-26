@@ -6,6 +6,7 @@ import { site } from '../data/site';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import A11yPanel from '../components/A11yPanel.astro';
+import ScrollTop from '../components/ScrollTop.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -112,10 +113,14 @@ const jsonLd = {
   <body>
     <a class="skip-link" href="#main">{_('nav.skip')}</a>
     <Header lang={lang} route={route} />
-    <main id="main">
+    {/* tabindex="-1" macht den Bereich für den Sprunglink und den
+        „Zum Seitenanfang“-Knopf fokussierbar, ohne ihn in die Tab-Reihenfolge
+        aufzunehmen. */}
+    <main id="main" tabindex="-1">
       <slot />
     </main>
     <Footer lang={lang} />
     <A11yPanel lang={lang} />
+    <ScrollTop lang={lang} />
   </body>
 </html>
