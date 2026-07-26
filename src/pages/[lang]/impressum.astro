@@ -1,0 +1,61 @@
+---
+import LegalLayout from '../../layouts/LegalLayout.astro';
+import { localePaths, type Locale } from '../../i18n/config';
+import { site } from '../../data/site';
+
+export function getStaticPaths() {
+  return localePaths();
+}
+
+const lang = Astro.params.lang as Locale;
+---
+
+<LegalLayout lang={lang} title="Impressum" route="impressum">
+  <p class="todo">
+    Entwurf. Vor dem Livegang müssen alle Angaben durch die echten Daten ersetzt und einmal von einer
+    Rechtsberatung geprüft werden — ein fehlerhaftes Impressum ist in Deutschland abmahnfähig.
+  </p>
+
+  <h2>Angaben gemäß § 5 DDG</h2>
+  <address>
+    {site.legal.owner}<br />
+    {site.nameFull}<br />
+    {site.address.street}<br />
+    {site.address.zip} {site.address.city}<br />
+    Deutschland
+  </address>
+
+  <h2>Kontakt</h2>
+  <p>
+    Telefon: {site.phone}<br />
+    E-Mail: <a href={`mailto:${site.email}`}>{site.email}</a>
+  </p>
+
+  <h2>Umsatzsteuer</h2>
+  <p class="todo">
+    Zutreffendes eintragen: entweder die Umsatzsteuer-Identifikationsnummer gemäß § 27 a UStG oder den
+    Hinweis „Als Kleinunternehmerin im Sinne von § 19 UStG wird keine Umsatzsteuer berechnet.“
+  </p>
+
+  <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
+  <address>
+    {site.legal.owner}<br />
+    {site.address.street}, {site.address.zip} {site.address.city}
+  </address>
+
+  <h2>Streitschlichtung</h2>
+  <p>
+    Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung bereit:
+    <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>.
+  </p>
+  <p>
+    Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer
+    Verbraucherschlichtungsstelle teilzunehmen.
+  </p>
+
+  <h2>Bildnachweise</h2>
+  <p>
+    Alle Fotografien und das Logo stammen, soweit nicht anders angegeben, von {site.nameFull} und dürfen
+    nicht ohne Zustimmung weiterverwendet werden.
+  </p>
+</LegalLayout>

@@ -1,0 +1,250 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TrustBar from '../../components/TrustBar.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import InstagramGrid from '../../components/InstagramGrid.astro';
+import { localePaths, path, t, type Locale } from '../../i18n/config';
+import { useTranslations } from '../../i18n/ui';
+import { BOUQUETS, CATEGORIES } from '../../data/shop';
+
+export function getStaticPaths() {
+  return localePaths();
+}
+
+const lang = Astro.params.lang as Locale;
+const _ = useTranslations(lang);
+const featured = BOUQUETS.filter((b) => b.featured).slice(0, 4);
+---
+
+<BaseLayout lang={lang} title={_('home.hero.title')} description={_('footer.tagline')}>
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-text">
+        <span class="kicker">{_('home.hero.kicker')}</span>
+        <h1>{_('home.hero.title')}</h1>
+        <p class="lead">{_('home.hero.text')}</p>
+        <div class="hero-actions">
+          <a class="btn btn--primary" href={path(lang, 'shop')}>{_('home.hero.cta')}</a>
+          <a class="btn btn--ghost" href={path(lang, 'hochzeiten')}>{_('home.hero.cta2')}</a>
+        </div>
+      </div>
+
+      <figure class="hero-figure">
+        <img
+          src="/brand/iris.webp"
+          srcset="/brand/iris-sm.webp 600w, /brand/iris.webp 1200w"
+          sizes="(min-width: 56rem) 26rem, 70vw"
+          alt=""
+          width="1200"
+          height="1592"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </figure>
+    </div>
+  </section>
+
+  <TrustBar lang={lang} />
+
+  <!-- Kategorien -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="kicker">{_('home.categories.kicker')}</span>
+        <h2>{_('home.categories.title')}</h2>
+        <p class="lead">{_('home.categories.text')}</p>
+      </div>
+
+      <ul class="cats">
+        {
+          CATEGORIES.map((category) => (
+            <li class="cat">
+              <a href={path(lang, 'shop/kategorie', category.slug)}>
+                <div class="ph cat-ph" data-label={t(category.name, lang)}>
+                  <img
+                    src={`/images/categories/${category.slug}.jpg`}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    onerror="this.remove()"
+                  />
+                </div>
+                <h3 class="cat-name">{t(category.name, lang)}</h3>
+                <p class="small muted">{t(category.blurb, lang)}</p>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Beliebte Sträuße -->
+  <section class="section section--tint">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="kicker">{_('home.featured.kicker')}</span>
+        <h2>{_('home.featured.title')}</h2>
+      </div>
+
+      <div class="grid grid--3">
+        {featured.map((bouquet) => <ProductCard lang={lang} bouquet={bouquet} />)}
+      </div>
+
+      <p class="section-foot">
+        <a class="link-arrow" href={path(lang, 'shop')}>{_('home.featured.all')}</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- Hochzeiten -->
+  <section class="section split">
+    <div class="wrap split-inner">
+      <div class="ph split-media" data-label={_('home.weddings.kicker')}>
+        <img src="/images/weddings/teaser.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()" />
+      </div>
+      <div>
+        <span class="kicker">{_('home.weddings.kicker')}</span>
+        <h2>{_('home.weddings.title')}</h2>
+        <p class="lead">{_('home.weddings.text')}</p>
+        <a class="btn btn--ghost" href={path(lang, 'hochzeiten')}>{_('home.weddings.cta')}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Workshops -->
+  <section class="section split">
+    <div class="wrap split-inner split-inner--reverse">
+      <div class="ph split-media" data-label={_('home.workshops.kicker')}>
+        <img src="/images/workshops/teaser.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()" />
+      </div>
+      <div>
+        <span class="kicker">{_('home.workshops.kicker')}</span>
+        <h2>{_('home.workshops.title')}</h2>
+        <p class="lead">{_('home.workshops.text')}</p>
+        <a class="btn btn--ghost" href={path(lang, 'workshops')}>{_('home.workshops.cta')}</a>
+      </div>
+    </div>
+  </section>
+
+  <InstagramGrid lang={lang} />
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: clamp(2.5rem, 1rem + 6vw, 6rem) clamp(3rem, 1rem + 6vw, 6rem);
+  }
+
+  .hero-inner {
+    display: grid;
+    gap: clamp(2rem, 1rem + 4vw, 4rem);
+    align-items: center;
+    grid-template-columns: 1fr;
+  }
+
+  .hero-text h1 {
+    margin-bottom: var(--space-5);
+  }
+
+  .hero-text .lead {
+    max-width: 38ch;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  .hero-figure {
+    margin: 0;
+    justify-self: center;
+    max-width: 26rem;
+  }
+
+  .hero-figure img {
+    width: 100%;
+    height: auto;
+  }
+
+  .cats {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(1.25rem, 0.5rem + 2vw, 2.25rem);
+    grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr));
+  }
+
+  .cat a {
+    display: block;
+    text-decoration: none;
+  }
+
+  .cat-ph {
+    aspect-ratio: 1;
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-4);
+  }
+
+  .cat-ph img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease);
+  }
+
+  .cat a:hover .cat-ph img {
+    transform: scale(1.04);
+  }
+
+  .cat-name {
+    font-size: 1.3rem;
+    margin-bottom: var(--space-2);
+  }
+
+  .cat a:hover .cat-name {
+    color: var(--gold-lit);
+  }
+
+  .section-foot {
+    margin-top: clamp(2rem, 1rem + 2vw, 3rem);
+  }
+
+  .split-inner {
+    display: grid;
+    gap: clamp(2rem, 1rem + 4vw, 4rem);
+    align-items: center;
+    grid-template-columns: 1fr;
+  }
+
+  .split-media {
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+  }
+
+  .split-media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (width >= 56rem) {
+    .hero-inner {
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+
+    .split-inner {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .split-inner--reverse > .split-media {
+      order: 2;
+    }
+  }
+</style>

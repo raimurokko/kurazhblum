@@ -1,0 +1,479 @@
+---
+import { t, type Locale } from '../i18n/config';
+import { useTranslations, type UiKey } from '../i18n/ui';
+import {
+  DELIVERY_ZONES,
+  EXTRAS,
+  MIN_ORDER_DELIVERY,
+  PRESENTATION_SURCHARGE,
+  formatPrice,
+  type Bouquet,
+  type PresentationKey,
+  type SizeKey,
+} from '../data/shop';
+import { DELIVERY_SLOTS } from '../data/site';
+
+interface Props {
+  lang: Locale;
+  bouquet: Bouquet;
+}
+
+const { lang, bouquet } = Astro.props;
+const _ = useTranslations(lang);
+
+const sizes: SizeKey[] = ['s', 'm', 'l'];
+const presentations = bouquet.presentations;
+
+/**
+ * Der Preis wird zweimal berechnet: hier im Browser für die Live-Anzeige und
+ * noch einmal serverseitig in /api/checkout. Der Serverwert ist der
+ * verbindliche — der Browser darf nur anzeigen, nie festlegen.
+ */
+const pricing = {
+  currencyLocale: lang,
+  sizes: bouquet.prices,
+  presentations: Object.fromEntries(presentations.map((p) => [p, PRESENTATION_SURCHARGE[p]])),
+  extras: Object.fromEntries(EXTRAS.map((e) => [e.id, e.price])),
+  zones: Object.fromEntries(DELIVERY_ZONES.map((z) => [z.id, z.fee])),
+  minOrderDelivery: MIN_ORDER_DELIVERY,
+};
+
+/** Preisbeispiele, damit die Kacheln ohne JavaScript schon sinnvoll aussehen. */
+const priceLabel = (cents: number) => (cents === 0 ? _('common.free') : `+ ${formatPrice(cents, lang)}`);
+
+// Frühester Liefertermin: morgen. Same-day läuft telefonisch, das ist ehrlicher
+// als ein Formular, das den Redaktionsschluss nicht kennt.
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
+const minDate = tomorrow.toISOString().slice(0, 10);
+---
+
+<form
+  class="cfg panel"
+  data-configurator
+  data-slug={bouquet.slug}
+  data-lang={lang}
+  data-min-warning={_('cfg.minorder.short')}
+  data-busy-label={_('cfg.loading')}
+>
+  <h2 class="cfg-title">{_('cfg.title')}</h2>
+
+  <!-- Größe -->
+  <fieldset class="cfg-block">
+    <legend class="field-label">{_('cfg.size')}</legend>
+    <div class="choices choices--row">
+      {
+        sizes.map((size, index) => (
+          <label class="choice">
+            <input type="radio" name="size" value={size} checked={index === 1} />
+            <span class="choice-title">{_(`cfg.size.${size}` as UiKey)}</span>
+            <span class="choice-desc">{_(`cfg.size.${size}.desc` as UiKey)}</span>
+            <span class="choice-price">{formatPrice(bouquet.prices[size], lang)}</span>
+          </label>
+        ))
+      }
+    </div>
+    <p class="hint">{_('cfg.size.hint')}</p>
+  </fieldset>
+
+  <!-- Präsentation -->
+  <fieldset class="cfg-block">
+    <legend class="field-label">{_('cfg.presentation')}</legend>
+    <div class="choices choices--row">
+      {
+        presentations.map((presentation: PresentationKey, index: number) => (
+          <label class="choice">
+            <input type="radio" name="presentation" value={presentation} checked={index === 0} />
+            <span class="choice-title">{_(`cfg.presentation.${presentation}` as UiKey)}</span>
+            <span class="choice-desc">{_(`cfg.presentation.${presentation}.desc` as UiKey)}</span>
+            <span class="choice-price">{priceLabel(PRESENTATION_SURCHARGE[presentation])}</span>
+          </label>
+        ))
+      }
+    </div>
+  </fieldset>
+
+  <!-- Grußkarte -->
+  <fieldset class="cfg-block">
+    <legend class="field-label">{_('cfg.card')} <span class="tag tag--gold">{_('cfg.card.free')}</span></legend>
+    <label class="switch">
+      <input type="checkbox" name="card" data-card-toggle />
+      <span>{_('cfg.card.yes')}</span>
+    </label>
+    <div class="cfg-card-body" hidden data-card-body>
+      <label class="field">
+        <span class="field-label">{_('cfg.card.message')}</span>
+        <textarea
+          class="textarea"
+          name="cardMessage"
+          maxlength="240"
+          rows="3"
+          placeholder={_('cfg.card.placeholder')}
+          data-card-message></textarea>
+      </label>
+      <p class="hint"><span data-card-count>0</span>/240 {_('cfg.card.counter')}</p>
+    </div>
+  </fieldset>
+
+  <!-- Extras -->
+  <fieldset class="cfg-block">
+    <legend class="field-label">{_('cfg.extras')}</legend>
+    <div class="choices">
+      {
+        EXTRAS.map((extra) => (
+          <label class="choice choice--inline">
+            <input type="checkbox" name="extras" value={extra.id} />
+            <span class="choice-title">{t(extra.name, lang)}</span>
+            <span class="choice-price">{priceLabel(extra.price)}</span>
+          </label>
+        ))
+      }
+    </div>
+  </fieldset>
+
+  <!-- Lieferung -->
+  <fieldset class="cfg-block">
+    <legend class="field-label">{_('cfg.delivery')}</legend>
+
+    <label class="field">
+      <span class="field-label">{_('cfg.delivery.zone')}</span>
+      <select class="select" name="zone" required>
+        {
+          DELIVERY_ZONES.map((zone) => (
+            <option value={zone.id} selected={zone.id === 'inner'} data-hint={t(zone.hint, lang)} data-name={t(zone.name, lang)}>
+              {t(zone.name, lang)} — {zone.fee === 0 ? _('common.free') : formatPrice(zone.fee, lang)}
+            </option>
+          ))
+        }
+      </select>
+      <span class="hint" data-zone-hint></span>
+    </label>
+
+    <div class="cfg-row">
+      <label class="field">
+        <span class="field-label">{_('cfg.delivery.date')}</span>
+        <input class="input" type="date" name="date" min={minDate} required />
+      </label>
+
+      <label class="field">
+        <span class="field-label">{_('cfg.delivery.slot')}</span>
+        <select class="select" name="slot">
+          {DELIVERY_SLOTS.map((slot) => <option value={slot.id}>{t(slot.label, lang)}</option>)}
+        </select>
+      </label>
+    </div>
+  </fieldset>
+
+  <!-- Zusammenfassung -->
+  <div class="cfg-summary">
+    <h3 class="field-label">{_('cfg.summary')}</h3>
+    <dl class="cfg-lines" data-lines></dl>
+
+    <div class="cfg-total">
+      <span>{_('cfg.total')}</span>
+      <strong data-total>{formatPrice(bouquet.prices.m, lang)}</strong>
+    </div>
+    <p class="hint">{_('cfg.incl_vat')}</p>
+
+    <p class="cfg-warn" hidden data-min-warning></p>
+
+    <button class="btn btn--primary btn--block" type="submit" data-submit>{_('cfg.order')}</button>
+    <p class="hint">{_('cfg.minorder')}</p>
+    <p class="cfg-error" hidden data-error>{_('form.error')}</p>
+  </div>
+
+  <script type="application/json" data-pricing is:inline set:html={JSON.stringify(pricing)} />
+</form>
+
+<style>
+  .cfg-title {
+    font-size: 1.6rem;
+    margin-bottom: var(--space-5);
+  }
+
+  .cfg-block {
+    border: 0;
+    padding: 0;
+    margin: 0 0 var(--space-6);
+  }
+
+  .cfg-block legend {
+    padding: 0;
+    margin-bottom: var(--space-3);
+  }
+
+  .cfg-row {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
+  }
+
+  .cfg-row .field {
+    margin-bottom: 0;
+  }
+
+  .choice--inline {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .choice--inline .choice-price {
+    margin-top: 0;
+    white-space: nowrap;
+  }
+
+  .switch {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+  }
+
+  .switch input {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--gold-lit);
+  }
+
+  .cfg-card-body {
+    margin-top: var(--space-4);
+  }
+
+  .cfg-card-body .field {
+    margin-bottom: var(--space-2);
+  }
+
+  .cfg-summary {
+    border-top: 1px solid var(--line-strong);
+    padding-top: var(--space-5);
+  }
+
+  .cfg-lines {
+    margin: var(--space-3) 0 var(--space-4);
+    display: grid;
+    gap: var(--space-2);
+    font-size: 0.9rem;
+  }
+
+  .cfg-lines > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    color: var(--cream-2);
+  }
+
+  .cfg-lines dt {
+    margin: 0;
+  }
+
+  .cfg-lines dd {
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .cfg-total {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--line);
+    font-size: 0.8rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cream-2);
+  }
+
+  .cfg-total strong {
+    font-family: var(--font-display), serif;
+    font-size: 2rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--cream);
+  }
+
+  .cfg-warn,
+  .cfg-error {
+    margin: var(--space-3) 0;
+    padding: 0.75rem 1rem;
+    border-left: 2px solid var(--gold);
+    background: rgb(144 112 64 / 0.12);
+    font-size: 0.88rem;
+    color: var(--cream-2);
+  }
+
+  .cfg-error {
+    border-left-color: var(--mauve-deep);
+    background: rgb(142 112 120 / 0.14);
+  }
+
+  .cfg-summary .btn {
+    margin-top: var(--space-3);
+  }
+</style>
+
+<script>
+  type Pricing = {
+    currencyLocale: string;
+    sizes: Record<string, number>;
+    presentations: Record<string, number>;
+    extras: Record<string, number>;
+    zones: Record<string, number>;
+    minOrderDelivery: number;
+  };
+
+  const INTL_LOCALE: Record<string, string> = { de: 'de-DE', uk: 'uk-UA', en: 'en-IE', ru: 'ru-RU' };
+
+  for (const form of document.querySelectorAll<HTMLFormElement>('[data-configurator]')) {
+    const pricingEl = form.querySelector<HTMLScriptElement>('[data-pricing]');
+    if (!pricingEl?.textContent) continue;
+
+    const pricing: Pricing = JSON.parse(pricingEl.textContent);
+    const lang = form.dataset.lang ?? 'de';
+    const slug = form.dataset.slug ?? '';
+    const money = new Intl.NumberFormat(INTL_LOCALE[lang] ?? 'de-DE', {
+      style: 'currency',
+      currency: 'EUR',
+      currencyDisplay: 'narrowSymbol',
+    });
+    const fmt = (cents: number) => money.format(cents / 100);
+
+    const totalEl = form.querySelector<HTMLElement>('[data-total]');
+    const linesEl = form.querySelector<HTMLElement>('[data-lines]');
+    const warnEl = form.querySelector<HTMLElement>('[data-min-warning]');
+    const errorEl = form.querySelector<HTMLElement>('[data-error]');
+    const submitEl = form.querySelector<HTMLButtonElement>('[data-submit]');
+    const zoneHintEl = form.querySelector<HTMLElement>('[data-zone-hint]');
+    const cardToggle = form.querySelector<HTMLInputElement>('[data-card-toggle]');
+    const cardBody = form.querySelector<HTMLElement>('[data-card-body]');
+    const cardMessage = form.querySelector<HTMLTextAreaElement>('[data-card-message]');
+    const cardCount = form.querySelector<HTMLElement>('[data-card-count]');
+
+    const minWarningTemplate = form.dataset.minWarning ?? '';
+
+    function readSelection() {
+      const data = new FormData(form);
+      const size = String(data.get('size') ?? 'm');
+      const presentation = String(data.get('presentation') ?? 'bouquet');
+      const zone = String(data.get('zone') ?? 'inner');
+      const extras = data.getAll('extras').map(String);
+      return { size, presentation, zone, extras };
+    }
+
+    function labelFor(name: string, value: string): string {
+      const input = form.querySelector<HTMLInputElement>(`input[name="${name}"][value="${value}"]`);
+      return input?.closest('.choice')?.querySelector('.choice-title')?.textContent?.trim() ?? value;
+    }
+
+    function render() {
+      const { size, presentation, zone, extras } = readSelection();
+
+      const base = pricing.sizes[size] ?? 0;
+      const surcharge = pricing.presentations[presentation] ?? 0;
+      const extrasTotal = extras.reduce((sum, id) => sum + (pricing.extras[id] ?? 0), 0);
+      const delivery = pricing.zones[zone] ?? 0;
+      const subtotal = base + surcharge + extrasTotal;
+      const total = subtotal + delivery;
+
+      if (totalEl) totalEl.textContent = fmt(total);
+
+      if (linesEl) {
+        const rows: [string, string][] = [[labelFor('size', size), fmt(base)]];
+        if (surcharge > 0) rows.push([labelFor('presentation', presentation), `+ ${fmt(surcharge)}`]);
+        for (const id of extras) {
+          rows.push([labelFor('extras', id), `+ ${fmt(pricing.extras[id] ?? 0)}`]);
+        }
+        const zoneOption = form.querySelector<HTMLSelectElement>('[name="zone"]')?.selectedOptions[0];
+        rows.push([zoneOption?.dataset.name ?? '', delivery === 0 ? '—' : `+ ${fmt(delivery)}`]);
+
+        linesEl.replaceChildren(
+          ...rows.map(([label, value]) => {
+            const row = document.createElement('div');
+            const dt = document.createElement('dt');
+            dt.textContent = label;
+            const dd = document.createElement('dd');
+            dd.textContent = value;
+            row.append(dt, dd);
+            return row;
+          }),
+        );
+      }
+
+      // Mindestbestellwert gilt nur, wenn geliefert wird.
+      const needsMinimum = zone !== 'pickup' && subtotal < pricing.minOrderDelivery;
+      if (warnEl) {
+        warnEl.hidden = !needsMinimum;
+        if (needsMinimum) {
+          warnEl.textContent = minWarningTemplate.replace('{amount}', fmt(pricing.minOrderDelivery - subtotal));
+        }
+      }
+      if (submitEl) submitEl.disabled = needsMinimum;
+
+      if (zoneHintEl) {
+        const selected = form.querySelector<HTMLSelectElement>('[name="zone"]');
+        zoneHintEl.textContent = selected?.selectedOptions[0]?.dataset.hint ?? '';
+      }
+    }
+
+    form.addEventListener('change', render);
+    form.addEventListener('input', () => {
+      if (cardCount && cardMessage) cardCount.textContent = String(cardMessage.value.length);
+    });
+
+    cardToggle?.addEventListener('change', () => {
+      if (cardBody) cardBody.hidden = !cardToggle.checked;
+      if (cardToggle.checked) cardMessage?.focus();
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+
+      const data = new FormData(form);
+      const { size, presentation, zone, extras } = readSelection();
+
+      const submitLabel = submitEl?.textContent ?? '';
+      if (submitEl) {
+        submitEl.disabled = true;
+        submitEl.textContent = form.dataset.busyLabel ?? submitLabel;
+      }
+      if (errorEl) errorEl.hidden = true;
+
+      try {
+        const response = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            lang,
+            slug,
+            size,
+            presentation,
+            zone,
+            extras,
+            date: data.get('date'),
+            slot: data.get('slot'),
+            cardMessage: cardToggle?.checked ? String(data.get('cardMessage') ?? '') : '',
+          }),
+        });
+
+        if (!response.ok) throw new Error(`checkout failed: ${response.status}`);
+        const result = (await response.json()) as { url?: string };
+        if (!result.url) throw new Error('checkout returned no url');
+        window.location.href = result.url;
+      } catch (error) {
+        console.error(error);
+        if (errorEl) errorEl.hidden = false;
+        if (submitEl) {
+          submitEl.disabled = false;
+          submitEl.textContent = submitLabel;
+        }
+      }
+    });
+
+    render();
+  }
+</script>

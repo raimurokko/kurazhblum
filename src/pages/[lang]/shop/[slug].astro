@@ -1,0 +1,189 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Configurator from '../../../components/Configurator.astro';
+import ProductCard from '../../../components/ProductCard.astro';
+import { LOCALES, path, t, type Locale } from '../../../i18n/config';
+import { useTranslations } from '../../../i18n/ui';
+import { BOUQUETS, bouquetsByCategory, categoryBySlug, formatPrice, lowestPrice } from '../../../data/shop';
+
+export function getStaticPaths() {
+  return LOCALES.flatMap((lang) => BOUQUETS.map((bouquet) => ({ params: { lang, slug: bouquet.slug }, props: { bouquet } })));
+}
+
+const lang = Astro.params.lang as Locale;
+const { bouquet } = Astro.props;
+const _ = useTranslations(lang);
+
+const name = t(bouquet.name, lang);
+const blurb = t(bouquet.blurb, lang);
+const category = categoryBySlug(bouquet.category);
+const related = bouquetsByCategory(bouquet.category)
+  .filter((entry) => entry.slug !== bouquet.slug)
+  .concat(BOUQUETS.filter((entry) => entry.featured && entry.category !== bouquet.category))
+  .slice(0, 3);
+
+const productJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name,
+  description: t(bouquet.description, lang),
+  image: new URL(bouquet.images[0], Astro.site).href,
+  brand: { '@type': 'Brand', name: 'KURAZHBLUM' },
+  offers: {
+    '@type': 'AggregateOffer',
+    priceCurrency: 'EUR',
+    lowPrice: (bouquet.prices.s / 100).toFixed(2),
+    highPrice: (bouquet.prices.l / 100).toFixed(2),
+    availability: 'https://schema.org/InStock',
+  },
+};
+---
+
+<BaseLayout lang={lang} title={name} description={blurb} route={`shop/${bouquet.slug}`} image={bouquet.images[0]}>
+  <section class="section">
+    <div class="wrap">
+      <p class="crumb">
+        <a href={path(lang, 'shop')}>{_('shop.back')}</a>
+      </p>
+
+      <div class="detail">
+        <div class="detail-media">
+          <div class="ph detail-ph" data-label={name}>
+            <img
+              src={bouquet.images[0]}
+              alt={name}
+              width="1000"
+              height="1250"
+              fetchpriority="high"
+              decoding="async"
+              onerror="this.remove()"
+            />
+          </div>
+        </div>
+
+        <div class="detail-info">
+          {category && <span class="kicker">{t(category.name, lang)}</span>}
+          <h1>{name}</h1>
+          <p class="detail-price">
+            <span class="muted small">{_('shop.from')}</span>
+            {formatPrice(lowestPrice(bouquet), lang)}
+          </p>
+          <hr class="rule" />
+          <p class="lead">{t(bouquet.description, lang)}</p>
+
+          <dl class="spec">
+            <dt>{_('cfg.summary')}</dt>
+            <dd>{t(bouquet.composition, lang)}</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="detail-cfg">
+        <Configurator lang={lang} bouquet={bouquet} />
+      </div>
+    </div>
+  </section>
+
+  {
+    related.length > 0 && (
+      <section class="section section--tint">
+        <div class="wrap">
+          <div class="section-head">
+            <h2>{_('shop.related')}</h2>
+          </div>
+          <div class="grid grid--3">
+            {related.map((entry) => (
+              <ProductCard lang={lang} bouquet={entry} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(productJsonLd)} />
+</BaseLayout>
+
+<style>
+  .crumb {
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-6);
+  }
+
+  .crumb a {
+    color: var(--cream-3);
+    text-decoration: none;
+  }
+
+  .crumb a:hover {
+    color: var(--gold-lit);
+  }
+
+  .detail {
+    display: grid;
+    gap: clamp(2rem, 1rem + 4vw, 4rem);
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .detail-ph {
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-lg);
+  }
+
+  .detail-ph img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .detail-price {
+    font-family: var(--font-display), serif;
+    font-size: 2rem;
+    margin-bottom: var(--space-4);
+  }
+
+  .detail-price .small {
+    font-family: var(--font-body), sans-serif;
+    margin-right: 0.35em;
+  }
+
+  .spec {
+    margin: var(--space-5) 0 0;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line);
+  }
+
+  .spec dt {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-lit);
+    margin-bottom: var(--space-2);
+  }
+
+  .spec dd {
+    margin: 0;
+    color: var(--cream-2);
+  }
+
+  .detail-cfg {
+    margin-top: clamp(2.5rem, 1rem + 4vw, 4rem);
+    max-width: 46rem;
+  }
+
+  @media (width >= 56rem) {
+    .detail {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .detail-media {
+      position: sticky;
+      top: 6rem;
+    }
+  }
+</style>

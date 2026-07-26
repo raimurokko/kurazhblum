@@ -1,0 +1,562 @@
+/*
+  KURAZHBLUM — Designsystem
+  ---------------------------------------------------------------------------
+  Die Farben stammen direkt aus dem Logo: schwarzer Grund, cremeweiße Iris mit
+  altrosa Rändern, goldbrauner Stiel (#907040 ist exakt die Linie unter „Berlin“).
+  Wer hier etwas ändert, ändert es für die ganze Website — bitte keine
+  Einzelfarben in Komponenten hart schreiben.
+*/
+
+:root {
+  /* — Grundflächen — */
+  --ink: #0b0a0a;
+  --ink-2: #131111;
+  --ink-3: #1c1918;
+  --ink-4: #262221;
+
+  /* — Schrift — */
+  --cream: #f2ece4;
+  --cream-2: #c4bab0;
+  --cream-3: #8e857d;
+
+  /* — Akzente — */
+  --gold: #907040;
+  --gold-lit: #c39a5e;
+  --gold-dim: #5c4728;
+  --mauve: #c3a9b0;
+  --mauve-deep: #8e7078;
+
+  /* — Linien & Schatten — */
+  --line: rgb(242 236 228 / 0.13);
+  --line-strong: rgb(242 236 228 / 0.26);
+  --shadow: 0 18px 50px rgb(0 0 0 / 0.55);
+
+  /* — Rhythmus — */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --space-9: 7rem;
+
+  --radius: 2px;
+  --radius-lg: 3px;
+
+  --measure: 62ch;
+  --page: 78rem;
+  --page-narrow: 46rem;
+
+  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+  font-weight: 300;
+  line-height: 1.65;
+  letter-spacing: 0.005em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* — Typografie —————————————————————————————————————————————————————— */
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display), ui-serif, Georgia, serif;
+  font-weight: 300;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--space-4);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(2.6rem, 1.7rem + 4.2vw, 5rem);
+}
+h2 {
+  font-size: clamp(2rem, 1.5rem + 2.4vw, 3.25rem);
+}
+h3 {
+  font-size: clamp(1.35rem, 1.15rem + 0.9vw, 1.9rem);
+}
+h4 {
+  font-size: 1.15rem;
+}
+
+p {
+  margin: 0 0 var(--space-4);
+  max-width: var(--measure);
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 0.28em;
+  text-decoration-thickness: 1px;
+  transition: color 0.2s var(--ease);
+}
+
+a:hover {
+  color: var(--gold-lit);
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold-lit);
+  outline-offset: 3px;
+  border-radius: var(--radius);
+}
+
+::selection {
+  background: var(--gold-dim);
+  color: var(--cream);
+}
+
+img,
+picture,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: var(--space-7) 0;
+}
+
+/* Kleine Vorzeile über einer Überschrift. */
+.kicker {
+  display: block;
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold-lit);
+  margin-bottom: var(--space-4);
+}
+
+.lead {
+  font-size: 1.15em;
+  color: var(--cream-2);
+}
+
+.muted {
+  color: var(--cream-3);
+}
+
+.small {
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+/* — Layout ————————————————————————————————————————————————————————— */
+
+.wrap {
+  width: min(100% - 2.5rem, var(--page));
+  margin-inline: auto;
+}
+
+.wrap-narrow {
+  width: min(100% - 2.5rem, var(--page-narrow));
+  margin-inline: auto;
+}
+
+.section {
+  padding-block: clamp(3.5rem, 2rem + 7vw, var(--space-9));
+}
+
+.section--tint {
+  background: var(--ink-2);
+}
+
+.section-head {
+  max-width: var(--measure);
+  margin-bottom: clamp(2rem, 1rem + 3vw, var(--space-7));
+}
+
+.grid {
+  display: grid;
+  gap: clamp(1.25rem, 0.5rem + 2vw, 2.25rem);
+}
+
+.grid--2 {
+  grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+}
+
+.grid--3 {
+  grid-template-columns: repeat(auto-fill, minmax(min(17rem, 100%), 1fr));
+}
+
+.grid--4 {
+  grid-template-columns: repeat(auto-fill, minmax(min(13rem, 100%), 1fr));
+}
+
+.stack > * + * {
+  margin-top: var(--space-4);
+}
+
+/* — Schaltflächen ——————————————————————————————————————————————————— */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  padding: 0.9em 1.9em;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.25s var(--ease),
+    border-color 0.25s var(--ease),
+    color 0.25s var(--ease),
+    opacity 0.25s var(--ease);
+}
+
+.btn--primary {
+  background: var(--cream);
+  color: var(--ink);
+}
+
+.btn--primary:hover {
+  background: var(--gold-lit);
+  color: var(--ink);
+}
+
+.btn--ghost {
+  border-color: var(--line-strong);
+  color: var(--cream);
+}
+
+.btn--ghost:hover {
+  border-color: var(--gold-lit);
+  color: var(--gold-lit);
+}
+
+.btn--gold {
+  background: var(--gold);
+  color: var(--cream);
+}
+
+.btn--gold:hover {
+  background: var(--gold-lit);
+  color: var(--ink);
+}
+
+.btn[disabled],
+.btn[aria-disabled='true'] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn--block {
+  width: 100%;
+}
+
+/* Textlink mit Pfeil, für „weiterlesen“-Stellen. */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--gold-lit);
+  border-bottom: 1px solid var(--gold-dim);
+  padding-bottom: 0.35em;
+}
+
+.link-arrow:hover {
+  border-bottom-color: var(--gold-lit);
+}
+
+.link-arrow::after {
+  content: '→';
+  transition: transform 0.25s var(--ease);
+}
+
+.link-arrow:hover::after {
+  transform: translateX(0.25em);
+}
+
+/* — Karten & Flächen ———————————————————————————————————————————————— */
+
+.card {
+  background: var(--ink-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.panel {
+  background: var(--ink-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.25rem, 0.75rem + 1.5vw, 2rem);
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.3em 0.85em;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cream-2);
+}
+
+.tag--gold {
+  border-color: var(--gold-dim);
+  color: var(--gold-lit);
+}
+
+/* Bildplatzhalter, solange die echten Fotos aus Instagram fehlen. */
+.ph {
+  position: relative;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 35%, rgb(195 169 176 / 0.13), transparent 62%),
+    linear-gradient(160deg, var(--ink-3), var(--ink));
+  color: var(--cream-3);
+  overflow: hidden;
+}
+
+.ph::after {
+  content: attr(data-label);
+  font-family: var(--font-display), serif;
+  font-size: 0.9rem;
+  font-style: italic;
+  letter-spacing: 0.05em;
+  padding: 0 1rem;
+  text-align: center;
+  opacity: 0.55;
+}
+
+/* — Formularelemente ———————————————————————————————————————————————— */
+
+label {
+  display: block;
+}
+
+.field {
+  display: block;
+  margin-bottom: var(--space-5);
+}
+
+.field > .field-label {
+  display: block;
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cream-2);
+  margin-bottom: var(--space-2);
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: 0.85em 1em;
+  background: var(--ink);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--cream);
+  font: inherit;
+  font-size: 0.95rem;
+  transition: border-color 0.2s var(--ease);
+}
+
+.input:hover,
+.select:hover,
+.textarea:hover {
+  border-color: var(--cream-3);
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: var(--gold-lit);
+  outline: none;
+}
+
+.textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--cream-2) 50%),
+    linear-gradient(135deg, var(--cream-2) 50%, transparent 50%);
+  background-position:
+    calc(100% - 1.15rem) 1.35rem,
+    calc(100% - 0.75rem) 1.35rem;
+  background-size:
+    5px 5px,
+    5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 2.5rem;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--cream-3);
+  opacity: 0.75;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: var(--cream-3);
+  margin-top: var(--space-2);
+}
+
+/* Auswahl als anklickbare Kacheln (Größe, Präsentation, Liefergebiet). */
+.choices {
+  display: grid;
+  gap: var(--space-3);
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.choices--row {
+  grid-template-columns: repeat(auto-fit, minmax(min(9rem, 100%), 1fr));
+}
+
+.choice {
+  position: relative;
+  display: block;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition:
+    border-color 0.2s var(--ease),
+    background-color 0.2s var(--ease);
+}
+
+.choice:hover {
+  border-color: var(--cream-3);
+}
+
+.choice input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.choice:has(input:checked) {
+  border-color: var(--gold-lit);
+  background: rgb(144 112 64 / 0.12);
+}
+
+.choice:has(input:focus-visible) {
+  outline: 2px solid var(--gold-lit);
+  outline-offset: 3px;
+}
+
+.choice-title {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--cream);
+}
+
+.choice-desc {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--cream-3);
+  margin-top: 0.2em;
+}
+
+.choice-price {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--gold-lit);
+  margin-top: 0.35em;
+}
+
+/* — Hilfsklassen ———————————————————————————————————————————————————— */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: -4rem;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: var(--cream);
+  color: var(--ink);
+  text-decoration: none;
+  transition: top 0.2s var(--ease);
+}
+
+.skip-link:focus {
+  top: var(--space-4);
+}
+
+.rule {
+  width: 4rem;
+  height: 1px;
+  background: var(--gold);
+  border: 0;
+  margin: 0 0 var(--space-5);
+}

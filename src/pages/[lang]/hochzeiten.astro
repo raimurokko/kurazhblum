@@ -1,0 +1,227 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import InquiryForm from '../../components/InquiryForm.astro';
+import { localePaths, t, type I18nText, type Locale } from '../../i18n/config';
+import { useTranslations } from '../../i18n/ui';
+
+export function getStaticPaths() {
+  return localePaths();
+}
+
+const lang = Astro.params.lang as Locale;
+const _ = useTranslations(lang);
+
+const services: { title: I18nText; text: I18nText }[] = [
+  {
+    title: {
+      de: 'Brautstrauß & Anstecker',
+      uk: 'Букет нареченої та бутоньєрки',
+      en: 'Bridal bouquet & buttonholes',
+      ru: 'Букет невесты и бутоньерки',
+    },
+    text: {
+      de: 'Der Strauß wird an Ihrem Kleid und Ihrer Größe ausgerichtet, nicht an einem Katalogbild. Anstecker und Haarschmuck passend dazu.',
+      uk: 'Букет підбирається під вашу сукню та зріст, а не під картинку з каталогу. Бутоньєрки та прикраса для волосся — у тон.',
+      en: 'The bouquet is built around your dress and your height, not a catalogue photo. Buttonholes and hairpieces to match.',
+      ru: 'Букет подбирается под ваше платье и рост, а не под картинку из каталога. Бутоньерки и украшение для волос — в тон.',
+    },
+  },
+  {
+    title: {
+      de: 'Zeremonie',
+      uk: 'Церемонія',
+      en: 'Ceremony',
+      ru: 'Церемония',
+    },
+    text: {
+      de: 'Bogen, Altar, Stuhlreihen, Streublumen. Aufbau vor Ort, rechtzeitig vor den ersten Gästen.',
+      uk: 'Арка, вівтар, ряди стільців, пелюстки. Монтаж на місці, завчасно до приходу гостей.',
+      en: 'Arch, altar, aisle rows, petals. Set up on site, well before the first guests arrive.',
+      ru: 'Арка, алтарь, ряды стульев, лепестки. Монтаж на месте, задолго до прихода гостей.',
+    },
+  },
+  {
+    title: {
+      de: 'Tische & Raum',
+      uk: 'Столи та зал',
+      en: 'Tables & room',
+      ru: 'Столы и зал',
+    },
+    text: {
+      de: 'Tischläufer aus Blumen, einzelne Gestecke, Kerzen, Eingang und Bar — abgestimmt auf Ihre Location statt gegen sie.',
+      uk: 'Квіткові доріжки, окремі композиції, свічки, вхід і бар — у злагоді з вашою локацією, а не всупереч їй.',
+      en: 'Floral runners, individual arrangements, candles, entrance and bar — tuned to your venue rather than against it.',
+      ru: 'Цветочные дорожки, отдельные композиции, свечи, вход и бар — в согласии с вашей площадкой, а не вопреки ей.',
+    },
+  },
+  {
+    title: {
+      de: 'Auf- und Abbau',
+      uk: 'Монтаж і демонтаж',
+      en: 'Set-up & take-down',
+      ru: 'Монтаж и демонтаж',
+    },
+    text: {
+      de: 'Wir bauen auf und räumen wieder ab — auch nachts. Sie müssen sich am nächsten Morgen um nichts kümmern.',
+      uk: 'Ми монтуємо та прибираємо — навіть уночі. Наступного ранку вам не треба нічим перейматися.',
+      en: 'We set up and clear away again — at night too. You have nothing to deal with the next morning.',
+      ru: 'Мы монтируем и убираем — в том числе ночью. На следующее утро вам не нужно ни о чём заботиться.',
+    },
+  },
+];
+
+const steps: { title: I18nText; text: I18nText }[] = [
+  {
+    title: { de: 'Anfrage', uk: 'Запит', en: 'Enquiry', ru: 'Запрос' },
+    text: {
+      de: 'Sie schicken Datum, Ort und ein paar Bilder, die Ihnen gefallen. Ich antworte innerhalb von 24 Stunden, ob der Termin frei ist.',
+      uk: 'Ви надсилаєте дату, місце та кілька зображень, які вам подобаються. Відповідаю протягом 24 годин, чи вільна дата.',
+      en: 'You send the date, the venue and a few images you like. I reply within 24 hours whether the date is free.',
+      ru: 'Вы присылаете дату, место и несколько картинок, которые вам нравятся. Отвечаю в течение 24 часов, свободна ли дата.',
+    },
+  },
+  {
+    title: { de: 'Gespräch', uk: 'Розмова', en: 'Conversation', ru: 'Разговор' },
+    text: {
+      de: 'Eine Stunde per Video oder im Atelier. Danach wissen wir beide, ob es passt — kostenlos und unverbindlich.',
+      uk: 'Година по відео або в ательє. Після цього ми обоє знаємо, чи підходимо одне одному — безкоштовно та без зобовʼязань.',
+      en: 'An hour by video or at the atelier. After that we both know whether it fits — free and without obligation.',
+      ru: 'Час по видео или в ателье. После этого мы оба понимаем, подходим ли друг другу — бесплатно и без обязательств.',
+    },
+  },
+  {
+    title: { de: 'Konzept & Angebot', uk: 'Концепція та пропозиція', en: 'Concept & quote', ru: 'Концепция и предложение' },
+    text: {
+      de: 'Sie bekommen eine Farbkarte, eine Skizze pro Bereich und ein festes Angebot. Erst danach wird etwas verbindlich.',
+      uk: 'Ви отримуєте кольорову карту, ескіз для кожної зони та фіксовану пропозицію. Лише після цього щось стає обовʼязковим.',
+      en: 'You receive a colour card, a sketch per area and a fixed quote. Only then does anything become binding.',
+      ru: 'Вы получаете цветовую карту, эскиз для каждой зоны и фиксированное предложение. Только после этого что-то становится обязательным.',
+    },
+  },
+  {
+    title: { de: 'Der Tag', uk: 'День', en: 'The day', ru: 'День' },
+    text: {
+      de: 'Wir sind vor Ihnen da und gehen nach den letzten Gästen. Der Brautstrauß kommt am Morgen zu Ihnen, nicht in die Location.',
+      uk: 'Ми на місці раніше за вас і йдемо після останніх гостей. Букет нареченої привозимо вранці вам, а не в локацію.',
+      en: 'We arrive before you and leave after the last guests. The bridal bouquet comes to you in the morning, not to the venue.',
+      ru: 'Мы на месте раньше вас и уходим после последних гостей. Букет невесты привозим утром вам, а не на площадку.',
+    },
+  },
+];
+---
+
+<BaseLayout lang={lang} title={_('weddings.title')} description={_('weddings.intro')} route="hochzeiten">
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="kicker">{_('weddings.kicker')}</span>
+        <h1>{_('weddings.title')}</h1>
+        <p class="lead">{_('weddings.intro')}</p>
+      </div>
+
+      <div class="ph hero-band" data-label={_('weddings.kicker')}>
+        <img src="/images/weddings/hero.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tint">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>{_('weddings.services')}</h2>
+      </div>
+      <div class="grid grid--2">
+        {
+          services.map((service) => (
+            <div class="panel">
+              <h3>{t(service.title, lang)}</h3>
+              <p class="muted">{t(service.text, lang)}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>{_('weddings.process')}</h2>
+      </div>
+      <ol class="steps">
+        {
+          steps.map((step, index) => (
+            <li class="step">
+              <span class="step-num">{String(index + 1).padStart(2, '0')}</span>
+              <h3>{t(step.title, lang)}</h3>
+              <p class="muted small">{t(step.text, lang)}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--tint">
+    <div class="wrap wrap-narrow">
+      <h2>{_('weddings.pricing.title')}</h2>
+      <p class="lead">{_('weddings.pricing.text')}</p>
+    </div>
+  </section>
+
+  <section class="section" id="anfrage">
+    <div class="wrap wrap-narrow">
+      <div class="section-head">
+        <h2>{_('weddings.inquire')}</h2>
+      </div>
+      <InquiryForm lang={lang} topic="wedding" />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero-band {
+    aspect-ratio: 21 / 9;
+    border-radius: var(--radius-lg);
+  }
+
+  .hero-band img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(1.5rem, 0.5rem + 2vw, 2.5rem);
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+    counter-reset: step;
+  }
+
+  .step {
+    border-top: 1px solid var(--line-strong);
+    padding-top: var(--space-4);
+  }
+
+  .step-num {
+    display: block;
+    font-family: var(--font-display), serif;
+    font-size: 1.6rem;
+    color: var(--gold);
+    margin-bottom: var(--space-3);
+  }
+
+  .step h3 {
+    font-size: 1.15rem;
+    margin-bottom: var(--space-2);
+  }
+
+  .step p {
+    margin: 0;
+  }
+</style>

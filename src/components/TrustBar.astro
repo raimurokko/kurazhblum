@@ -1,0 +1,59 @@
+---
+import type { Locale } from '../i18n/config';
+import { useTranslations, type UiKey } from '../i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const _ = useTranslations(lang);
+
+const items: { title: UiKey; text: UiKey }[] = [
+  { title: 'trust.delivery.title', text: 'trust.delivery.text' },
+  { title: 'trust.photo.title', text: 'trust.photo.text' },
+  { title: 'trust.card.title', text: 'trust.card.text' },
+  { title: 'trust.handmade.title', text: 'trust.handmade.text' },
+];
+---
+
+<section class="trust" aria-label={_('trust.delivery.title')}>
+  <div class="wrap trust-grid">
+    {
+      items.map((item) => (
+        <div class="trust-item">
+          <h2 class="trust-title">{_(item.title)}</h2>
+          <p class="small muted">{_(item.text)}</p>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .trust {
+    border-block: 1px solid var(--line);
+    padding-block: clamp(2rem, 1rem + 3vw, 3rem);
+    background: var(--ink-2);
+  }
+
+  .trust-grid {
+    display: grid;
+    gap: clamp(1.5rem, 0.5rem + 2.5vw, 2.5rem);
+    grid-template-columns: repeat(auto-fit, minmax(min(13rem, 100%), 1fr));
+  }
+
+  .trust-title {
+    font-family: var(--font-body), sans-serif;
+    font-size: 0.74rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-lit);
+    margin-bottom: var(--space-2);
+  }
+
+  .trust-item p {
+    margin: 0;
+  }
+</style>

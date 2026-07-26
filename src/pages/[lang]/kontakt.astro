@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import InquiryForm from '../../components/InquiryForm.astro';
+import { localePaths, t, type Locale } from '../../i18n/config';
+import { useTranslations } from '../../i18n/ui';
+import { site } from '../../data/site';
+
+export function getStaticPaths() {
+  return localePaths();
+}
+
+const lang = Astro.params.lang as Locale;
+const _ = useTranslations(lang);
+---
+
+<BaseLayout lang={lang} title={_('contact.title')} description={_('footer.tagline')} route="kontakt">
+  <section class="section">
+    <div class="wrap contact">
+      <div>
+        <span class="kicker">{_('contact.kicker')}</span>
+        <h1>{_('contact.title')}</h1>
+
+        <dl class="details">
+          <div>
+            <dt>{_('contact.email')}</dt>
+            <dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+          </div>
+          <div>
+            <dt>{_('contact.phone')}</dt>
+            <dd><a href={`tel:${site.phoneHref}`}>{site.phone}</a></dd>
+          </div>
+          <div>
+            <dt>{_('contact.instagram')}</dt>
+            <dd>
+              <a href={site.instagramUrl} target="_blank" rel="noopener">@{site.instagram}</a>
+            </dd>
+          </div>
+          <div>
+            <dt>{_('contact.address')}</dt>
+            <dd>
+              {site.address.street}<br />
+              {site.address.zip}&nbsp;{site.address.city}
+            </dd>
+          </div>
+        </dl>
+
+        <h2 class="hours-head">{_('contact.hours')}</h2>
+        <dl class="details">
+          {
+            site.hours.map((entry) => (
+              <div>
+                <dt>{t(entry.days, lang)}</dt>
+                <dd>{entry.time || t(site.closedLabel, lang)}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="hint">{_('contact.byappointment')}</p>
+      </div>
+
+      <div>
+        <InquiryForm lang={lang} topic="general" />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact {
+    display: grid;
+    gap: clamp(2rem, 1rem + 4vw, 4rem);
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .details {
+    margin: 0 0 var(--space-6);
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .details > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .details dt {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-lit);
+  }
+
+  .details dd {
+    margin: 0;
+    text-align: right;
+    color: var(--cream-2);
+  }
+
+  .hours-head {
+    font-size: 1.15rem;
+    margin-bottom: var(--space-4);
+  }
+
+  @media (width >= 56rem) {
+    .contact {
+      grid-template-columns: 0.85fr 1.15fr;
+    }
+  }
+</style>

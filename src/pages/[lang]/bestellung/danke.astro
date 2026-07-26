@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { localePaths, path, type Locale } from '../../../i18n/config';
+import { useTranslations } from '../../../i18n/ui';
+import { site } from '../../../data/site';
+
+export function getStaticPaths() {
+  return localePaths();
+}
+
+const lang = Astro.params.lang as Locale;
+const _ = useTranslations(lang);
+---
+
+<BaseLayout
+  lang={lang}
+  title={_('checkout.success.title')}
+  description={_('checkout.success.text')}
+  route="bestellung/danke"
+  noindex
+>
+  <section class="section">
+    <div class="wrap wrap-narrow center">
+      <img src="/brand/monogram.png" alt="" width="512" height="385" class="mono" />
+      <h1>{_('checkout.success.title')}</h1>
+      <p class="lead">{_('checkout.success.text')}</p>
+      <div class="actions">
+        <a class="btn btn--primary" href={path(lang, 'shop')}>{_('checkout.back')}</a>
+        <a class="btn btn--ghost" href={site.instagramUrl} target="_blank" rel="noopener">
+          @{site.instagram}
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .center {
+    text-align: center;
+    padding-block: clamp(2rem, 1rem + 4vw, 4rem);
+  }
+
+  .center p {
+    margin-inline: auto;
+  }
+
+  .mono {
+    width: 4.5rem;
+    height: auto;
+    margin: 0 auto var(--space-6);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+</style>

@@ -1,0 +1,87 @@
+---
+import LegalLayout from '../../layouts/LegalLayout.astro';
+import { localePaths, type Locale } from '../../i18n/config';
+import { site } from '../../data/site';
+
+export function getStaticPaths() {
+  return localePaths();
+}
+
+const lang = Astro.params.lang as Locale;
+---
+
+<LegalLayout lang={lang} title="Widerrufsbelehrung" route="widerruf">
+  <p class="todo">
+    Entwurf. Gerade hier lohnt die anwaltliche Prüfung: Welche Ausnahme greift, hängt davon ab, wie das
+    Sortiment am Ende tatsächlich aussieht (frei gebundener Einzelstrauß, Standardware ab Lager,
+    Trockenblumen, Gutscheine, Workshops — das sind vier verschiedene Fälle).
+  </p>
+
+  <h2>Widerrufsrecht</h2>
+  <p>
+    Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen. Die
+    Widerrufsfrist beträgt vierzehn Tage ab dem Tag, an dem Sie oder ein von Ihnen benannter Dritter,
+    der nicht der Beförderer ist, die Waren in Besitz genommen haben bzw. hat.
+  </p>
+  <p>
+    Um Ihr Widerrufsrecht auszuüben, müssen Sie uns
+  </p>
+  <address>
+    {site.legal.owner}, {site.nameFull}<br />
+    {site.address.street}, {site.address.zip} {site.address.city}<br />
+    E-Mail: <a href={`mailto:${site.email}`}>{site.email}</a>
+  </address>
+  <p>
+    mittels einer eindeutigen Erklärung (z. B. per Post oder E-Mail) über Ihren Entschluss informieren.
+    Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung vor Ablauf der Frist absenden.
+  </p>
+
+  <h2>Folgen des Widerrufs</h2>
+  <p>
+    Wenn Sie diesen Vertrag widerrufen, erstatten wir Ihnen alle Zahlungen, die wir von Ihnen erhalten
+    haben, einschließlich der Lieferkosten (mit Ausnahme der zusätzlichen Kosten, die sich daraus
+    ergeben, dass Sie eine andere Art der Lieferung als die von uns angebotene, günstigste
+    Standardlieferung gewählt haben), unverzüglich und spätestens binnen vierzehn Tagen ab dem Tag, an
+    dem die Mitteilung über Ihren Widerruf bei uns eingegangen ist.
+  </p>
+
+  <h2>Ausnahmen vom Widerrufsrecht</h2>
+  <p>Das Widerrufsrecht besteht nach § 312g Abs. 2 BGB nicht bei Verträgen zur Lieferung von</p>
+  <ul>
+    <li>
+      Waren, die nicht vorgefertigt sind und für deren Herstellung eine individuelle Auswahl oder
+      Bestimmung durch den Verbraucher maßgeblich ist (Nr. 1) — das betrifft individuell zusammengestellte
+      Sträuße und Gestecke,
+    </li>
+    <li>
+      Waren, die schnell verderben können oder deren Verfallsdatum schnell überschritten würde (Nr. 2) —
+      das betrifft Schnittblumen und Pflanzen.
+    </li>
+  </ul>
+  <p>
+    Für Trockenblumen, Vasen und Gutscheine gilt das Widerrufsrecht dagegen uneingeschränkt.
+  </p>
+
+  <h2>Workshops</h2>
+  <p>
+    Für Freizeitveranstaltungen mit festem Termin — dazu zählen unsere Workshops — besteht nach
+    § 312g Abs. 2 Nr. 9 BGB kein gesetzliches Widerrufsrecht. Unabhängig davon gelten unsere
+    freiwilligen Stornobedingungen: kostenfreie Stornierung bis 14 Tage vor dem Termin, danach
+    Erstattung bei Nachbesetzung des Platzes; Plätze sind jederzeit übertragbar.
+  </p>
+
+  <h2>Muster-Widerrufsformular</h2>
+  <p>
+    (Wenn Sie den Vertrag widerrufen wollen, füllen Sie bitte dieses Formular aus und senden Sie es
+    zurück.)
+  </p>
+  <ul>
+    <li>An: {site.legal.owner}, {site.address.street}, {site.address.zip} {site.address.city}, {site.email}</li>
+    <li>Hiermit widerrufe(n) ich/wir den von mir/uns abgeschlossenen Vertrag über den Kauf der folgenden Waren:</li>
+    <li>Bestellt am / erhalten am:</li>
+    <li>Name des/der Verbraucher(s):</li>
+    <li>Anschrift des/der Verbraucher(s):</li>
+    <li>Unterschrift (nur bei Mitteilung auf Papier):</li>
+    <li>Datum:</li>
+  </ul>
+</LegalLayout>

@@ -1,0 +1,297 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import InquiryForm from '../../components/InquiryForm.astro';
+import { localePaths, t, type Locale } from '../../i18n/config';
+import { useTranslations } from '../../i18n/ui';
+import { formatPrice } from '../../data/shop';
+import { WORKSHOP_FORMATS, formatBySlug, upcomingDates } from '../../data/workshops';
+
+export function getStaticPaths() {
+  return localePaths();
+}
+
+const lang = Astro.params.lang as Locale;
+const _ = useTranslations(lang);
+
+const INTL_LOCALE: Record<Locale, string> = { de: 'de-DE', uk: 'uk-UA', en: 'en-GB', ru: 'ru-RU' };
+const dateFormat = new Intl.DateTimeFormat(INTL_LOCALE[lang], {
+  weekday: 'short',
+  day: 'numeric',
+  month: 'long',
+  hour: '2-digit',
+  minute: '2-digit',
+});
+
+const dates = upcomingDates().map((entry) => ({
+  ...entry,
+  format: formatBySlug(entry.formatSlug)!,
+  label: dateFormat.format(new Date(entry.start)),
+}));
+---
+
+<BaseLayout lang={lang} title={_('workshops.title')} description={_('workshops.intro')} route="workshops">
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="kicker">{_('workshops.kicker')}</span>
+        <h1>{_('workshops.title')}</h1>
+        <p class="lead">{_('workshops.intro')}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Termine -->
+  <section class="section section--tint">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>{_('workshops.upcoming')}</h2>
+      </div>
+
+      <ul class="dates">
+        {
+          dates.map((entry) => (
+            <li class="date">
+              <div class="date-main">
+                <p class="date-when">{entry.label}</p>
+                <h3 class="date-name">{t(entry.format.name, lang)}</h3>
+                <p class="small muted">
+                  {t(entry.format.duration, lang)} · {t(entry.format.location, lang)}
+                </p>
+              </div>
+
+              <div class="date-side">
+                {entry.format.price && (
+                  <p class="date-price">
+                    {formatPrice(entry.format.price, lang)}
+                    <span class="small muted"> {_('workshops.perperson')}</span>
+                  </p>
+                )}
+                <p class="small muted date-seats">
+                  {entry.seatsLeft > 0 ? `${entry.seatsLeft} ${_('workshops.seats')}` : _('workshops.soldout')}
+                </p>
+                <button
+                  class="btn btn--gold"
+                  type="button"
+                  data-book-workshop
+                  data-date-id={entry.id}
+                  disabled={entry.seatsLeft === 0}
+                >
+                  {_('workshops.book')}
+                </button>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="hint" data-book-error hidden>{_('form.error')}</p>
+    </div>
+  </section>
+
+  <!-- Formate -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>{_('workshops.formats')}</h2>
+      </div>
+
+      <div class="grid grid--2">
+        {
+          WORKSHOP_FORMATS.map((format) => (
+            <article class="panel format">
+              <div class="ph format-ph" data-label={t(format.name, lang)}>
+                <img
+                  src={format.image}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  onerror="this.remove()"
+                />
+              </div>
+              <h3>{t(format.name, lang)}</h3>
+              <p class="muted">{t(format.description, lang)}</p>
+
+              <dl class="format-meta small">
+                <div>
+                  <dt>{_('workshops.duration')}</dt>
+                  <dd>{t(format.duration, lang)}</dd>
+                </div>
+                <div>
+                  <dt>{_('workshops.location')}</dt>
+                  <dd>{t(format.location, lang)}</dd>
+                </div>
+                {format.price && (
+                  <div>
+                    <dt>{_('workshops.perperson')}</dt>
+                    <dd>{formatPrice(format.price, lang)}</dd>
+                  </div>
+                )}
+              </dl>
+
+              <p class="field-label format-inc">{_('workshops.included')}</p>
+              <ul class="format-list small muted">
+                {format.included.map((item) => (
+                  <li>{t(item, lang)}</li>
+                ))}
+              </ul>
+
+              {format.inquiryOnly && (
+                <a class="btn btn--ghost" href="#anfrage">
+                  {_('workshops.inquire')}
+                </a>
+              )}
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Mobiler Workshop -->
+  <section class="section section--tint" id="anfrage">
+    <div class="wrap wrap-narrow">
+      <div class="section-head">
+        <h2>{_('workshops.mobile.title')}</h2>
+        <p class="lead">{_('workshops.mobile.text')}</p>
+      </div>
+      <InquiryForm lang={lang} topic="workshop" />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .dates {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .date {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+    padding: var(--space-5);
+    background: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+  }
+
+  .date-when {
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold-lit);
+    margin-bottom: var(--space-2);
+  }
+
+  .date-name {
+    font-size: 1.45rem;
+    margin-bottom: var(--space-1);
+  }
+
+  .date-main p:last-child {
+    margin: 0;
+  }
+
+  .date-side {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-2);
+  }
+
+  .date-price {
+    font-family: var(--font-display), serif;
+    font-size: 1.5rem;
+    margin: 0;
+  }
+
+  .date-seats {
+    margin: 0;
+  }
+
+  .format-ph {
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius);
+    margin-bottom: var(--space-4);
+  }
+
+  .format-ph img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .format-meta {
+    display: grid;
+    gap: var(--space-2);
+    margin: var(--space-4) 0;
+    padding: var(--space-4) 0;
+    border-block: 1px solid var(--line);
+  }
+
+  .format-meta > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .format-meta dt {
+    color: var(--cream-3);
+  }
+
+  .format-meta dd {
+    margin: 0;
+    text-align: right;
+  }
+
+  .format-inc {
+    margin-bottom: var(--space-2);
+  }
+
+  .format-list {
+    margin: 0 0 var(--space-5);
+    padding-left: 1.1rem;
+  }
+
+  .format-list li {
+    margin-bottom: var(--space-1);
+  }
+</style>
+
+<script>
+  const errorEl = document.querySelector<HTMLElement>('[data-book-error]');
+
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-book-workshop]')) {
+    button.addEventListener('click', async () => {
+      const label = button.textContent ?? '';
+      button.disabled = true;
+      if (errorEl) errorEl.hidden = true;
+
+      try {
+        const response = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            kind: 'workshop',
+            lang: document.documentElement.lang.split('-')[0],
+            dateId: button.dataset.dateId,
+          }),
+        });
+        if (!response.ok) throw new Error(`checkout failed: ${response.status}`);
+        const result = (await response.json()) as { url?: string };
+        if (!result.url) throw new Error('checkout returned no url');
+        window.location.href = result.url;
+      } catch (error) {
+        console.error(error);
+        if (errorEl) errorEl.hidden = false;
+        button.disabled = false;
+        button.textContent = label;
+      }
+    });
+  }
+</script>

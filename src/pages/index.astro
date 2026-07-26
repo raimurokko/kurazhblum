@@ -1,17 +1,42 @@
 ---
+// Einstiegsseite ohne Sprachpräfix. Sie leitet auf die passende Sprachversion
+// weiter: bevorzugt die Browsersprache, sonst Deutsch. Als statische Seite
+// gebaut, damit sie ohne Server funktioniert.
+import { DEFAULT_LOCALE, LOCALES, path } from '../i18n/config';
+import { site } from '../data/site';
 
+const fallback = path(DEFAULT_LOCALE);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{site.nameFull}</title>
+    <meta http-equiv="refresh" content={`0; url=${fallback}`} />
+    <link rel="canonical" href={fallback} />
+    <meta name="robots" content="noindex" />
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #0b0a0a;
+        color: #8e857d;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <p><a href={fallback} style="color:#c39a5e">{site.nameFull}</a></p>
+    <script is:inline define:vars={{ locales: LOCALES, fallback }}>
+      const preferred = (navigator.languages ?? [navigator.language ?? 'de'])
+        .map((tag) => tag.toLowerCase().split('-')[0])
+        .find((code) => locales.includes(code));
+      location.replace(preferred ? `/${preferred}/` : fallback);
+    </script>
+  </body>
 </html>

@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { DEFAULT_LOCALE, path } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+
+// 404 kann nur eine Sprache haben, weil die Route sprachlos ist —
+// Deutsch als Hauptsprache, mit Links in alle vier Fassungen.
+const lang = DEFAULT_LOCALE;
+const _ = useTranslations(lang);
+---
+
+<BaseLayout lang={lang} title={_('common.notfound.title')} description={_('common.notfound.text')} noindex>
+  <section class="section">
+    <div class="wrap wrap-narrow center">
+      <h1>{_('common.notfound.title')}</h1>
+      <p class="lead">{_('common.notfound.text')}</p>
+      <p>
+        <a class="btn btn--primary" href={path(lang)}>{_('common.home')}</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .center {
+    text-align: center;
+    padding-block: clamp(2rem, 1rem + 5vw, 5rem);
+  }
+
+  .center p {
+    margin-inline: auto;
+  }
+</style>

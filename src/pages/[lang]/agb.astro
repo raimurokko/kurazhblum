@@ -1,0 +1,98 @@
+---
+import LegalLayout from '../../layouts/LegalLayout.astro';
+import { localePaths, path, type Locale } from '../../i18n/config';
+import { site } from '../../data/site';
+import { MIN_ORDER_DELIVERY, formatPrice } from '../../data/shop';
+
+export function getStaticPaths() {
+  return localePaths();
+}
+
+const lang = Astro.params.lang as Locale;
+---
+
+<LegalLayout lang={lang} title="Allgemeine Geschäftsbedingungen" route="agb">
+  <p class="todo">
+    Entwurf als Arbeitsgrundlage. Vor dem Livegang von einer Rechtsberatung prüfen lassen — AGB sind der
+    Teil, bei dem Fehler am teuersten werden.
+  </p>
+
+  <h2>1. Geltungsbereich</h2>
+  <p>
+    Diese Bedingungen gelten für alle Bestellungen von Verbraucherinnen und Verbrauchern sowie
+    Unternehmen über diese Website bei {site.legal.owner}, {site.nameFull}, {site.address.street},
+    {site.address.zip} {site.address.city}.
+  </p>
+
+  <h2>2. Vertragsschluss</h2>
+  <p>
+    Die Darstellung der Produkte ist kein bindendes Angebot. Mit dem Abschluss des Bestellvorgangs geben
+    Sie ein verbindliches Angebot ab. Der Vertrag kommt zustande, wenn wir die Bestellung per E-Mail
+    bestätigen oder die Ware ausliefern.
+  </p>
+
+  <h2>3. Preise und Zahlung</h2>
+  <p>
+    Alle Preise verstehen sich inklusive der gesetzlichen Umsatzsteuer. Liefergebühren werden im
+    Bestellvorgang gesondert ausgewiesen. Die Zahlung erfolgt über den Zahlungsdienstleister Stripe;
+    verfügbar sind die dort angebotenen Zahlungsarten.
+  </p>
+
+  <h2>4. Lieferung</h2>
+  <p>
+    Wir liefern in Berlin und im Umkreis von bis zu 40 km. Der Mindestbestellwert für eine Lieferung
+    beträgt {formatPrice(MIN_ORDER_DELIVERY, 'de')}; bei Abholung im Atelier gibt es keinen
+    Mindestbestellwert.
+  </p>
+  <p>
+    Wir liefern zum vereinbarten Termin im gewählten Zeitfenster. Ist die empfangende Person nicht
+    anzutreffen, versuchen wir die Übergabe an Nachbarn oder eine Ablage nach Absprache. Ist beides nicht
+    möglich, nehmen wir Kontakt zu Ihnen auf; ein zweiter Zustellversuch kann berechnet werden.
+  </p>
+
+  <h2>5. Beschaffenheit von Blumen</h2>
+  <p>
+    Blumen sind ein Naturprodukt. Sorte, Farbton, Größe und Reifegrad können saisonal schwanken. Ist eine
+    bestellte Sorte nicht in ausreichender Qualität verfügbar, ersetzen wir sie durch eine gleichwertige
+    Blume vergleichbarer Anmutung und vergleichbaren Werts. Abbildungen auf dieser Website sind
+    Beispielbilder; jeder Strauß wird von Hand gebunden und ist daher ein Einzelstück.
+  </p>
+  <p>
+    Vor der Lieferung erhalten Sie auf Wunsch ein Foto Ihres Straußes. Wenn Ihnen die Umsetzung nicht
+    zusagt, klären wir das, bevor der Strauß das Atelier verlässt.
+  </p>
+
+  <h2>6. Widerrufsrecht</h2>
+  <p>
+    Verbraucherinnen und Verbrauchern steht grundsätzlich ein Widerrufsrecht zu. Bei individuell
+    gebundenen Sträußen und schnell verderblicher Ware bestehen gesetzliche Ausnahmen — die Einzelheiten
+    stehen in der <a href={path(lang, 'widerruf')}>Widerrufsbelehrung</a>.
+  </p>
+
+  <h2>7. Workshops</h2>
+  <p>
+    Gebuchte Plätze sind übertragbar. Eine kostenfreie Stornierung ist bis 14 Tage vor dem Termin
+    möglich; danach erstatten wir den Betrag nur, wenn der Platz nachbesetzt werden kann. Muss ein Termin
+    von uns abgesagt werden, erstatten wir den vollen Betrag.
+  </p>
+
+  <h2>8. Hochzeiten und Events</h2>
+  <p>
+    Für Hochzeiten und Events gilt ein gesondertes schriftliches Angebot. Mit der Auftragsbestätigung
+    wird eine Anzahlung fällig; die Restzahlung erfolgt vor der Veranstaltung. Die Stornobedingungen
+    ergeben sich aus dem jeweiligen Angebot.
+  </p>
+
+  <h2>9. Gewährleistung</h2>
+  <p>
+    Es gelten die gesetzlichen Regelungen. Bitte melden Sie erkennbare Mängel innerhalb von 24 Stunden
+    nach Erhalt unter <a href={`mailto:${site.email}`}>{site.email}</a>, gern mit einem Foto — bei
+    Frischware lässt sich später nicht mehr klären, worauf ein Mangel zurückgeht.
+  </p>
+
+  <h2>10. Schlussbestimmungen</h2>
+  <p>
+    Es gilt deutsches Recht. Sollte eine Bestimmung unwirksam sein, bleibt der Vertrag im Übrigen
+    wirksam.
+  </p>
+</LegalLayout>

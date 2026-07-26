@@ -1,0 +1,93 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { DEFAULT_LOCALE, t, type I18nText, type Locale } from '../i18n/config';
+
+interface Props {
+  lang: Locale;
+  title: string;
+  route: string;
+  description?: string;
+}
+
+const { lang, title, route, description = title } = Astro.props;
+
+/**
+ * Die Rechtstexte stehen nur auf Deutsch. Das ist Absicht: rechtlich
+ * verbindlich ist in Deutschland ohnehin die deutsche Fassung, und eine
+ * ungeprüfte Übersetzung würde mehr Risiko schaffen als Nutzen.
+ */
+const foreignNotice: I18nText = {
+  de: '',
+  uk: 'Юридичні тексти доступні лише німецькою мовою — саме ця редакція є обовʼязковою. Якщо щось незрозуміло, напишіть мені, і я поясню українською.',
+  en: 'The legal texts are available in German only — that version is the binding one. If anything is unclear, write to me and I will explain it in English.',
+  ru: 'Юридические тексты доступны только на немецком языке — именно эта редакция является обязательной. Если что-то непонятно, напишите мне, и я объясню по-русски.',
+};
+
+const notice = lang === DEFAULT_LOCALE ? '' : t(foreignNotice, lang);
+---
+
+<BaseLayout lang={lang} title={title} description={description} route={route}>
+  <section class="section">
+    <div class="wrap wrap-narrow legal">
+      <h1>{title}</h1>
+      {notice && <p class="legal-notice">{notice}</p>}
+      <div class="legal-body" lang="de">
+        <slot />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style is:global>
+  .legal-notice {
+    padding: 0.9rem 1.2rem;
+    border-left: 2px solid var(--gold);
+    background: rgb(144 112 64 / 0.12);
+    color: var(--cream-2);
+    font-size: 0.92rem;
+    max-width: none;
+  }
+
+  .legal-body h2 {
+    font-size: 1.5rem;
+    margin-top: var(--space-7);
+  }
+
+  .legal-body h3 {
+    font-size: 1.1rem;
+    margin-top: var(--space-6);
+  }
+
+  .legal-body p,
+  .legal-body li {
+    color: var(--cream-2);
+  }
+
+  .legal-body ul,
+  .legal-body ol {
+    max-width: var(--measure);
+    padding-left: 1.2rem;
+  }
+
+  .legal-body li {
+    margin-bottom: var(--space-2);
+  }
+
+  .legal-body address {
+    font-style: normal;
+    color: var(--cream-2);
+    margin-bottom: var(--space-4);
+  }
+
+  /* Sichtbare Markierung für alles, was noch von der Inhaberin kommen muss. */
+  .todo {
+    display: block;
+    padding: 0.85rem 1.1rem;
+    margin: var(--space-4) 0;
+    border: 1px dashed var(--mauve-deep);
+    border-radius: var(--radius);
+    background: rgb(142 112 120 / 0.1);
+    color: var(--mauve);
+    font-size: 0.9rem;
+  }
+</style>

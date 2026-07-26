@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { localePaths, path, type Locale } from '../../../i18n/config';
+import { useTranslations } from '../../../i18n/ui';
+
+export function getStaticPaths() {
+  return localePaths();
+}
+
+const lang = Astro.params.lang as Locale;
+const _ = useTranslations(lang);
+---
+
+<BaseLayout
+  lang={lang}
+  title={_('checkout.cancel.title')}
+  description={_('checkout.cancel.text')}
+  route="bestellung/abbruch"
+  noindex
+>
+  <section class="section">
+    <div class="wrap wrap-narrow center">
+      <h1>{_('checkout.cancel.title')}</h1>
+      <p class="lead">{_('checkout.cancel.text')}</p>
+      <p>
+        <a class="btn btn--primary" href={path(lang, 'shop')}>{_('checkout.back')}</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .center {
+    text-align: center;
+    padding-block: clamp(2rem, 1rem + 4vw, 4rem);
+  }
+
+  .center p {
+    margin-inline: auto;
+  }
+</style>

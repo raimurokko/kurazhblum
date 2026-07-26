@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ProductCard from '../../../components/ProductCard.astro';
+import TrustBar from '../../../components/TrustBar.astro';
+import { localePaths, path, t, type Locale } from '../../../i18n/config';
+import { useTranslations } from '../../../i18n/ui';
+import { BOUQUETS, CATEGORIES } from '../../../data/shop';
+
+export function getStaticPaths() {
+  return localePaths();
+}
+
+const lang = Astro.params.lang as Locale;
+const _ = useTranslations(lang);
+---
+
+<BaseLayout lang={lang} title={_('shop.title')} description={_('shop.subtitle')} route="shop">
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="kicker">{_('nav.shop')}</span>
+        <h1>{_('shop.title')}</h1>
+        <p class="lead">{_('shop.subtitle')}</p>
+      </div>
+
+      <nav class="filters" aria-label={_('home.categories.kicker')}>
+        <span class="filter is-active">{_('shop.filter.all')}</span>
+        {
+          CATEGORIES.map((category) => (
+            <a class="filter" href={path(lang, 'shop/kategorie', category.slug)}>
+              {t(category.name, lang)}
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="grid grid--3">
+        {BOUQUETS.map((bouquet) => <ProductCard lang={lang} bouquet={bouquet} />)}
+      </div>
+    </div>
+  </section>
+
+  <TrustBar lang={lang} />
+</BaseLayout>
+
+<style>
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: clamp(2rem, 1rem + 3vw, 3rem);
+  }
+
+  .filter {
+    padding: 0.5em 1.1em;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    color: var(--cream-2);
+    white-space: nowrap;
+  }
+
+  a.filter:hover {
+    border-color: var(--gold-lit);
+    color: var(--gold-lit);
+  }
+
+  .filter.is-active {
+    border-color: var(--gold);
+    background: rgb(144 112 64 / 0.16);
+    color: var(--cream);
+  }
+</style>

@@ -1,0 +1,106 @@
+---
+import LegalLayout from '../../layouts/LegalLayout.astro';
+import { localePaths, t, type Locale } from '../../i18n/config';
+import { DELIVERY_ZONES, MIN_ORDER_DELIVERY, formatPrice } from '../../data/shop';
+import { DELIVERY_SLOTS, site } from '../../data/site';
+
+export function getStaticPaths() {
+  return localePaths();
+}
+
+const lang = Astro.params.lang as Locale;
+---
+
+<LegalLayout
+  lang={lang}
+  title="Lieferung & Zahlung"
+  route="lieferung"
+  description="Liefergebiete, Gebühren, Zeitfenster und Zahlungsarten."
+>
+  <h2>Liefergebiete und Gebühren</h2>
+  <table class="ship-table">
+    <thead>
+      <tr>
+        <th scope="col">Gebiet</th>
+        <th scope="col">Gebühr</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        DELIVERY_ZONES.map((zone) => (
+          <tr>
+            <td>
+              {t(zone.name, 'de')}
+              <br />
+              <span class="small muted">{t(zone.hint, 'de')}</span>
+            </td>
+            <td class="ship-fee">{zone.fee === 0 ? 'kostenlos' : formatPrice(zone.fee, 'de')}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  <p>
+    Der Mindestbestellwert für eine Lieferung beträgt {formatPrice(MIN_ORDER_DELIVERY, 'de')}. Bei Abholung
+    im Atelier gibt es keinen Mindestbestellwert.
+  </p>
+
+  <h2>Zeitfenster</h2>
+  <ul>
+    {DELIVERY_SLOTS.map((slot) => <li>{t(slot.label, 'de')}</li>)}
+  </ul>
+  <p>
+    Bestellungen bis {site.sameDayCutoff} Uhr liefern wir nach Möglichkeit noch am selben Tag — bitte
+    rufen Sie dafür kurz an, damit wir die Route planen können. Über das Formular buchbar ist der
+    Folgetag.
+  </p>
+
+  <h2>Zahlung</h2>
+  <p>
+    Die Zahlung läuft über Stripe. Verfügbar sind Kredit- und Debitkarte, Apple&nbsp;Pay,
+    Google&nbsp;Pay sowie die von Stripe für Deutschland freigeschalteten Verfahren. Kartendaten geben Sie
+    direkt bei Stripe ein; wir sehen sie nicht.
+  </p>
+  <p>
+    Für Hochzeiten, Events und Firmenaufträge stellen wir eine Rechnung mit Zahlungsziel und Anzahlung
+    aus — dort läuft nichts über den Warenkorb.
+  </p>
+
+  <h2>Versand außerhalb Berlins</h2>
+  <p>
+    Frische Sträuße versenden wir nicht per Post — sie kommen nicht in dem Zustand an, in dem sie das
+    Atelier verlassen. Für Empfängerinnen und Empfänger außerhalb des Liefergebiets sind Trockenblumen
+    die richtige Wahl; die versenden wir bundesweit mit DHL.
+  </p>
+</LegalLayout>
+
+<style>
+  .ship-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: var(--space-5);
+  }
+
+  .ship-table th,
+  .ship-table td {
+    text-align: left;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .ship-table th {
+    font-family: var(--font-body), sans-serif;
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-lit);
+  }
+
+  .ship-fee {
+    text-align: right;
+    white-space: nowrap;
+  }
+</style>

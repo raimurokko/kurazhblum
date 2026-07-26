@@ -1,0 +1,98 @@
+---
+import { Font } from 'astro:assets';
+import { LOCALES, LOCALE_TAGS, DEFAULT_LOCALE, path, type Locale } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+import { site } from '../data/site';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  lang: Locale;
+  title: string;
+  description: string;
+  /** Route ohne Sprachpräfix, z. B. "shop" oder "shop/rosen-pur". Leer = Startseite. */
+  route?: string;
+  image?: string;
+  /** Suchmaschinen aussperren (Danke-Seiten, Abbruchseiten). */
+  noindex?: boolean;
+}
+
+const { lang, title, description, route = '', image = '/brand/lockup.jpg', noindex = false } = Astro.props;
+const _ = useTranslations(lang);
+
+const canonical = new URL(path(lang, route), Astro.site).href;
+const ogImage = new URL(image, Astro.site).href;
+const fullTitle = route === '' && lang === DEFAULT_LOCALE ? `${site.nameFull} — ${description}` : `${title} · ${site.name}`;
+
+/** Strukturierte Daten, damit Google Öffnungszeiten und Adresse direkt anzeigt. */
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Florist',
+  name: site.nameFull,
+  url: new URL(path(DEFAULT_LOCALE), Astro.site).href,
+  image: new URL('/brand/lockup.jpg', Astro.site).href,
+  logo: new URL('/brand/wordmark.png', Astro.site).href,
+  description,
+  email: site.email,
+  telephone: site.phone,
+  sameAs: [site.instagramUrl],
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.address.street,
+    postalCode: site.address.zip,
+    addressLocality: site.address.city,
+    addressCountry: site.address.country,
+  },
+  areaServed: ['Berlin', 'Potsdam'],
+  priceRange: '€€',
+};
+---
+
+<!doctype html>
+<html lang={LOCALE_TAGS[lang]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonical} />
+
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    {
+      LOCALES.map((locale) => (
+        <link rel="alternate" hreflang={LOCALE_TAGS[locale]} href={new URL(path(locale, route), Astro.site).href} />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={new URL(path(DEFAULT_LOCALE, route), Astro.site).href} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/brand/monogram.png" />
+    <meta name="theme-color" content="#0b0a0a" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.nameFull} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content={LOCALE_TAGS[lang].replace('-', '_')} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <Font cssVariable="--font-display" preload />
+    <Font cssVariable="--font-body" preload />
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">{_('nav.skip')}</a>
+    <Header lang={lang} route={route} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>

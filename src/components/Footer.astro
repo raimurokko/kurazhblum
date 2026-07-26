@@ -1,0 +1,144 @@
+---
+import { path, t, type Locale } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+import { site } from '../data/site';
+import { CATEGORIES } from '../data/shop';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const _ = useTranslations(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="/brand/monogram.png" alt="" width="512" height="385" class="footer-mono" />
+        <p class="muted">{_('footer.tagline')}</p>
+        <a class="link-arrow" href={site.instagramUrl} rel="me noopener" target="_blank">
+          @{site.instagram}
+        </a>
+      </div>
+
+      <nav class="footer-col" aria-labelledby="f-shop">
+        <h2 class="footer-head" id="f-shop">{_('footer.shop')}</h2>
+        <ul>
+          {
+            CATEGORIES.map((category) => (
+              <li>
+                <a href={path(lang, 'shop/kategorie', category.slug)}>{t(category.name, lang)}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <nav class="footer-col" aria-labelledby="f-about">
+        <h2 class="footer-head" id="f-about">{_('footer.about')}</h2>
+        <ul>
+          <li><a href={path(lang, 'hochzeiten')}>{_('nav.weddings')}</a></li>
+          <li><a href={path(lang, 'workshops')}>{_('nav.workshops')}</a></li>
+          <li><a href={path(lang, 'atelier')}>{_('nav.atelier')}</a></li>
+          <li><a href={path(lang, 'kontakt')}>{_('nav.contact')}</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer-col" aria-labelledby="f-legal">
+        <h2 class="footer-head" id="f-legal">{_('footer.legal')}</h2>
+        <ul>
+          <li><a href={path(lang, 'impressum')}>{_('footer.imprint')}</a></li>
+          <li><a href={path(lang, 'datenschutz')}>{_('footer.privacy')}</a></li>
+          <li><a href={path(lang, 'agb')}>{_('footer.terms')}</a></li>
+          <li><a href={path(lang, 'widerruf')}>{_('footer.withdrawal')}</a></li>
+          <li><a href={path(lang, 'lieferung')}>{_('footer.shipping')}</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="small muted">© {year} {site.nameFull}. {_('footer.rights')}</p>
+      <p class="small muted">
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    background: var(--ink-2);
+    padding-block: clamp(3rem, 2rem + 4vw, 5rem) var(--space-6);
+    margin-top: var(--space-8);
+  }
+
+  .footer-top {
+    display: grid;
+    gap: clamp(2rem, 1rem + 3vw, 3.5rem);
+    grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
+  }
+
+  .footer-brand {
+    max-width: 24rem;
+  }
+
+  .footer-mono {
+    width: 3.5rem;
+    height: auto;
+    margin-bottom: var(--space-4);
+    opacity: 0.9;
+  }
+
+  .footer-head {
+    font-family: var(--font-body), sans-serif;
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-lit);
+    margin-bottom: var(--space-4);
+  }
+
+  .footer-col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .footer-col a {
+    font-size: 0.92rem;
+    color: var(--cream-2);
+    text-decoration: none;
+  }
+
+  .footer-col a:hover {
+    color: var(--gold-lit);
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-top: clamp(2.5rem, 1rem + 4vw, 4rem);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--line);
+  }
+
+  .footer-bottom p {
+    margin: 0;
+  }
+
+  /* Ab Tablet: feste Aufteilung, damit die Rechtsspalte nicht umbricht. */
+  @media (width >= 52rem) {
+    .footer-top {
+      grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    }
+  }
+</style>

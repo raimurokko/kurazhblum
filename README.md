@@ -1,43 +1,204 @@
-# Astro Starter Kit: Minimal
+# KURAZHBLUM Berlin
 
-```sh
-npm create astro@latest -- --template minimal
+Website und Shop für das Floristik-Atelier KURAZHBLUM in Berlin — Sträuße mit
+Konfigurator, Hochzeits- und Event-Anfragen, Workshops mit Platzbuchung.
+
+Gebaut mit [Astro](https://astro.build) und TypeScript. Vier Sprachen:
+Deutsch (Hauptsprache), Ukrainisch, Englisch, Russisch.
+
+---
+
+## Loslegen
+
+```bash
+npm install
+cp .env.example .env   # Schlüssel eintragen, siehe unten
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Die Website läuft dann auf <http://localhost:4321>. Ohne Schlüssel in `.env`
+funktioniert alles außer Kasse und Formularversand — beide antworten dann
+sauber mit einem Fehler statt still zu scheitern.
 
-## 🚀 Project Structure
+| Befehl            | Wirkung                                        |
+| :---------------- | :--------------------------------------------- |
+| `npm run dev`     | Entwicklungsserver auf Port 4321                |
+| `npm run build`   | Produktions-Build nach `./dist/`                |
+| `npm run preview` | Build lokal ansehen                             |
+| `npx astro check` | TypeScript- und Astro-Prüfung                   |
 
-Inside of your Astro project, you'll see the following folders and files:
+---
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+## Was noch fehlt, bevor die Website online geht
+
+In dieser Reihenfolge:
+
+1. **Bilder.** Alle Produkt-, Kategorie- und Atelierbilder sind derzeit
+   Platzhalter (dunkle Kacheln mit dem Namen darin). Siehe „Bilder pflegen“.
+2. **Stammdaten.** In `src/data/site.ts` stehen überall `TODO`: echter Name der
+   Inhaberin, Adresse, Telefonnummer, E-Mail, Umsatzsteuer-Status.
+3. **Rechtstexte.** `src/pages/[lang]/impressum.astro`, `datenschutz.astro`,
+   `agb.astro` und `widerruf.astro` sind Entwürfe mit sichtbar markierten
+   Lücken. Sie müssen einmal anwaltlich geprüft werden — ein fehlerhaftes
+   Impressum oder eine falsche Widerrufsbelehrung sind in Deutschland
+   abmahnfähig.
+4. **Preise und Sortiment.** `src/data/shop.ts` — die Preise orientieren sich an
+   den Preisstufen aus dem Instagram-Profil (85–100 € / 100–150 € / 200–250 €),
+   sind aber nicht bestätigt.
+5. **Workshop-Termine.** `src/data/workshops.ts` enthält Beispieltermine.
+6. **Die persönliche Geschichte** auf der Atelier-Seite. Die Absätze dort
+   beschreiben bewusst nur die Arbeitsweise — der eigene Werdegang muss von
+   Gala selbst kommen.
+7. **Domain** in `astro.config.mjs` (`site`) und `src/data/site.ts` eintragen.
+
+---
+
+## Aufbau
+
+```
+src/
+├── i18n/
+│   ├── config.ts      Sprachen, Pfad-Helfer, I18nText-Typ
+│   └── ui.ts          Alle Oberflächentexte in vier Sprachen
+├── data/
+│   ├── site.ts        Stammdaten, Öffnungszeiten, Lieferzeitfenster
+│   ├── shop.ts        Kategorien, Sträuße, Preise, Liefergebiete, Extras
+│   ├── workshops.ts   Kursformate und Termine
+│   └── instagram.ts   Verweise auf die lokalen Instagram-Bilder
+├── layouts/           BaseLayout (Meta, hreflang, JSON-LD), LegalLayout
+├── components/        Header, Footer, ProductCard, Configurator, InquiryForm …
+├── pages/
+│   ├── index.astro    Weiterleitung auf die Browsersprache
+│   ├── 404.astro
+│   ├── api/           checkout.ts, inquiry.ts (serverseitig)
+│   └── [lang]/        Alle Seiten, einmal pro Sprache generiert
+└── styles/global.css  Designsystem — Farben, Typografie, Komponenten
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+### Sprachen
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Die Sprache steckt im ersten Pfadsegment: `/de/shop/`, `/uk/shop/` …
+Die URL-Segmente selbst sind bewusst in allen Sprachen gleich, damit ein
+Sprachwechsel immer auf derselben Seite landet.
 
-Any static assets, like images, can be placed in the `public/` directory.
+Oberflächentexte stehen in `src/i18n/ui.ts`. Ein neuer Schlüssel muss in allen
+vier Sprachen ergänzt werden — der Typ `UiKey` erzwingt das beim Build.
+Produkttexte liegen bei den Produkten selbst als `I18nText`-Objekt.
 
-## 🧞 Commands
+Fehlt eine Übersetzung, fällt der Text automatisch auf Deutsch zurück, statt
+leer zu bleiben.
 
-All commands are run from the root of the project, from a terminal:
+### Preise
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+Alle Beträge sind **Cent-Ganzzahlen**. Nie mit Fließkomma rechnen. Formatiert
+wird ausschließlich über `formatPrice()` aus `src/data/shop.ts`.
 
-## 👀 Want to learn more?
+Der Konfigurator rechnet im Browser nur für die Anzeige. Verbindlich ist allein
+die Berechnung in `src/pages/api/checkout.ts` — sonst ließe sich der Preis im
+Formular manipulieren. Wer die Preislogik ändert, muss beide Stellen ansehen.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+---
+
+## Bilder pflegen
+
+Instagram-Bilder lassen sich nicht direkt einbinden: das CDN blockt fremde
+Domains und die Bild-URLs laufen nach kurzer Zeit ab. Die Bilder müssen deshalb
+lokal liegen.
+
+**Ablauf:**
+
+1. Bild aus dem Instagram-Beitrag exportieren (bei Reels das Cover)
+2. Auf 1600 px kürzeste Kante skalieren, als `.jpg` mit Qualität ~82 speichern
+3. In den passenden Ordner unter `public/images/` legen:
+
+   | Ordner                     | Wofür                                   | Dateiname                       |
+   | :------------------------- | :-------------------------------------- | :------------------------------ |
+   | `public/images/products/`  | Produktfotos                             | `<produkt-slug>.jpg`            |
+   | `public/images/categories/`| Kategoriekacheln                         | `<kategorie-slug>.jpg`          |
+   | `public/images/instagram/` | Feed auf Start- und Atelierseite         | `01.jpg`, `02.jpg` …            |
+   | `public/images/workshops/` | Kursformate, Teaser                      | `basics.jpg`, `teaser.jpg` …    |
+   | `public/images/weddings/`  | Hochzeitsseite                           | `hero.jpg`, `teaser.jpg`        |
+   | `public/images/atelier/`   | Porträt                                  | `portrait.jpg`                  |
+
+4. Für Instagram-Bilder zusätzlich einen Eintrag in `src/data/instagram.ts`
+   ergänzen (Permalink und Alternativtext in vier Sprachen)
+
+Solange eine Datei fehlt, zeigt die Website eine dunkle Platzhalterkachel mit
+dem Namen darin — nichts bricht, es sieht nur unfertig aus.
+
+Die Logodateien in `public/brand/` sind bereits fertig aufbereitet
+(freigestellt, mit Alphakanal): `wordmark.png`, `monogram.png`, `iris.webp`,
+`iris-sm.webp`, `lockup.jpg` (für Vorschaubilder beim Teilen).
+
+---
+
+## Zahlungen und Formulare
+
+### Stripe (Kasse)
+
+`src/pages/api/checkout.ts` erstellt eine Stripe-Checkout-Session und leitet
+dorthin weiter. Bezahlt wird nie auf dieser Website — Kartendaten sieht nur
+Stripe.
+
+Was zu tun ist:
+
+1. Konto auf <https://stripe.com> anlegen, Geschäftsdaten verifizieren
+2. Testschlüssel (`sk_test_…`) in `.env` als `STRIPE_SECRET_KEY` eintragen
+3. Eine Testbestellung durchklicken (Testkarte `4242 4242 4242 4242`)
+4. Zum Livegang auf den Live-Schlüssel wechseln
+
+Die Bestelldetails — Größe, Präsentation, Grußkartentext, Wunschtermin,
+Liefergebiet — landen als `metadata` an der Stripe-Session und sind im
+Stripe-Dashboard bei jeder Zahlung sichtbar.
+
+**Noch offen:** ein Webhook, der bei erfolgreicher Zahlung eine
+Bestätigungsmail mit allen Details verschickt. Bis dahin steht alles im
+Dashboard, muss aber dort abgelesen werden.
+
+### Resend (Anfragen)
+
+`src/pages/api/inquiry.ts` verschickt Anfragen aus den Formularen per E-Mail.
+Konto auf <https://resend.com>, Absenderdomain verifizieren, Schlüssel als
+`RESEND_API_KEY` eintragen.
+
+Gegen Spam läuft ein Honeypot-Feld mit: Bots füllen es aus, ihre Anfrage wird
+verworfen, sie bekommen trotzdem eine Erfolgsmeldung.
+
+---
+
+## Veröffentlichen
+
+Die Website wird statisch gebaut; nur die beiden API-Routen laufen
+serverseitig. Konfiguriert ist der Node-Adapter, damit sie überall läuft:
+
+```bash
+npm run build
+node ./dist/server/entry.mjs
+```
+
+Auf Netlify oder Vercel ist der jeweilige Adapter besser (kleinere Funktionen,
+kein dauerhaft laufender Prozess):
+
+```bash
+npx astro add netlify   # oder: npx astro add vercel
+```
+
+Der Befehl tauscht den Adapter in `astro.config.mjs` selbst aus. Die Variablen
+aus `.env` müssen dann in der Oberfläche des Anbieters hinterlegt werden.
+
+---
+
+## Datenschutz
+
+Bewusste Entscheidungen, die beim Ändern nicht verloren gehen sollten:
+
+- **Schriften werden selbst gehostet.** Astro lädt Cormorant Garamond und Inter
+  beim Build herunter und liefert sie vom eigenen Server aus. Keine Verbindung
+  zu Google Fonts — das ist in Deutschland ein realer Abmahngrund.
+- **Kein Tracking, keine Analyse-Cookies, keine Social-Media-Pixel.** Deshalb
+  braucht die Website auch kein Cookie-Banner.
+- **Instagram-Bilder liegen lokal.** Es entsteht keine Verbindung zu Meta,
+  solange niemand einen Link anklickt.
+
+Wer eine dieser Entscheidungen zurücknimmt, muss die Datenschutzerklärung
+anpassen — und bei Analyse-Werkzeugen ein Einwilligungsbanner ergänzen.

@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import ProductCard from '../../../../components/ProductCard.astro';
+import TrustBar from '../../../../components/TrustBar.astro';
+import { LOCALES, path, t, type Locale } from '../../../../i18n/config';
+import { useTranslations } from '../../../../i18n/ui';
+import { CATEGORIES, bouquetsByCategory, categoryBySlug } from '../../../../data/shop';
+
+export function getStaticPaths() {
+  return LOCALES.flatMap((lang) => CATEGORIES.map((category) => ({ params: { lang, category: category.slug } })));
+}
+
+const lang = Astro.params.lang as Locale;
+const categorySlug = Astro.params.category!;
+const category = categoryBySlug(categorySlug)!;
+const _ = useTranslations(lang);
+
+const bouquets = bouquetsByCategory(categorySlug);
+const name = t(category.name, lang);
+const blurb = t(category.blurb, lang);
+---
+
+<BaseLayout lang={lang} title={name} description={blurb} route={`shop/kategorie/${categorySlug}`}>
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="kicker">{_('nav.shop')}</span>
+        <h1>{name}</h1>
+        <p class="lead">{blurb}</p>
+      </div>
+
+      <nav class="filters" aria-label={_('home.categories.kicker')}>
+        <a class="filter" href={path(lang, 'shop')}>{_('shop.filter.all')}</a>
+        {
+          CATEGORIES.map((entry) => (
+            <a
+              class:list={['filter', { 'is-active': entry.slug === categorySlug }]}
+              href={path(lang, 'shop/kategorie', entry.slug)}
+              aria-current={entry.slug === categorySlug ? 'page' : undefined}
+            >
+              {t(entry.name, lang)}
+            </a>
+          ))
+        }
+      </nav>
+
+      {
+        bouquets.length > 0 ? (
+          <div class="grid grid--3">
+            {bouquets.map((bouquet) => (
+              <ProductCard lang={lang} bouquet={bouquet} />
+            ))}
+          </div>
+        ) : (
+          <p class="lead muted">{_('shop.empty')}</p>
+        )
+      }
+    </div>
+  </section>
+
+  <TrustBar lang={lang} />
+</BaseLayout>
+
+<style>
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: clamp(2rem, 1rem + 3vw, 3rem);
+  }
+
+  .filter {
+    padding: 0.5em 1.1em;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    color: var(--cream-2);
+    white-space: nowrap;
+  }
+
+  .filter:hover {
+    border-color: var(--gold-lit);
+    color: var(--gold-lit);
+  }
+
+  .filter.is-active {
+    border-color: var(--gold);
+    background: rgb(144 112 64 / 0.16);
+    color: var(--cream);
+  }
+</style>

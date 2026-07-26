@@ -1,0 +1,177 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import InstagramGrid from '../../components/InstagramGrid.astro';
+import { localePaths, path, t, type I18nText, type Locale } from '../../i18n/config';
+import { useTranslations } from '../../i18n/ui';
+import { site } from '../../data/site';
+
+export function getStaticPaths() {
+  return localePaths();
+}
+
+const lang = Astro.params.lang as Locale;
+const _ = useTranslations(lang);
+
+/*
+  ⚠️ TODO — persönliche Geschichte
+  Die Absätze hier beschreiben bewusst nur die Arbeitsweise, keine Biografie.
+  Galas eigene Geschichte (Ausbildung, Weg nach Berlin, warum Blumen) gehört
+  hierher, aber sie muss von ihr selbst kommen — nichts davon erfinden.
+*/
+const paragraphs: I18nText[] = [
+  {
+    de: '„Kurazh“ heißt Mut, Übermut, ein bisschen Draufgängertum. Genau das braucht ein Strauß, der nicht nach Katalog aussehen soll: den Mut, eine Farbe zu setzen, die keiner erwartet hat, und den Rest darum herum zu bauen.',
+    uk: '«Кураж» — це сміливість, завзяття, трохи зухвалості. Саме це потрібно букету, який не має виглядати як із каталогу: сміливість поставити колір, якого ніхто не очікував, і побудувати навколо нього все решта.',
+    en: '“Kurazh” means nerve, high spirits, a touch of daring. That is exactly what a bouquet needs if it is not supposed to look like a catalogue: the nerve to place a colour nobody expected, and to build the rest around it.',
+    ru: '«Кураж» — это смелость, задор, немного дерзости. Именно это нужно букету, который не должен выглядеть каталожным: смелость поставить цвет, которого никто не ждал, и выстроить вокруг него всё остальное.',
+  },
+  {
+    de: 'Im Atelier gibt es kein Lager. Ich kaufe morgens ein, binde tagsüber und liefere am selben oder am nächsten Tag. Was nicht verkauft wird, geht nicht in den Kühlraum, sondern in den nächsten Strauß — deshalb wechselt das Sortiment jede Woche.',
+    uk: 'В ательє немає складу. Я закуповую вранці, збираю вдень і доставляю того ж або наступного дня. Те, що не продалося, не йде в холодильник, а стає частиною наступного букета — тому асортимент змінюється щотижня.',
+    en: 'There is no warehouse at the atelier. I shop in the morning, tie during the day and deliver the same or the next day. What does not sell goes into the next bouquet rather than into cold storage — which is why the range changes every week.',
+    ru: 'В ателье нет склада. Я закупаюсь утром, собираю днём и доставляю в тот же или на следующий день. То, что не продалось, идёт не в холодильник, а в следующий букет — поэтому ассортимент меняется каждую неделю.',
+  },
+  {
+    de: 'Vor jeder Lieferung bekommen Sie ein Foto. Nicht als Marketing, sondern weil Blumen ein Naturprodukt sind: Wenn die Sorte, die Sie sich vorgestellt haben, heute nicht in guter Qualität da war, sollen Sie das vorher sehen und nicht der oder die Beschenkte hinterher.',
+    uk: 'Перед кожною доставкою ви отримуєте фото. Не заради маркетингу, а тому що квіти — природний продукт: якщо сорту, який ви уявляли, сьогодні не було в належній якості, ви маєте побачити це заздалегідь, а не той, кому дарують, — потім.',
+    en: 'Before every delivery you get a photo. Not as marketing, but because flowers are a natural product: if the variety you had in mind was not available in good quality today, you should see that beforehand — not the person receiving it, afterwards.',
+    ru: 'Перед каждой доставкой вы получаете фото. Не ради маркетинга, а потому что цветы — природный продукт: если сорта, который вы представляли, сегодня не было в хорошем качестве, вы должны увидеть это заранее, а не тот, кому дарят, — потом.',
+  },
+];
+
+const facts: { label: I18nText; value: I18nText }[] = [
+  {
+    label: { de: 'Atelier', uk: 'Ательє', en: 'Atelier', ru: 'Ателье' },
+    value: {
+      de: 'Berlin — Besuch nach Vereinbarung',
+      uk: 'Берлін — візит за домовленістю',
+      en: 'Berlin — visits by appointment',
+      ru: 'Берлин — визит по договорённости',
+    },
+  },
+  {
+    label: { de: 'Sprachen', uk: 'Мови', en: 'Languages', ru: 'Языки' },
+    value: {
+      de: 'Deutsch, Ukrainisch, Englisch, Russisch',
+      uk: 'Німецька, українська, англійська, російська',
+      en: 'German, Ukrainian, English, Russian',
+      ru: 'Немецкий, украинский, английский, русский',
+    },
+  },
+  {
+    label: { de: 'Liefergebiet', uk: 'Зона доставки', en: 'Delivery area', ru: 'Зона доставки' },
+    value: {
+      de: 'Berlin und bis 40 km ins Umland',
+      uk: 'Берлін і до 40 км навколо',
+      en: 'Berlin and up to 40 km around',
+      ru: 'Берлин и до 40 км вокруг',
+    },
+  },
+];
+---
+
+<BaseLayout lang={lang} title={_('atelier.title')} description={t(paragraphs[0], lang)} route="atelier">
+  <section class="section">
+    <div class="wrap about">
+      <div>
+        <span class="kicker">{_('atelier.kicker')}</span>
+        <h1>{_('atelier.title')}</h1>
+        {paragraphs.map((paragraph) => <p class="lead">{t(paragraph, lang)}</p>)}
+
+        <dl class="facts">
+          {
+            facts.map((fact) => (
+              <div>
+                <dt>{t(fact.label, lang)}</dt>
+                <dd>{t(fact.value, lang)}</dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <div class="about-actions">
+          <a class="btn btn--primary" href={path(lang, 'kontakt')}>{_('nav.contact')}</a>
+          <a class="btn btn--ghost" href={path(lang, 'workshops')}>{_('nav.workshops')}</a>
+        </div>
+      </div>
+
+      <figure class="about-figure">
+        <div class="ph about-ph" data-label={site.nameFull}>
+          <img src="/images/atelier/portrait.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()" />
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <InstagramGrid lang={lang} />
+</BaseLayout>
+
+<style>
+  .about {
+    display: grid;
+    gap: clamp(2rem, 1rem + 4vw, 4rem);
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .facts {
+    margin: clamp(2rem, 1rem + 2vw, 3rem) 0;
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .facts > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .facts dt {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-lit);
+  }
+
+  .facts dd {
+    margin: 0;
+    color: var(--cream-2);
+  }
+
+  .about-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .about-figure {
+    margin: 0;
+  }
+
+  .about-ph {
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-lg);
+  }
+
+  .about-ph img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (width >= 56rem) {
+    .about {
+      grid-template-columns: 1.05fr 0.95fr;
+    }
+
+    .about-figure {
+      position: sticky;
+      top: 6rem;
+    }
+  }
+</style>

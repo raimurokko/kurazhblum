@@ -1,0 +1,274 @@
+---
+import { path, t, type Locale } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+import type { I18nText } from '../i18n/config';
+
+type Topic = 'wedding' | 'event' | 'workshop' | 'general';
+
+interface Props {
+  lang: Locale;
+  topic: Topic;
+  /** Vorbelegung, z. B. der gewählte Workshop. */
+  subject?: string;
+}
+
+const { lang, topic, subject = '' } = Astro.props;
+const _ = useTranslations(lang);
+
+/** Nur für Hochzeiten und Events relevant. */
+const showEventFields = topic === 'wedding' || topic === 'event';
+const showGuestFields = showEventFields || topic === 'workshop';
+
+const budgets: { value: string; label: I18nText }[] = [
+  {
+    value: 'unter-1000',
+    label: { de: 'bis 1.000 €', uk: 'до 1 000 €', en: 'up to €1,000', ru: 'до 1 000 €' },
+  },
+  {
+    value: '1000-2500',
+    label: { de: '1.000 – 2.500 €', uk: '1 000 – 2 500 €', en: '€1,000 – 2,500', ru: '1 000 – 2 500 €' },
+  },
+  {
+    value: '2500-5000',
+    label: { de: '2.500 – 5.000 €', uk: '2 500 – 5 000 €', en: '€2,500 – 5,000', ru: '2 500 – 5 000 €' },
+  },
+  {
+    value: 'ueber-5000',
+    label: { de: 'über 5.000 €', uk: 'понад 5 000 €', en: 'over €5,000', ru: 'свыше 5 000 €' },
+  },
+  {
+    value: 'offen',
+    label: { de: 'noch offen', uk: 'ще не визначено', en: 'not decided yet', ru: 'пока не решено' },
+  },
+];
+
+const weddingServices: { value: string; label: I18nText }[] = [
+  {
+    value: 'brautstrauss',
+    label: { de: 'Brautstrauß & Anstecker', uk: 'Букет нареченої та бутоньєрки', en: 'Bridal bouquet & buttonholes', ru: 'Букет невесты и бутоньерки' },
+  },
+  {
+    value: 'zeremonie',
+    label: { de: 'Zeremonie / Bogen', uk: 'Церемонія / арка', en: 'Ceremony / arch', ru: 'Церемония / арка' },
+  },
+  {
+    value: 'tische',
+    label: { de: 'Tischgestaltung', uk: 'Оформлення столів', en: 'Table design', ru: 'Оформление столов' },
+  },
+  {
+    value: 'raum',
+    label: { de: 'Raum & Eingang', uk: 'Зал та вхід', en: 'Room & entrance', ru: 'Зал и вход' },
+  },
+  {
+    value: 'auto',
+    label: { de: 'Auto & Details', uk: 'Авто та деталі', en: 'Car & details', ru: 'Авто и детали' },
+  },
+  {
+    value: 'abbau',
+    label: { de: 'Auf- und Abbau', uk: 'Монтаж і демонтаж', en: 'Set-up & take-down', ru: 'Монтаж и демонтаж' },
+  },
+];
+---
+
+<form class="inq panel" data-inquiry data-topic={topic} data-busy-label={_('form.sending')}>
+  <input type="hidden" name="topic" value={topic} />
+  <input type="hidden" name="lang" value={lang} />
+  {subject && <input type="hidden" name="subject" value={subject} />}
+
+  <!-- Honeypot: für Menschen unsichtbar, Bots füllen es aus. -->
+  <div class="hp" aria-hidden="true">
+    <label>
+      Website
+      <input type="text" name="website" tabindex="-1" autocomplete="off" />
+    </label>
+  </div>
+
+  <div class="inq-row">
+    <label class="field">
+      <span class="field-label">{_('form.name')}</span>
+      <input class="input" type="text" name="name" required autocomplete="name" />
+    </label>
+
+    <label class="field">
+      <span class="field-label">{_('form.email')}</span>
+      <input class="input" type="email" name="email" required autocomplete="email" />
+    </label>
+  </div>
+
+  <div class="inq-row">
+    <label class="field">
+      <span class="field-label">{_('form.phone')} <span class="muted">({_('form.optional')})</span></span>
+      <input class="input" type="tel" name="phone" autocomplete="tel" />
+    </label>
+
+    <label class="field">
+      <span class="field-label">{_('form.date')}</span>
+      <input class="input" type="date" name="date" required={showEventFields} />
+    </label>
+  </div>
+
+  {
+    showEventFields && (
+      <div class="inq-row">
+        <label class="field">
+          <span class="field-label">{_('form.location')}</span>
+          <input class="input" type="text" name="location" />
+        </label>
+
+        <label class="field">
+          <span class="field-label">{_('form.budget')}</span>
+          <select class="select" name="budget">
+            {budgets.map((budget) => (
+              <option value={budget.value}>{t(budget.label, lang)}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+    )
+  }
+
+  {
+    showGuestFields && (
+      <label class="field">
+        <span class="field-label">{_('form.guests')}</span>
+        <input class="input" type="number" name="guests" min="1" max="500" inputmode="numeric" />
+      </label>
+    )
+  }
+
+  {
+    topic === 'wedding' && (
+      <fieldset class="field">
+        <legend class="field-label">{_('form.services')}</legend>
+        <div class="choices choices--row">
+          {weddingServices.map((service) => (
+            <label class="choice choice--inline">
+              <input type="checkbox" name="services" value={service.value} />
+              <span class="choice-title">{t(service.label, lang)}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    )
+  }
+
+  <label class="field">
+    <span class="field-label">{_('form.message')}</span>
+    <textarea class="textarea" name="message" required placeholder={_('form.message.placeholder')}></textarea>
+  </label>
+
+  <label class="consent">
+    <input type="checkbox" name="consent" required />
+    <span class="small">
+      <Fragment set:html={_('form.privacy', {
+        link: `<a href="${path(lang, 'datenschutz')}">${_('form.privacy.link')}</a>`,
+      })} />
+    </span>
+  </label>
+
+  <button class="btn btn--primary" type="submit" data-submit>{_('form.submit')}</button>
+
+  <p class="inq-note inq-note--ok" hidden data-success>{_('form.success')}</p>
+  <p class="inq-note inq-note--error" hidden data-error>{_('form.error')}</p>
+</form>
+
+<style>
+  .inq-row {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+  }
+
+  .inq fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0 0 var(--space-5);
+  }
+
+  .inq fieldset legend {
+    padding: 0;
+    margin-bottom: var(--space-3);
+  }
+
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    margin-bottom: var(--space-5);
+    cursor: pointer;
+  }
+
+  .consent input {
+    margin-top: 0.25rem;
+    width: 1.05rem;
+    height: 1.05rem;
+    flex: 0 0 auto;
+    accent-color: var(--gold-lit);
+  }
+
+  .inq-note {
+    margin: var(--space-4) 0 0;
+    padding: 0.85rem 1.1rem;
+    border-left: 2px solid var(--gold);
+    background: rgb(144 112 64 / 0.12);
+    font-size: 0.9rem;
+  }
+
+  .inq-note--error {
+    border-left-color: var(--mauve-deep);
+    background: rgb(142 112 120 / 0.14);
+  }
+</style>
+
+<script>
+  for (const form of document.querySelectorAll<HTMLFormElement>('[data-inquiry]')) {
+    const submitEl = form.querySelector<HTMLButtonElement>('[data-submit]');
+    const successEl = form.querySelector<HTMLElement>('[data-success]');
+    const errorEl = form.querySelector<HTMLElement>('[data-error]');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+
+      const label = submitEl?.textContent ?? '';
+      if (submitEl) {
+        submitEl.disabled = true;
+        submitEl.textContent = form.dataset.busyLabel ?? label;
+      }
+      if (errorEl) errorEl.hidden = true;
+
+      const payload = Object.fromEntries(new FormData(form).entries());
+      // Mehrfachauswahl geht bei Object.fromEntries verloren — separat nachtragen.
+      const services = new FormData(form).getAll('services').map(String);
+
+      try {
+        const response = await fetch('/api/inquiry', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...payload, services }),
+        });
+        if (!response.ok) throw new Error(`inquiry failed: ${response.status}`);
+
+        form.reset();
+        if (successEl) successEl.hidden = false;
+        if (submitEl) submitEl.hidden = true;
+        successEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } catch (error) {
+        console.error(error);
+        if (errorEl) errorEl.hidden = false;
+        if (submitEl) {
+          submitEl.disabled = false;
+          submitEl.textContent = label;
+        }
+      }
+    });
+  }
+</script>
