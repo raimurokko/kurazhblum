@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { localePaths, path, type Locale } from '../../../i18n/config';
+import { asset, localePaths, path, type Locale } from '../../../i18n/config';
 import { useTranslations } from '../../../i18n/ui';
 import { site } from '../../../data/site';
 
@@ -21,7 +21,7 @@ const _ = useTranslations(lang);
 >
   <section class="section">
     <div class="wrap wrap-narrow center">
-      <img src="/brand/monogram.png" alt="" width="512" height="385" class="mono" />
+      <img src={asset("/brand/monogram.png")} alt="" width="512" height="385" class="mono" />
       <h1>{_('checkout.success.title')}</h1>
       <p class="lead">{_('checkout.success.text')}</p>
       <div class="actions">

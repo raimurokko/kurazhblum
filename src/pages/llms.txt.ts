@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 
-import { DEFAULT_LOCALE, LOCALES, path, t } from '../i18n/config';
+import { DEFAULT_LOCALE, LOCALES, asset, path, t } from '../i18n/config';
 import { BOUQUETS, CATEGORIES, DELIVERY_ZONES, MIN_ORDER_DELIVERY, formatPrice, lowestPrice } from '../data/shop';
 import { WORKSHOP_FORMATS } from '../data/workshops';
 import { site } from '../data/site';
@@ -84,15 +84,15 @@ export const GET: APIRoute = ({ site: astroSite }) => {
   lines.push(`- [Kontakt](${url('kontakt')})`);
   lines.push(`- [Lieferung & Zahlung](${url('lieferung')})`);
   lines.push(`- [Erklärung zur Barrierefreiheit](${url('barrierefreiheit')})`);
-  lines.push(`- Sprachversionen: ${LOCALES.map((l) => `/${l}/`).join(' ')}`);
-  lines.push(`- [Sitemap](${origin}/sitemap-index.xml)`);
+  lines.push(`- Sprachversionen: ${LOCALES.map((l) => asset(`/${l}/`)).join(' ')}`);
+  lines.push(`- [Sitemap](${origin}${asset('/sitemap-index.xml')})`);
   lines.push('');
 
   lines.push('## Kontakt');
   lines.push('');
   lines.push(`- Anfragen: ${site.email}`);
   lines.push(`- Telefon: ${site.phone}`);
-  lines.push(`- Sicherheitsmeldungen: ${origin}/.well-known/security.txt`);
+  lines.push(`- Sicherheitsmeldungen: ${origin}${asset('/.well-known/security.txt')}`);
   lines.push('');
 
   return new Response(lines.join('\n'), {

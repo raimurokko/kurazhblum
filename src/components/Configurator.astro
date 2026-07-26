@@ -1,5 +1,5 @@
 ---
-import { t, type Locale } from '../i18n/config';
+import { asset, t, type Locale } from '../i18n/config';
 import { useTranslations, type UiKey } from '../i18n/ui';
 import {
   DELIVERY_ZONES,
@@ -11,7 +11,7 @@ import {
   type PresentationKey,
   type SizeKey,
 } from '../data/shop';
-import { DELIVERY_SLOTS } from '../data/site';
+import { DELIVERY_SLOTS, site } from '../data/site';
 
 interface Props {
   lang: Locale;
@@ -55,6 +55,7 @@ const minDate = tomorrow.toISOString().slice(0, 10);
   data-lang={lang}
   data-min-warning={_('cfg.minorder.short')}
   data-busy-label={_('cfg.loading')}
+  data-endpoint={asset('/api/checkout')}
 >
   <h2 class="cfg-title">{_('cfg.title')}</h2>
 
@@ -179,7 +180,10 @@ const minDate = tomorrow.toISOString().slice(0, 10);
 
     <button class="btn btn--primary btn--block" type="submit" data-submit>{_('cfg.order')}</button>
     <p class="hint">{_('cfg.minorder')}</p>
-    <p class="cfg-error" hidden data-error>{_('form.error')}</p>
+    <p class="cfg-error" hidden data-error>
+      {_('form.error')}<br />
+      <a href={`mailto:${site.email}`}>{site.email}</a> · <a href={`tel:${site.phoneHref}`}>{site.phone}</a>
+    </p>
   </div>
 
   <script type="application/json" data-pricing is:inline set:html={JSON.stringify(pricing)} />
@@ -449,7 +453,7 @@ const minDate = tomorrow.toISOString().slice(0, 10);
       if (errorEl) errorEl.hidden = true;
 
       try {
-        const response = await fetch('/api/checkout', {
+        const response = await fetch(form.dataset.endpoint ?? '/api/checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

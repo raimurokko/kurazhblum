@@ -1,5 +1,5 @@
 ---
-import { path, t, type Locale } from '../i18n/config';
+import { asset, path, t, type Locale } from '../i18n/config';
 import { useTranslations } from '../i18n/ui';
 import { site } from '../data/site';
 import { CATEGORIES } from '../data/shop';
@@ -17,7 +17,7 @@ const year = new Date().getFullYear();
   <div class="wrap">
     <div class="footer-top">
       <div class="footer-brand">
-        <img src="/brand/monogram.png" alt="" width="512" height="385" class="footer-mono" />
+        <img src={asset("/brand/monogram.png")} alt="" width="512" height="385" class="footer-mono" />
         <p class="muted">{_('footer.tagline')}</p>
         <a class="link-arrow" href={site.instagramUrl} rel="me noopener" target="_blank">
           @{site.instagram}

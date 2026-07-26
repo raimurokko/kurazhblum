@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import InstagramGrid from '../../components/InstagramGrid.astro';
-import { localePaths, path, t, type I18nText, type Locale } from '../../i18n/config';
+import { asset, localePaths, path, t, type I18nText, type Locale } from '../../i18n/config';
 import { useTranslations } from '../../i18n/ui';
 import { site } from '../../data/site';
 
@@ -97,7 +97,7 @@ const facts: { label: I18nText; value: I18nText }[] = [
 
       <figure class="about-figure">
         <div class="ph about-ph" data-label={site.nameFull}>
-          <img src="/images/atelier/portrait.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()" />
+          <img src={asset("/images/atelier/portrait.jpg")} alt="" loading="lazy" decoding="async" onerror="this.remove()" />
         </div>
       </figure>
     </div>

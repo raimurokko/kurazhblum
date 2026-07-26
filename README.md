@@ -176,8 +176,37 @@ npm run build
 node ./dist/server/entry.mjs
 ```
 
-Auf Netlify oder Vercel ist der jeweilige Adapter besser (kleinere Funktionen,
-kein dauerhaft laufender Prozess):
+Domain und Basispfad kommen aus der Umgebung, damit dieselbe Codebasis an
+mehreren Orten läuft:
+
+| Variable | Beispiel                    | Wirkung                                  |
+| :------- | :-------------------------- | :--------------------------------------- |
+| `SITE`   | `https://kurazhblum.de`     | Domain für canonical, hreflang, Sitemap   |
+| `BASE`   | `/kurazhblum`               | Unterverzeichnis; leer lassen für Wurzel  |
+
+Interne Links müssen deshalb über `path()` und Dateien aus `public/` über
+`asset()` gebaut werden (beides in `src/i18n/config.ts`). Ein hart
+geschriebenes `"/brand/logo.png"` bricht, sobald `BASE` gesetzt ist.
+
+### GitHub Pages
+
+`.github/workflows/pages.yml` baut bei jedem Push auf `main` und
+veröffentlicht nach <https://raimurokko.github.io/kurazhblum/>.
+
+**Einmalig nötig:** Repository → Settings → Pages → „Build and deployment“ →
+Source auf **GitHub Actions** stellen. Das lässt sich nicht automatisieren —
+der `enablement`-Schalter von `actions/configure-pages` verlangt einen
+persönlichen Zugriffstoken, das eingebaute `GITHUB_TOKEN` genügt nicht.
+
+⚠️ **Pages liefert nur statische Dateien.** Die Routen `/api/checkout` und
+`/api/inquiry` gibt es dort nicht. Der Shop ist vollständig benutzbar — bis
+zum Klick auf „Zur Kasse“ oder „Anfrage senden“; dann erscheint statt einer
+Weiterleitung die Fehlermeldung mit E-Mail-Adresse und Telefonnummer. Für
+Pages ist das als Schaufenster in Ordnung, für den Verkauf nicht.
+
+### Netlify oder Vercel (für den echten Betrieb)
+
+Dort laufen auch die Serverfunktionen:
 
 ```bash
 npx astro add netlify   # oder: npx astro add vercel
@@ -185,6 +214,7 @@ npx astro add netlify   # oder: npx astro add vercel
 
 Der Befehl tauscht den Adapter in `astro.config.mjs` selbst aus. Die Variablen
 aus `.env` müssen dann in der Oberfläche des Anbieters hinterlegt werden.
+`BASE` bleibt bei diesen Anbietern leer.
 
 ---
 

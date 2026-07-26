@@ -2,7 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Configurator from '../../../components/Configurator.astro';
 import ProductCard from '../../../components/ProductCard.astro';
-import { LOCALES, path, t, type Locale } from '../../../i18n/config';
+import { asset, LOCALES, path, t, type Locale } from '../../../i18n/config';
 import { useTranslations } from '../../../i18n/ui';
 import { BOUQUETS, bouquetsByCategory, categoryBySlug, formatPrice, lowestPrice } from '../../../data/shop';
 
@@ -27,7 +27,7 @@ const productJsonLd = {
   '@type': 'Product',
   name,
   description: t(bouquet.description, lang),
-  image: new URL(bouquet.images[0], Astro.site).href,
+  image: new URL(asset(bouquet.images[0]), Astro.site).href,
   brand: { '@type': 'Brand', name: 'KURAZHBLUM' },
   offers: {
     '@type': 'AggregateOffer',
@@ -50,7 +50,7 @@ const productJsonLd = {
         <div class="detail-media">
           <div class="ph detail-ph" data-label={name}>
             <img
-              src={bouquet.images[0]}
+              src={asset(bouquet.images[0])}
               alt={name}
               width="1000"
               height="1250"

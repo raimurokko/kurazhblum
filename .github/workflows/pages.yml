@@ -1,0 +1,83 @@
+name: GitHub Pages
+
+# Baut die Website und veröffentlicht sie unter
+# https://raimurokko.github.io/kurazhblum/
+#
+# EINMALIG VORHER NÖTIG:
+#   Repository → Settings → Pages → „Build and deployment“ →
+#   Source auf „GitHub Actions“ stellen.
+# Das lässt sich hier nicht automatisieren: der `enablement`-Schalter von
+# actions/configure-pages verlangt einen persönlichen Zugriffstoken, das
+# eingebaute GITHUB_TOKEN reicht dafür nicht.
+#
+# ⚠️ GitHub Pages liefert nur statische Dateien. Die beiden Server-Routen
+# /api/checkout und /api/inquiry gibt es dort nicht — Kasse und
+# Anfrageformulare zeigen stattdessen die Kontaktdaten an. Für den echten
+# Betrieb braucht es einen Host mit Serverfunktionen (Netlify, Vercel).
+
+on:
+  push:
+    branches: [main]
+  # Erlaubt den manuellen Start über den Reiter „Actions“.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Ein Deployment zur Zeit; laufende nicht abbrechen, damit nichts halb
+# veröffentlicht liegen bleibt.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: GitHub Pages einrichten
+        id: pages
+        uses: actions/configure-pages@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Website bauen
+        env:
+          # Beides kommt aus der Pages-Konfiguration, damit Links und
+          # Bildpfade das Unterverzeichnis /kurazhblum/ enthalten.
+          SITE: ${{ steps.pages.outputs.origin }}
+          BASE: ${{ steps.pages.outputs.base_path }}
+        run: npm run build
+
+      - name: Verzeichnisauflistung unterbinden
+        # Ohne diese Datei schickt Pages alles durch Jekyll und schluckt
+        # dabei jeden Ordner, der mit einem Unterstrich beginnt — also den
+        # ganzen _astro-Ordner mit CSS, JS und Schriften.
+        run: touch dist/client/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          # Nur der statische Teil. dist/server enthält die Node-Funktionen,
+          # die auf Pages ohnehin nicht laufen.
+          path: dist/client
+          # .nojekyll und .well-known/security.txt beginnen mit einem Punkt
+          # und würden sonst nicht mit hochgeladen.
+          include-hidden-files: true
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

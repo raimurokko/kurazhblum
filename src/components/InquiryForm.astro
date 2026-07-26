@@ -1,6 +1,7 @@
 ---
-import { path, t, type Locale } from '../i18n/config';
+import { asset, path, t, type Locale } from '../i18n/config';
 import { useTranslations } from '../i18n/ui';
+import { site } from '../data/site';
 import type { I18nText } from '../i18n/config';
 
 type Topic = 'wedding' | 'event' | 'workshop' | 'general';
@@ -70,7 +71,13 @@ const weddingServices: { value: string; label: I18nText }[] = [
 ];
 ---
 
-<form class="inq panel" data-inquiry data-topic={topic} data-busy-label={_('form.sending')}>
+<form
+  class="inq panel"
+  data-inquiry
+  data-topic={topic}
+  data-busy-label={_('form.sending')}
+  data-endpoint={asset('/api/inquiry')}
+>
   <input type="hidden" name="topic" value={topic} />
   <input type="hidden" name="lang" value={lang} />
   {subject && <input type="hidden" name="subject" value={subject} />}
@@ -169,7 +176,10 @@ const weddingServices: { value: string; label: I18nText }[] = [
   <button class="btn btn--primary" type="submit" data-submit>{_('form.submit')}</button>
 
   <p class="inq-note inq-note--ok" hidden data-success>{_('form.success')}</p>
-  <p class="inq-note inq-note--error" hidden data-error>{_('form.error')}</p>
+  <p class="inq-note inq-note--error" hidden data-error>
+    {_('form.error')}<br />
+    <a href={`mailto:${site.email}`}>{site.email}</a> · <a href={`tel:${site.phoneHref}`}>{site.phone}</a>
+  </p>
 </form>
 
 <style>
@@ -259,7 +269,7 @@ const weddingServices: { value: string; label: I18nText }[] = [
       const services = new FormData(form).getAll('services').map(String);
 
       try {
-        const response = await fetch('/api/inquiry', {
+        const response = await fetch(form.dataset.endpoint ?? '/api/inquiry', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...payload, services }),

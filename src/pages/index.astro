@@ -2,7 +2,7 @@
 // Einstiegsseite ohne Sprachpräfix. Sie leitet auf die passende Sprachversion
 // weiter: bevorzugt die Browsersprache, sonst Deutsch. Als statische Seite
 // gebaut, damit sie ohne Server funktioniert.
-import { DEFAULT_LOCALE, LOCALES, path } from '../i18n/config';
+import { DEFAULT_LOCALE, LOCALES, asset, path } from '../i18n/config';
 import { site } from '../data/site';
 
 const fallback = path(DEFAULT_LOCALE);
@@ -32,11 +32,11 @@ const fallback = path(DEFAULT_LOCALE);
   </head>
   <body>
     <p><a href={fallback} style="color:#c39a5e">{site.nameFull}</a></p>
-    <script is:inline define:vars={{ locales: LOCALES, fallback }}>
+    <script is:inline define:vars={{ locales: LOCALES, fallback, base: asset('/') }}>
       const preferred = (navigator.languages ?? [navigator.language ?? 'de'])
         .map((tag) => tag.toLowerCase().split('-')[0])
         .find((code) => locales.includes(code));
-      location.replace(preferred ? `/${preferred}/` : fallback);
+      location.replace(preferred ? `${base}${preferred}/` : fallback);
     </script>
   </body>
 </html>

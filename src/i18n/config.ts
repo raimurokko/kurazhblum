@@ -31,12 +31,36 @@ export function isLocale(value: unknown): value is Locale {
 }
 
 /**
- * Baut einen internen Pfad für eine Sprache.
- * path("de", "shop") -> "/de/shop/"
+ * Basispfad der Installation — "/" lokal, "/kurazhblum/" auf GitHub Pages.
+ *
+ * Astro reicht `base` aus astro.config.mjs unverändert durch: steht dort
+ * "/kurazhblum" ohne Schrägstrich am Ende, fehlt er auch hier — und aus
+ * BASE + "brand/logo.png" wird "/kurazhblumbrand/logo.png". Deshalb wird
+ * er an dieser einen Stelle erzwungen.
+ */
+const BASE = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
+/**
+ * Baut einen internen Pfad für eine Sprache, inklusive Basispfad.
+ * path("de", "shop") -> "/de/shop/"  bzw.  "/kurazhblum/de/shop/"
+ *
+ * Interne Links immer hierüber bauen, nie als Zeichenkette schreiben —
+ * sonst brechen sie, sobald die Website in einem Unterverzeichnis liegt.
  */
 export function path(locale: Locale, ...segments: (string | number)[]): string {
   const parts = segments.flatMap((s) => String(s).split('/')).filter(Boolean);
-  return `/${[locale, ...parts].join('/')}/`;
+  return `${BASE}${[locale, ...parts].join('/')}/`.replace(/\/{2,}/g, '/');
+}
+
+/**
+ * Verweis auf eine Datei aus `public/`, inklusive Basispfad.
+ * asset("/brand/wordmark.png") -> "/brand/wordmark.png"
+ *                              bzw. "/kurazhblum/brand/wordmark.png"
+ */
+export function asset(file: string): string {
+  return `${BASE}${file.replace(/^\/+/, '')}`.replace(/\/{2,}/g, '/');
 }
 
 /** Alle Sprachen als getStaticPaths-Einträge. */

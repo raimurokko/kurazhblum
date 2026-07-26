@@ -1,6 +1,6 @@
 ---
 import { Font } from 'astro:assets';
-import { LOCALES, LOCALE_TAGS, DEFAULT_LOCALE, path, type Locale } from '../i18n/config';
+import { asset, LOCALES, LOCALE_TAGS, DEFAULT_LOCALE, path, type Locale } from '../i18n/config';
 import { useTranslations } from '../i18n/ui';
 import { site } from '../data/site';
 import Header from '../components/Header.astro';
@@ -23,7 +23,7 @@ const { lang, title, description, route = '', image = '/brand/lockup.jpg', noind
 const _ = useTranslations(lang);
 
 const canonical = new URL(path(lang, route), Astro.site).href;
-const ogImage = new URL(image, Astro.site).href;
+const ogImage = new URL(asset(image), Astro.site).href;
 const fullTitle = route === '' && lang === DEFAULT_LOCALE ? `${site.nameFull} — ${description}` : `${title} · ${site.name}`;
 
 /** Strukturierte Daten, damit Google Öffnungszeiten und Adresse direkt anzeigt. */
@@ -32,8 +32,8 @@ const jsonLd = {
   '@type': 'Florist',
   name: site.nameFull,
   url: new URL(path(DEFAULT_LOCALE), Astro.site).href,
-  image: new URL('/brand/lockup.jpg', Astro.site).href,
-  logo: new URL('/brand/wordmark.png', Astro.site).href,
+  image: new URL(asset('/brand/lockup.jpg'), Astro.site).href,
+  logo: new URL(asset('/brand/wordmark.png'), Astro.site).href,
   description,
   email: site.email,
   telephone: site.phone,
@@ -69,8 +69,8 @@ const jsonLd = {
     }
     <link rel="alternate" hreflang="x-default" href={new URL(path(DEFAULT_LOCALE, route), Astro.site).href} />
 
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/brand/monogram.png" />
+    <link rel="icon" type="image/svg+xml" href={asset("/favicon.svg")} />
+    <link rel="apple-touch-icon" href={asset("/brand/monogram.png")} />
     <meta name="theme-color" content="#0b0a0a" />
 
     <meta property="og:type" content="website" />

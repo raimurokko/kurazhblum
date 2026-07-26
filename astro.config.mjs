@@ -3,10 +3,25 @@ import { defineConfig, fontProviders } from 'astro/config';
 import node from '@astrojs/node';
 import sitemap from '@astrojs/sitemap';
 
+/*
+  Domain und Basispfad kommen aus der Umgebung, damit dieselbe Codebasis
+  an drei Orten läuft:
+
+    lokal            SITE=… BASE=… nicht gesetzt  →  http://localhost:4321/
+    GitHub Pages     im Workflow gesetzt          →  …github.io/kurazhblum/
+    eigene Domain    SITE=https://kurazhblum.de   →  https://kurazhblum.de/
+
+  Wichtig: Wer `BASE` setzt, muss interne Links über `path()` und Dateien in
+  `public/` über `asset()` aufbauen (src/i18n/config.ts). Hart geschriebene
+  Pfade wie "/brand/logo.png" brechen unter einem Unterverzeichnis.
+*/
+const SITE = process.env.SITE ?? 'https://kurazhblum.de';
+const BASE = process.env.BASE ?? '/';
+
 // https://astro.build/config
 export default defineConfig({
-  // TODO: auf die echte Domain ändern, sobald sie registriert ist.
-  site: 'https://kurazhblum.de',
+  site: SITE,
+  base: BASE,
 
   // Statisch gebaut; nur die API-Routen (Checkout, Anfragen) laufen serverseitig.
   // Für Netlify/Vercel den Adapter tauschen — siehe README.

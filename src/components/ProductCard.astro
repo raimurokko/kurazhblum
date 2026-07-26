@@ -1,5 +1,5 @@
 ---
-import { path, t, type Locale } from '../i18n/config';
+import { asset, path, t, type Locale } from '../i18n/config';
 import { useTranslations } from '../i18n/ui';
 import { formatPrice, lowestPrice, type Bouquet } from '../data/shop';
 
@@ -12,7 +12,7 @@ const { lang, bouquet } = Astro.props;
 const _ = useTranslations(lang);
 const name = t(bouquet.name, lang);
 const href = path(lang, 'shop', bouquet.slug);
-const image = bouquet.images[0];
+const image = asset(bouquet.images[0]);
 ---
 
 <article class="product">

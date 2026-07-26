@@ -1,5 +1,5 @@
 ---
-import { t, type Locale } from '../i18n/config';
+import { asset, t, type Locale } from '../i18n/config';
 import { useTranslations } from '../i18n/ui';
 import { site } from '../data/site';
 import { INSTAGRAM_POSTS } from '../data/instagram';
@@ -31,7 +31,7 @@ const _ = useTranslations(lang);
           <li>
             <a href={post.permalink} target="_blank" rel="noopener" class="ig-item">
               <div class="ph ig-ph" data-label={`@${site.instagram}`}>
-                <img src={post.image} alt={t(post.alt, lang)} loading="lazy" decoding="async" onerror="this.remove()" />
+                <img src={asset(post.image)} alt={t(post.alt, lang)} loading="lazy" decoding="async" onerror="this.remove()" />
               </div>
               {post.isReel && (
                 <span class="ig-reel" aria-hidden="true">

@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import Stripe from 'stripe';
 
-import { DEFAULT_LOCALE, isLocale, t, type Locale } from '../../i18n/config';
+import { DEFAULT_LOCALE, asset, isLocale, t, type Locale } from '../../i18n/config';
 import {
   DELIVERY_ZONES,
   EXTRAS,
@@ -51,8 +51,8 @@ export const POST: APIRoute = async ({ request, url }) => {
 
   const lang: Locale = isLocale(payload.lang) ? payload.lang : DEFAULT_LOCALE;
   const origin = url.origin;
-  const successUrl = `${origin}/${lang}/bestellung/danke/?session_id={CHECKOUT_SESSION_ID}`;
-  const cancelUrl = `${origin}/${lang}/bestellung/abbruch/`;
+  const successUrl = `${origin}${asset(`/${lang}/bestellung/danke/`)}?session_id={CHECKOUT_SESSION_ID}`;
+  const cancelUrl = `${origin}${asset(`/${lang}/bestellung/abbruch/`)}`;
 
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
   const metadata: Record<string, string> = { lang };
