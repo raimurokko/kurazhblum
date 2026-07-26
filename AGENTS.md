@@ -16,6 +16,11 @@ Siehe README.md für den vollen Überblick. Das Wichtigste beim Ändern:
   Bilder liegen lokal. Das ist eine Datenschutzentscheidung, kein Zufall.
 - **Rechtstexte sind Entwürfe** und tragen sichtbare `.todo`-Markierungen.
   Diese Markierungen nicht ohne Rücksprache entfernen.
+- **Barrierefreiheit ist Release-Kriterium**, nicht Kür. Schriftgrade immer mit
+  `min(…, Nvw)` deckeln und Seitenränder in px/vw halten — `rem` wächst mit der
+  Textgröße aus dem Barrierefreiheits-Menü und sprengt sonst schmale Layouts.
+  Nach Layoutänderungen bei 320 px und 150 % Textgröße prüfen, dass die Seite
+  nicht seitlich scrollt. Details in README.md.
 
 ## Development
 

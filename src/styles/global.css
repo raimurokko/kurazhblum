@@ -78,6 +78,16 @@ html {
 
 body {
   margin: 0;
+  /*
+    Deutsche Komposita sind lang: „Hochzeitsfloristik“ misst bei 150 %
+    Textgröße rund 370 px und passt damit auf kein 320-px-Gerät.
+    `hyphens: auto` trennt an den richtigen Stellen (das <html lang> liefert
+    das Wörterbuch); `overflow-wrap: anywhere` ist die Notbremse für Wörter
+    ohne Trennstelle — E-Mail-Adressen, Handles, URLs. Zusammen halten sie
+    WCAG 1.4.10 (Reflow) auch in den ungünstigsten Kombinationen.
+  */
+  hyphens: auto;
+  overflow-wrap: anywhere;
   background: var(--ink);
   color: var(--cream);
   font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
@@ -103,17 +113,24 @@ h4 {
   text-wrap: balance;
 }
 
+/*
+  Die vw-Obergrenze ist kein Schmuck: `rem` wächst mit, sobald im
+  Barrierefreiheits-Menü die Textgröße hochgesetzt wird. Ohne diese Deckelung
+  stünde auf einem 320-px-Gerät bei 150 % eine 62-px-Überschrift, die kein
+  einziges Wort mehr umbrechen könnte — die Seite würde seitlich scrollen
+  (WCAG 1.4.10). Auf großen Bildschirmen greift die Deckelung nie.
+*/
 h1 {
-  font-size: clamp(2.6rem, 1.7rem + 4.2vw, 5rem);
+  font-size: min(clamp(2.6rem, 1.7rem + 4.2vw, 5rem), 13vw);
 }
 h2 {
-  font-size: clamp(2rem, 1.5rem + 2.4vw, 3.25rem);
+  font-size: min(clamp(2rem, 1.5rem + 2.4vw, 3.25rem), 11vw);
 }
 h3 {
-  font-size: clamp(1.35rem, 1.15rem + 0.9vw, 1.9rem);
+  font-size: min(clamp(1.35rem, 1.15rem + 0.9vw, 1.9rem), 8vw);
 }
 h4 {
-  font-size: 1.15rem;
+  font-size: min(1.15rem, 7vw);
 }
 
 p {
@@ -187,13 +204,16 @@ hr {
 
 /* — Layout ————————————————————————————————————————————————————————— */
 
+/* Seitenrand bewusst in px/vw statt rem: er soll nicht mitwachsen, wenn die
+   Textgröße im Barrierefreiheits-Menü hochgesetzt wird — sonst bleibt auf
+   schmalen Geräten kaum noch Platz für den Text selbst. */
 .wrap {
-  width: min(100% - 2.5rem, var(--page));
+  width: min(100% - clamp(20px, 4vw, 40px), var(--page));
   margin-inline: auto;
 }
 
 .wrap-narrow {
-  width: min(100% - 2.5rem, var(--page-narrow));
+  width: min(100% - clamp(20px, 4vw, 40px), var(--page-narrow));
   margin-inline: auto;
 }
 
@@ -302,6 +322,10 @@ hr {
 .link-arrow {
   display: inline-flex;
   align-items: center;
+  flex-wrap: wrap;
+  /* `anywhere` statt `break-word`: nur so schrumpft auch die min-content-Breite,
+     sonst sprengen lange Handles wie @kurazhblum_berlin ein 320-px-Layout. */
+  overflow-wrap: anywhere;
   gap: 0.5em;
   font-size: 0.82rem;
   letter-spacing: 0.14em;
@@ -474,6 +498,7 @@ label {
 .choice {
   position: relative;
   display: block;
+  min-width: 0;
   padding: 1rem 1.1rem;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius);

@@ -5,6 +5,7 @@ import { useTranslations } from '../i18n/ui';
 import { site } from '../data/site';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import A11yPanel from '../components/A11yPanel.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -84,6 +85,27 @@ const jsonLd = {
     <Font cssVariable="--font-display" preload />
     <Font cssVariable="--font-body" preload />
 
+    {/* Barrierefreiheits-Einstellungen vor dem ersten Paint anwenden — sonst
+        blitzt beim Laden kurz die Standarddarstellung auf. */}
+    <script is:inline>
+      (function () {
+        try {
+          var state = JSON.parse(localStorage.getItem('kb-a11y') || '{}');
+          var root = document.documentElement;
+          ['contrast', 'gray', 'cvd', 'dys', 'links', 'motion'].forEach(function (key) {
+            if (state[key]) root.classList.add('a11y-' + key);
+          });
+          var sizes = ['100%', '115%', '130%', '150%'];
+          if (state.size) {
+            root.style.fontSize = sizes[state.size] || '100%';
+            root.classList.add('a11y-size-' + state.size);
+          }
+        } catch (e) {
+          /* defekter Speicher — Standarddarstellung */
+        }
+      })();
+    </script>
+
     <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
   </head>
 
@@ -94,5 +116,6 @@ const jsonLd = {
       <slot />
     </main>
     <Footer lang={lang} />
+    <A11yPanel lang={lang} />
   </body>
 </html>

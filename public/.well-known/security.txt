@@ -1,0 +1,15 @@
+# KURAZHBLUM Berlin — Sicherheitskontakt (RFC 9116)
+# Wer eine Schwachstelle findet, darf sie melden — verantwortungsvolle
+# Offenlegung ist ausdrücklich willkommen und wird nicht rechtlich verfolgt.
+# Das hier ist ein kleines Blumenatelier: bitte keine Lasttests, keine
+# Testbestellungen mit echten Zahlungsdaten, keine Kundendaten anfassen.
+
+Contact: mailto:hallo@kurazhblum.de
+Expires: 2027-07-27T00:00:00.000Z
+Preferred-Languages: de, uk, en, ru
+Canonical: https://kurazhblum.de/.well-known/security.txt
+
+# TODO vor dem Livegang:
+#   - `Contact` auf die echte Adresse setzen
+#   - `Canonical` auf die echte Domain setzen
+#   - `Expires` jährlich verlängern (sonst gilt die Datei als abgelaufen)

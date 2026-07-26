@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { localePaths, path, t, type Locale } from '../../i18n/config';
+import { useTranslations } from '../../i18n/ui';
+import { site } from '../../data/site';
+import { LAST_REVIEW, REVIEW_DATE_TEXT, STATEMENT } from '../../data/accessibility';
+
+export function getStaticPaths() {
+  return localePaths();
+}
+
+const lang = Astro.params.lang as Locale;
+const _ = useTranslations(lang);
+
+const title = _('a11y.statement');
+const intro = t(STATEMENT[0].paragraphs![0], lang);
+
+const metaLabel: Record<Locale, string> = {
+  de: 'Stand',
+  uk: 'Станом на',
+  en: 'Last reviewed',
+  ru: 'По состоянию на',
+};
+
+const appliesTo: Record<Locale, string> = {
+  de: 'Diese Erklärung gilt für die Website',
+  uk: 'Ця декларація стосується сайту',
+  en: 'This statement applies to the website',
+  ru: 'Эта декларация относится к сайту',
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: title,
+  inLanguage: lang,
+  url: new URL(path(lang, 'barrierefreiheit'), Astro.site).href,
+  dateModified: LAST_REVIEW,
+};
+---
+
+<BaseLayout lang={lang} title={title} description={intro} route="barrierefreiheit">
+  <section class="section">
+    <div class="wrap wrap-narrow">
+      <span class="kicker">{_('footer.legal')}</span>
+      <h1>{title}</h1>
+      <p class="page-meta">
+        {metaLabel[lang]}: {t(REVIEW_DATE_TEXT, lang)} · {appliesTo[lang]}
+        <strong>{site.domain}</strong>
+      </p>
+
+      <div class="statement">
+        {
+          STATEMENT.map((section) => (
+            <section class="statement-block">
+              <h2>{t(section.heading, lang)}</h2>
+              {section.paragraphs?.map((paragraph) => <p>{t(paragraph, lang)}</p>)}
+              {section.items && (
+                <ul>
+                  {section.items.map((item) => (
+                    <li>{t(item, lang)}</li>
+                  ))}
+                </ul>
+              )}
+              {section.after?.map((paragraph) => <p>{t(paragraph, lang)}</p>)}
+            </section>
+          ))
+        }
+
+        <section class="statement-block">
+          <h2>{_('contact.kicker')}</h2>
+          <p>
+            <strong>{site.nameFull}</strong><br />
+            {site.address.city}, {site.address.country === 'DE' ? 'Deutschland' : site.address.country}<br />
+            <a href={`mailto:${site.email}`}>{site.email}</a><br />
+            <a href={`tel:${site.phoneHref}`}>{site.phone}</a>
+          </p>
+          <p>
+            <a class="link-arrow" href={path(lang, 'kontakt')}>{_('nav.contact')}</a>
+          </p>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+</BaseLayout>
+
+<style>
+  .page-meta {
+    color: var(--cream-3);
+    font-size: 0.9rem;
+    margin-bottom: var(--space-7);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .statement-block {
+    margin-bottom: var(--space-7);
+  }
+
+  .statement-block h2 {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-4);
+  }
+
+  .statement-block p,
+  .statement-block li {
+    color: var(--cream-2);
+  }
+
+  .statement-block ul {
+    max-width: var(--measure);
+    padding-left: 1.2rem;
+    margin: 0 0 var(--space-4);
+  }
+
+  .statement-block li {
+    margin-bottom: var(--space-3);
+  }
+</style>

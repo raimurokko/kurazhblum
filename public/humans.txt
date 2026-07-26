@@ -1,0 +1,34 @@
+/* ATELIER */
+
+    KURAZHBLUM Berlin — Floristik-Atelier
+    Sträuße, Hochzeiten, Events, Workshops
+    Berlin, Deutschland
+    Instagram: @kurazhblum_berlin
+
+    Gesprochen wird: Deutsch, Українська, English, Русский
+
+
+/* WEBSITE */
+
+    Aufbau: Astro, TypeScript, handgeschriebenes CSS
+    Schriften: Cormorant Garamond, Inter, OpenDyslexic — alle selbst gehostet
+    Zahlungen: Stripe
+    Farben: aus dem Logo entnommen, bis auf den letzten Hexwert
+
+    Keine Cookies. Kein Tracking. Keine Ressourcen von fremden Servern.
+    Deshalb auch kein Banner, das erst weggeklickt werden muss.
+
+
+/* BARRIEREFREIHEIT */
+
+    WCAG 2.1 AA als Ziel, Selbstbewertung
+    Panel mit Textgröße, Hochkontrast, Graustufen, farbsicherer Palette,
+    Dyslexie-Modus und Vorlesefunktion — rechts am Bildschirmrand
+    Erklärung: /de/barrierefreiheit/
+
+
+/* DANK */
+
+    OpenDyslexic von Abbie Gonzalez (SIL Open Font License)
+    Cormorant von Christian Thalmann, Inter von Rasmus Andersson
+    Astro und alles, was daran hängt

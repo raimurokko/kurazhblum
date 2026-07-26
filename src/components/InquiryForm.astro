@@ -183,6 +183,15 @@ const weddingServices: { value: string; label: I18nText }[] = [
     border: 0;
     padding: 0;
     margin: 0 0 var(--space-5);
+    /* Fieldsets ignorieren sonst die Breite ihres Grid-Containers. */
+    min-width: 0;
+  }
+
+  .inq .choice--inline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2) var(--space-3);
   }
 
   .inq fieldset legend {

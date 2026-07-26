@@ -188,6 +188,62 @@ aus `.env` müssen dann in der Oberfläche des Anbieters hinterlegt werden.
 
 ---
 
+## Barrierefreiheit
+
+Umgesetzt nach dem Mindeststandard der Novum Analytica
+(`BARRIEREFREIHEIT-STANDARD.md` im Projekt novumanalytica.com, Teil A).
+Zielniveau ist WCAG 2.1 AA.
+
+**Das Panel** liegt hinter dem runden Knopf mit dem Rollstuhl-Symbol am rechten
+Bildschirmrand (`src/components/A11yPanel.astro`). Es bietet Textgröße bis
+150 %, Hochkontrast, Graustufen, eine farbfehlsichtigkeits-sichere Palette,
+Dyslexie-Modus mit lokal gehostetem OpenDyslexic, Link-Hervorhebung,
+„Animationen reduzieren“ und Vorlesen per Klick über die Sprachausgabe des
+Geräts.
+
+Der Zustand liegt in `localStorage` unter `kb-a11y` — nie in Cookies. Ein
+Inline-Skript im `<head>` (BaseLayout) wendet ihn vor dem ersten Paint an,
+sonst blitzt beim Laden kurz die Standarddarstellung auf.
+
+**Die Erklärung** steht in allen vier Sprachen unter `/[lang]/barrierefreiheit/`;
+der Inhalt liegt in `src/data/accessibility.ts`. Wird die Website verändert,
+gehören `LAST_REVIEW` und der Abschnitt „Bekannte Lücken“ mitgepflegt.
+
+### Worauf beim Ändern zu achten ist
+
+Zwei Fallen, die beim Bauen aufgefallen sind und leicht wieder zuschlagen:
+
+- **`rem` in `clamp()`-Minimalwerten.** Setzt jemand die Textgröße auf 150 %,
+  wächst `rem` mit — eine Überschrift mit `clamp(2.6rem, …)` steht dann auch
+  auf einem 320-px-Gerät bei 62 px und kann nicht mehr umbrechen. Deshalb sind
+  alle großen Schriftgrade zusätzlich mit `min(…, Nvw)` gedeckelt, und die
+  Seitenränder sind in px/vw statt rem angegeben.
+- **Media Queries rechnen mit der ursprünglichen Schriftgröße**, nicht mit der
+  hochgesetzten. Die Kopfzeile kann deshalb nicht per Breakpoint umbauen — sie
+  reagiert auf die Klassen `a11y-size-1/2/3` am `<html>`.
+
+Nach Layoutänderungen einmal gegenprüfen: 320 px Breite, Textgröße 150 %,
+Dyslexie-Modus an — die Seite darf nicht seitlich scrollen (WCAG 1.4.10).
+Kurztest in der Browserkonsole:
+
+```js
+document.documentElement.scrollWidth === document.documentElement.clientWidth
+```
+
+## Maschinenlesbare Dateien
+
+| Datei                       | Erzeugt in                     | Zweck                                       |
+| :-------------------------- | :----------------------------- | :------------------------------------------ |
+| `/sitemap-index.xml`        | `@astrojs/sitemap`             | Alle Seiten, mit hreflang je Sprache         |
+| `/robots.txt`               | `src/pages/robots.txt.ts`      | Crawler-Regeln, verweist auf die Sitemap     |
+| `/llms.txt`                 | `src/pages/llms.txt.ts`        | Zusammenfassung für Sprachmodelle            |
+| `/humans.txt`               | `public/humans.txt`            | Wer die Website gebaut hat                   |
+| `/.well-known/security.txt` | `public/.well-known/`          | Sicherheitskontakt nach RFC 9116             |
+
+`robots.txt` und `llms.txt` werden beim Build aus den echten Daten erzeugt —
+ein neues Produkt taucht dort automatisch auf. Die beiden statischen Dateien
+enthalten TODO-Markierungen (Kontaktadresse, Domain, `Expires`-Datum).
+
 ## Datenschutz
 
 Bewusste Entscheidungen, die beim Ändern nicht verloren gehen sollten:

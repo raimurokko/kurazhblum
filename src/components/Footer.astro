@@ -50,6 +50,7 @@ const year = new Date().getFullYear();
       <nav class="footer-col" aria-labelledby="f-legal">
         <h2 class="footer-head" id="f-legal">{_('footer.legal')}</h2>
         <ul>
+          <li><a href={path(lang, 'barrierefreiheit')}>{_('footer.accessibility')}</a></li>
           <li><a href={path(lang, 'impressum')}>{_('footer.imprint')}</a></li>
           <li><a href={path(lang, 'datenschutz')}>{_('footer.privacy')}</a></li>
           <li><a href={path(lang, 'agb')}>{_('footer.terms')}</a></li>
@@ -111,6 +112,12 @@ const year = new Date().getFullYear();
     gap: var(--space-2);
   }
 
+  /* Grid-Kinder bekommen sonst min-width: auto und weigern sich, unter die
+     Breite ihres längsten Wortes zu schrumpfen. */
+  .footer-col li {
+    min-width: 0;
+  }
+
   .footer-col a {
     font-size: 0.92rem;
     color: var(--cream-2);
@@ -133,12 +140,17 @@ const year = new Date().getFullYear();
 
   .footer-bottom p {
     margin: 0;
+    /* E-Mail-Adressen sind ein einziges langes Wort. */
+    overflow-wrap: anywhere;
   }
 
-  /* Ab Tablet: feste Aufteilung, damit die Rechtsspalte nicht umbricht. */
+  /* Ab Tablet: feste Aufteilung, damit die Rechtsspalte nicht umbricht.
+     `minmax(0, …)` ist hier Pflicht — sonst können die Spalten nicht unter
+     ihre Inhaltsbreite schrumpfen und die Seite läuft bei vergrößertem Text
+     seitlich aus dem Bild. */
   @media (width >= 52rem) {
     .footer-top {
-      grid-template-columns: 1.6fr 1fr 1fr 1fr;
+      grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr));
     }
   }
 </style>

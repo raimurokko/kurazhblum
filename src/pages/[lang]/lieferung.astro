@@ -18,7 +18,8 @@ const lang = Astro.params.lang as Locale;
   description="Liefergebiete, Gebühren, Zeitfenster und Zahlungsarten."
 >
   <h2>Liefergebiete und Gebühren</h2>
-  <table class="ship-table">
+  <div class="table-scroll">
+    <table class="ship-table">
     <thead>
       <tr>
         <th scope="col">Gebiet</th>
@@ -38,8 +39,9 @@ const lang = Astro.params.lang as Locale;
           </tr>
         ))
       }
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </div>
 
   <p>
     Der Mindestbestellwert für eine Lieferung beträgt {formatPrice(MIN_ORDER_DELIVERY, 'de')}. Bei Abholung
@@ -76,10 +78,17 @@ const lang = Astro.params.lang as Locale;
 </LegalLayout>
 
 <style>
+  /* Tabellen brechen nicht um. Bei vergrößertem Text oder auf schmalen
+     Geräten scrollt deshalb die Tabelle, nicht die ganze Seite. */
+  .table-scroll {
+    overflow-x: auto;
+    margin-bottom: var(--space-5);
+  }
+
   .ship-table {
     width: 100%;
+    min-width: 18rem;
     border-collapse: collapse;
-    margin-bottom: var(--space-5);
   }
 
   .ship-table th,

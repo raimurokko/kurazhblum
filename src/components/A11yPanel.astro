@@ -1,0 +1,307 @@
+---
+import { path, type Locale } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+import '../styles/a11y.css';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const _ = useTranslations(lang);
+
+/** Sprache für die Sprachausgabe des Geräts. */
+const SPEECH_LANG: Record<Locale, string> = {
+  de: 'de-DE',
+  uk: 'uk-UA',
+  en: 'en-GB',
+  ru: 'ru-RU',
+};
+---
+
+<button
+  type="button"
+  id="a11y-toggle"
+  class="a11y-toggle"
+  aria-expanded="false"
+  aria-controls="a11y-panel"
+  aria-label={_('a11y.open')}
+  data-label-open={_('a11y.open')}
+  data-label-close={_('a11y.close')}
+>
+  <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true">
+    <circle cx="12" cy="4" r="2"></circle>
+    <path
+      d="M19 13v-2c-1.54.02-3.09-.75-4.07-1.83l-1.29-1.43c-.17-.19-.38-.34-.61-.45-.01 0-.01-.01-.02-.01-.31-.18-.68-.28-1.06-.26-1.05.05-1.81.98-1.81 2.03V15c0 1.1.9 2 2 2h5v5h2v-5.5c0-1.1-.9-2-2-2h-3v-3.45c1.29 1.07 3.25 1.94 5 1.95zm-6.17 5c-.41 1.16-1.52 2-2.83 2-1.66 0-3-1.34-3-3 0-1.31.84-2.41 2-2.83V12.1c-2.28.46-4 2.48-4 4.9 0 2.76 2.24 5 5 5 2.42 0 4.44-1.72 4.9-4h-2.07z"
+    ></path>
+  </svg>
+</button>
+
+<div
+  id="a11y-panel"
+  class="a11y-panel"
+  role="dialog"
+  aria-labelledby="a11y-title"
+  data-speech-lang={SPEECH_LANG[lang]}
+  data-voice-unavailable={_('a11y.voice.unavailable')}
+  hidden
+>
+  <div class="a11y-head">
+    <h2 id="a11y-title">{_('a11y.title')}</h2>
+    <button type="button" id="a11y-close" class="a11y-close" aria-label={_('a11y.close')}>
+      <svg
+        viewBox="0 0 24 24"
+        width="18"
+        height="18"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        aria-hidden="true"
+      >
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <div class="a11y-group">
+    <h3>{_('a11y.group.see')}</h3>
+    <div class="a11y-size">
+      <span id="a11y-size-label">{_('a11y.size')}</span>
+      <div class="a11y-size-controls">
+        <button type="button" id="a11y-size-down" class="a11y-size-btn" aria-label={_('a11y.size.down')}>−</button>
+        <output id="a11y-size-val" aria-live="polite">100&nbsp;%</output>
+        <button type="button" id="a11y-size-up" class="a11y-size-btn" aria-label={_('a11y.size.up')}>+</button>
+      </div>
+    </div>
+    <button type="button" class="a11y-opt" data-opt="contrast" aria-pressed="false">
+      {_('a11y.contrast')}<span class="a11y-switch" aria-hidden="true"></span>
+    </button>
+    <button type="button" class="a11y-opt" data-opt="gray" aria-pressed="false">
+      {_('a11y.gray')}<span class="a11y-switch" aria-hidden="true"></span>
+    </button>
+    <button type="button" class="a11y-opt" data-opt="cvd" aria-pressed="false">
+      {_('a11y.cvd')}<span class="a11y-switch" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <div class="a11y-group">
+    <h3>{_('a11y.group.read')}</h3>
+    <button type="button" class="a11y-opt" data-opt="dys" aria-pressed="false">
+      {_('a11y.dys')}<span class="a11y-switch" aria-hidden="true"></span>
+    </button>
+    <p class="a11y-hint">{_('a11y.dys.hint')}</p>
+    <button type="button" class="a11y-opt" data-opt="links" aria-pressed="false">
+      {_('a11y.links')}<span class="a11y-switch" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <div class="a11y-group">
+    <h3>{_('a11y.group.operate')}</h3>
+    <button type="button" class="a11y-opt" data-opt="motion" aria-pressed="false">
+      {_('a11y.motion')}<span class="a11y-switch" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <div class="a11y-group">
+    <h3>{_('a11y.group.speak')}</h3>
+    <button type="button" class="a11y-opt" data-opt="voice" aria-pressed="false">
+      {_('a11y.voice')}<span class="a11y-switch" aria-hidden="true"></span>
+    </button>
+    <p class="a11y-hint" id="a11y-voice-hint">{_('a11y.voice.hint')}</p>
+  </div>
+
+  <button type="button" id="a11y-reset" class="a11y-reset">{_('a11y.reset')}</button>
+  <p class="a11y-note">{_('a11y.note')}</p>
+  <a class="a11y-link" href={path(lang, 'barrierefreiheit')}>{_('a11y.statement')} →</a>
+</div>
+
+<script>
+  /*
+    Zustand liegt in localStorage ('kb-a11y', JSON, keine Cookies). Ein
+    Inline-Skript im <head> (BaseLayout.astro) setzt die Klassen bereits vor
+    dem ersten Paint — dieses Skript hält nur die Bedienung nach.
+  */
+  const A11Y_KEY = 'kb-a11y';
+  const A11Y_FLAGS = ['contrast', 'gray', 'cvd', 'dys', 'links', 'motion'] as const;
+  const A11Y_SIZES = ['100%', '115%', '130%', '150%'];
+
+  type A11yState = { size: number } & Partial<Record<string, boolean | number>>;
+
+  const root = document.documentElement;
+  const toggle = document.getElementById('a11y-toggle');
+  const panel = document.getElementById('a11y-panel');
+
+  if (toggle && panel) {
+    const closeBtn = document.getElementById('a11y-close') as HTMLButtonElement | null;
+    const resetBtn = document.getElementById('a11y-reset');
+    const sizeDown = document.getElementById('a11y-size-down') as HTMLButtonElement | null;
+    const sizeUp = document.getElementById('a11y-size-up') as HTMLButtonElement | null;
+    const sizeVal = document.getElementById('a11y-size-val');
+    const voiceHint = document.getElementById('a11y-voice-hint');
+    const options = Array.from(panel.querySelectorAll<HTMLButtonElement>('.a11y-opt'));
+
+    const speechLang = panel.dataset.speechLang || 'de-DE';
+
+    let state: A11yState = { size: 0 };
+    try {
+      state = { size: 0, ...JSON.parse(localStorage.getItem(A11Y_KEY) || '{}') };
+    } catch {
+      /* defekter Speicher — Standardwerte verwenden */
+    }
+    state.size = Math.min(Math.max(Number(state.size) || 0, 0), A11Y_SIZES.length - 1);
+
+    const save = () => localStorage.setItem(A11Y_KEY, JSON.stringify(state));
+
+    function apply() {
+      for (const flag of A11Y_FLAGS) root.classList.toggle(`a11y-${flag}`, !!state[flag]);
+      root.style.fontSize = state.size ? A11Y_SIZES[state.size] : '';
+
+      // Media Queries rechnen immer mit der ursprünglichen Schriftgröße, nicht
+      // mit der hochgesetzten. Die Stufe muss deshalb als Klasse am <html>
+      // hängen, damit die Kopfzeile bei großem Text umbauen kann.
+      for (let step = 1; step < A11Y_SIZES.length; step++) {
+        root.classList.toggle(`a11y-size-${step}`, state.size === step);
+      }
+
+      for (const button of options) {
+        button.setAttribute('aria-pressed', String(!!state[button.dataset.opt ?? '']));
+      }
+      if (sizeVal) sizeVal.innerHTML = A11Y_SIZES[state.size].replace('%', '&nbsp;%');
+      if (sizeDown) sizeDown.disabled = state.size === 0;
+      if (sizeUp) sizeUp.disabled = state.size === A11Y_SIZES.length - 1;
+      if (!state.voice) voiceStop();
+    }
+
+    function open() {
+      panel!.hidden = false;
+      toggle!.setAttribute('aria-expanded', 'true');
+      toggle!.setAttribute('aria-label', toggle!.dataset.labelClose ?? '');
+      closeBtn?.focus();
+    }
+
+    function shut() {
+      panel!.hidden = true;
+      toggle!.setAttribute('aria-expanded', 'false');
+      toggle!.setAttribute('aria-label', toggle!.dataset.labelOpen ?? '');
+    }
+
+    toggle.addEventListener('click', () => {
+      if (panel.hidden) {
+        open();
+      } else {
+        shut();
+        toggle.focus();
+      }
+    });
+
+    closeBtn?.addEventListener('click', () => {
+      shut();
+      toggle.focus();
+    });
+
+    document.addEventListener('click', (event) => {
+      const target = event.target as Node;
+      if (!panel.hidden && !panel.contains(target) && !toggle.contains(target)) shut();
+    });
+
+    for (const button of options) {
+      button.addEventListener('click', () => {
+        const key = button.dataset.opt;
+        if (!key) return;
+        state[key] = !state[key];
+
+        if (key === 'voice' && state.voice && !('speechSynthesis' in window)) {
+          state.voice = false;
+          if (voiceHint) voiceHint.textContent = panel.dataset.voiceUnavailable ?? '';
+        }
+        save();
+        apply();
+      });
+    }
+
+    sizeDown?.addEventListener('click', () => {
+      if (state.size > 0) {
+        state.size--;
+        save();
+        apply();
+      }
+    });
+
+    sizeUp?.addEventListener('click', () => {
+      if (state.size < A11Y_SIZES.length - 1) {
+        state.size++;
+        save();
+        apply();
+      }
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      state = { size: 0 };
+      save();
+      apply();
+    });
+
+    /* — Vorlesen per Klick (Web Speech API, Sprachausgabe des Geräts) — */
+    let reading: Element | null = null;
+
+    function voiceStop() {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      reading?.classList.remove('a11y-reading');
+      reading = null;
+    }
+
+    function pickVoice(): SpeechSynthesisVoice | null {
+      const prefix = speechLang.slice(0, 2).toLowerCase();
+      const voices = window.speechSynthesis.getVoices().filter((v) => v.lang?.toLowerCase().startsWith(prefix));
+      return voices.find((v) => v.localService) ?? voices[0] ?? null;
+    }
+
+    document.addEventListener(
+      'click',
+      (event) => {
+        if (!state.voice || !('speechSynthesis' in window)) return;
+        const target = event.target as HTMLElement;
+        if (panel.contains(target) || toggle.contains(target)) return;
+
+        const element = target.closest('p, h1, h2, h3, h4, dt, dd, li, figcaption, a, button, label');
+        if (!element) return;
+
+        // Im Vorlese-Modus wird gelesen statt navigiert.
+        if (element.tagName === 'A' || element.tagName === 'BUTTON') event.preventDefault();
+
+        voiceStop();
+        const text = (element as HTMLElement).innerText || element.textContent || '';
+        if (!text.trim()) return;
+
+        const utterance = new SpeechSynthesisUtterance(text.trim());
+        utterance.lang = speechLang;
+        const voice = pickVoice();
+        if (voice) utterance.voice = voice;
+
+        reading = element;
+        element.classList.add('a11y-reading');
+        utterance.onend = utterance.onerror = () => {
+          element.classList.remove('a11y-reading');
+          if (reading === element) reading = null;
+        };
+        window.speechSynthesis.speak(utterance);
+      },
+      true,
+    );
+
+    /* Esc: erst das Vorlesen stoppen, sonst das Panel schließen. */
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      if (reading) {
+        voiceStop();
+      } else if (!panel.hidden) {
+        shut();
+        toggle.focus();
+      }
+    });
+
+    apply();
+  }
+</script>

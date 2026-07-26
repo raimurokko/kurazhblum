@@ -214,9 +214,14 @@ const minDate = tomorrow.toISOString().slice(0, 10);
 
   .choice--inline {
     display: flex;
+    flex-wrap: wrap;
     align-items: baseline;
     justify-content: space-between;
-    gap: var(--space-4);
+    gap: var(--space-2) var(--space-4);
+  }
+
+  .choice--inline > * {
+    min-width: 0;
   }
 
   .choice--inline .choice-price {
@@ -289,7 +294,7 @@ const minDate = tomorrow.toISOString().slice(0, 10);
 
   .cfg-total strong {
     font-family: var(--font-display), serif;
-    font-size: 2rem;
+    font-size: min(2rem, 10vw);
     font-weight: 400;
     letter-spacing: 0;
     text-transform: none;

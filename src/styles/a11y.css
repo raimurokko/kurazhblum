@@ -1,0 +1,478 @@
+/*
+  Barrierefreiheit — Panel, Bedienknopf und Darstellungsmodi.
+
+  Umsetzung nach dem Barrierefreiheits-Mindeststandard der Novum Analytica
+  (Teil A): Textgröße bis 150 %, Hochkontrast, Graustufen, farbsichere Palette,
+  Dyslexie-Modus mit lokal gehostetem OpenDyslexic, Link-Hervorhebung,
+  Animationen reduzieren, Vorlesen per Klick.
+
+  Der Zustand liegt in localStorage (nie Cookies) und wird von einem
+  Inline-Skript im <head> vor dem ersten Paint angewendet — sonst blitzt
+  beim Laden kurz die Standarddarstellung auf.
+*/
+
+/* — OpenDyslexic, lokal gehostet ————————————————————————————————————
+   SIL Open Font License 1.1 (public/fonts/OFL-OpenDyslexic.txt),
+   © Abbie Gonzalez. Wird nur im Dyslexie-Modus überhaupt geladen. */
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/opendyslexic-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/opendyslexic-italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/opendyslexic-bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/opendyslexic-bold-italic.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Bedienknopf und Panel
+   ═══════════════════════════════════════════════════════════════════ */
+
+.a11y-toggle {
+  position: fixed;
+  right: clamp(0.75rem, 0.4rem + 1vw, 1.25rem);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  /* WCAG 2.2 Zielgröße: deutlich über 24 × 24 px */
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border: 1px solid var(--gold-dim);
+  border-radius: 50%;
+  background: var(--ink-2);
+  color: var(--cream);
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition:
+    background-color 0.2s var(--ease),
+    border-color 0.2s var(--ease),
+    color 0.2s var(--ease);
+}
+
+.a11y-toggle:hover {
+  background: var(--gold);
+  border-color: var(--gold-lit);
+  color: var(--cream);
+}
+
+.a11y-panel {
+  position: fixed;
+  right: clamp(0.75rem, 0.4rem + 1vw, 1.25rem);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 95;
+  width: min(20rem, calc(100vw - 1.5rem));
+  max-height: min(38rem, calc(100vh - 2rem));
+  overflow-y: auto;
+  padding: var(--space-5);
+  background: var(--ink-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.a11y-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.a11y-head h2 {
+  font-size: 1.35rem;
+  margin: 0;
+}
+
+.a11y-close {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--cream-2);
+  cursor: pointer;
+}
+
+.a11y-close:hover {
+  border-color: var(--gold-lit);
+  color: var(--gold-lit);
+}
+
+.a11y-group {
+  margin-bottom: var(--space-5);
+}
+
+.a11y-group h3 {
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-lit);
+  margin-bottom: var(--space-3);
+}
+
+.a11y-opt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 2.75rem;
+  margin-bottom: var(--space-2);
+  padding: 0.6rem 0.8rem;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--cream);
+  font: inherit;
+  font-size: 0.88rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.a11y-opt:hover {
+  border-color: var(--cream-3);
+}
+
+.a11y-opt[aria-pressed='true'] {
+  border-color: var(--gold-lit);
+  background: rgb(144 112 64 / 0.16);
+}
+
+/* Schalter — reine Dekoration, der Zustand steht in aria-pressed */
+.a11y-switch {
+  position: relative;
+  flex: 0 0 auto;
+  width: 2.1rem;
+  height: 1.15rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--ink);
+  transition: background-color 0.2s var(--ease);
+}
+
+.a11y-switch::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  background: var(--cream-3);
+  transition:
+    transform 0.2s var(--ease),
+    background-color 0.2s var(--ease);
+}
+
+.a11y-opt[aria-pressed='true'] .a11y-switch {
+  background: var(--gold);
+  border-color: var(--gold-lit);
+}
+
+.a11y-opt[aria-pressed='true'] .a11y-switch::after {
+  transform: translateX(0.95rem);
+  background: var(--cream);
+}
+
+.a11y-size {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  font-size: 0.88rem;
+}
+
+.a11y-size-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.a11y-size-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--cream);
+  font: inherit;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.a11y-size-btn:hover:not(:disabled) {
+  border-color: var(--gold-lit);
+  color: var(--gold-lit);
+}
+
+.a11y-size-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+#a11y-size-val {
+  min-width: 3.5rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--cream-2);
+}
+
+.a11y-reset {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.6rem 0.8rem;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--cream-2);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.a11y-reset:hover {
+  border-color: var(--gold-lit);
+  color: var(--gold-lit);
+}
+
+.a11y-hint,
+.a11y-note {
+  margin: var(--space-2) 0 0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--cream-3);
+  max-width: none;
+}
+
+.a11y-link {
+  display: inline-block;
+  margin-top: var(--space-3);
+  font-size: 0.8rem;
+  color: var(--gold-lit);
+}
+
+/* Abschnitt, der gerade vorgelesen wird */
+.a11y-reading {
+  outline: 2px solid var(--gold-lit);
+  outline-offset: 3px;
+  background: rgb(144 112 64 / 0.18);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Darstellungsmodi
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* — Hoher Kontrast —————————————————————————————————————————————————
+   Reines Schwarz gegen reines Weiß; alle Grautöne rücken nach oben.
+   Fließtext erreicht damit 21:1, also auch AAA. */
+html.a11y-contrast {
+  --ink: #000;
+  --ink-2: #000;
+  --ink-3: #0d0d0d;
+  --ink-4: #161616;
+  --cream: #fff;
+  --cream-2: #fff;
+  --cream-3: #dcdcdc;
+  --gold: #f0b95e;
+  --gold-lit: #ffd27f;
+  --gold-dim: #f0b95e;
+  --mauve: #f0c8d2;
+  --mauve-deep: #d9a3b0;
+  --line: rgb(255 255 255 / 0.45);
+  --line-strong: rgb(255 255 255 / 0.75);
+}
+
+html.a11y-contrast .site-header {
+  background: #000;
+  backdrop-filter: none;
+}
+
+/* Platzhalterkacheln würden im Hochkontrast als leere Flächen verschwinden */
+html.a11y-contrast .ph {
+  background: #0d0d0d;
+  border: 1px solid var(--line);
+}
+
+html.a11y-contrast .ph::after {
+  opacity: 1;
+  color: #fff;
+}
+
+/* — Graustufen ——————————————————————————————————————————————————————
+   Bedienelemente bleiben ausgenommen, sonst verlieren die Schalter
+   ihre einzige nicht-textliche Zustandsanzeige. */
+html.a11y-gray body > *:not(.a11y-panel):not(.a11y-toggle) {
+  filter: grayscale(1);
+}
+
+/* — Farbsichere Palette (Okabe-Ito) ————————————————————————————————
+   Gold und Altrosa liegen für Rot-Grün-Schwächen nah beieinander.
+   Ersetzt durch Orange und Himmelblau — auf Schwarz beide über 4,5:1. */
+html.a11y-cvd {
+  --gold: #e69f00;
+  --gold-lit: #f0b840;
+  --gold-dim: #8a6100;
+  --mauve: #56b4e9;
+  --mauve-deep: #0072b2;
+}
+
+/* — Dyslexie-freundliche Darstellung ————————————————————————————— */
+html.a11y-dys,
+html.a11y-dys body {
+  font-family: 'OpenDyslexic', var(--font-body), sans-serif;
+  letter-spacing: 0.04em;
+  word-spacing: 0.14em;
+  line-height: 1.85;
+}
+
+html.a11y-dys h1,
+html.a11y-dys h2,
+html.a11y-dys h3,
+html.a11y-dys h4,
+html.a11y-dys h5,
+html.a11y-dys h6,
+html.a11y-dys .btn,
+html.a11y-dys .kicker,
+html.a11y-dys .field-label {
+  font-family: 'OpenDyslexic', var(--font-body), sans-serif;
+  letter-spacing: 0.01em;
+}
+
+/* OpenDyslexic läuft deutlich breiter — große Grade etwas dämpfen */
+html.a11y-dys h1 {
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 3.2rem);
+}
+
+html.a11y-dys h2 {
+  font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.3rem);
+}
+
+/* Kursiv ist bei Dyslexie schwer zu lesen */
+html.a11y-dys em,
+html.a11y-dys i,
+html.a11y-dys .ph::after {
+  font-style: normal;
+  font-weight: 700;
+}
+
+html.a11y-dys p,
+html.a11y-dys li,
+html.a11y-dys dd {
+  max-width: 55ch;
+}
+
+/* — Links hervorheben ——————————————————————————————————————————— */
+html.a11y-links a {
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 0.2em;
+  color: var(--gold-lit) !important;
+  background: rgb(144 112 64 / 0.14);
+  padding: 0 0.15em;
+  border-radius: 2px;
+}
+
+html.a11y-links a:focus-visible,
+html.a11y-links a:hover {
+  background: rgb(144 112 64 / 0.3);
+}
+
+/* Reine Bildlinks (Logo, Produktkacheln) bekommen keinen Textmarker —
+   der Kasten um das Logo sähe aus wie ein Darstellungsfehler. */
+html.a11y-links a:has(> img),
+html.a11y-links a:has(> .ph),
+html.a11y-links a:has(> svg) {
+  background: none;
+  padding: 0;
+  text-decoration: none !important;
+}
+
+/* — Animationen reduzieren ——————————————————————————————————————— */
+html.a11y-motion,
+html.a11y-motion *,
+html.a11y-motion *::before,
+html.a11y-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* — Kopfzeile bei vergrößertem Text ————————————————————————————————
+   Media Queries rechnen mit der ursprünglichen Schriftgröße; ohne diese
+   Regeln würde die Navigation bei 130 % rechts aus dem Bild laufen und die
+   Bestellschaltfläche wäre nicht mehr erreichbar (WCAG 1.4.4).
+   Erst fällt die Schaltfläche weg, dann klappt die ganze Navigation ins Menü. */
+
+html.a11y-size-2 .header-cta,
+html.a11y-size-3 .header-cta {
+  display: none;
+}
+
+html.a11y-size-3 .nav,
+html.a11y-size-3 .langs {
+  display: none;
+}
+
+html.a11y-size-3 .burger {
+  display: grid;
+}
+
+html.a11y-size-3 .mobile-nav {
+  display: block;
+}
+
+html.a11y-size-3 .brand img {
+  width: min(8rem, 40vw);
+}
+
+/* Panel und Knopf weichen dem Inhalt auf schmalen Geräten aus */
+@media (width < 30rem) {
+  .a11y-toggle {
+    top: auto;
+    bottom: 1rem;
+    transform: none;
+  }
+
+  .a11y-panel {
+    top: auto;
+    bottom: 1rem;
+    transform: none;
+    max-height: calc(100vh - 2rem);
+  }
+}
