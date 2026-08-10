@@ -17,7 +17,13 @@ export const site = {
   email: 'hallo@kurazhblum.de', // TODO
   phone: '+49 000 0000000', // TODO
   phoneHref: '+490000000000', // TODO
-  whatsapp: '', // TODO: optional, https://wa.me/49…
+
+  /**
+   * WhatsApp-Nummer im internationalen Format ohne Plus und ohne Leerzeichen,
+   * z. B. '4915112345678'. Leer lassen, wenn kein WhatsApp genutzt wird —
+   * dann verschwindet die Schaltfläche überall von selbst.
+   */
+  whatsapp: '490000000000', // TODO
 
   address: {
     street: 'Straße Hausnummer', // TODO

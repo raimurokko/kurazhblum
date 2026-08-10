@@ -4,7 +4,14 @@ import Configurator from '../../../components/Configurator.astro';
 import ProductCard from '../../../components/ProductCard.astro';
 import { asset, LOCALES, path, t, type Locale } from '../../../i18n/config';
 import { useTranslations } from '../../../i18n/ui';
-import { BOUQUETS, bouquetsByCategory, categoryBySlug, formatPrice, lowestPrice } from '../../../data/shop';
+import {
+  BOUQUETS,
+  bouquetsByCategory,
+  categoryBySlug,
+  formatPrice,
+  hasSizes,
+  lowestPrice,
+} from '../../../data/shop';
 
 export function getStaticPaths() {
   return LOCALES.flatMap((lang) => BOUQUETS.map((bouquet) => ({ params: { lang, slug: bouquet.slug }, props: { bouquet } })));
@@ -29,13 +36,20 @@ const productJsonLd = {
   description: t(bouquet.description, lang),
   image: new URL(asset(bouquet.images[0]), Astro.site).href,
   brand: { '@type': 'Brand', name: 'KURAZHBLUM' },
-  offers: {
-    '@type': 'AggregateOffer',
-    priceCurrency: 'EUR',
-    lowPrice: (bouquet.prices.s / 100).toFixed(2),
-    highPrice: (bouquet.prices.l / 100).toFixed(2),
-    availability: 'https://schema.org/InStock',
-  },
+  offers: hasSizes(bouquet)
+    ? {
+        '@type': 'AggregateOffer',
+        priceCurrency: 'EUR',
+        lowPrice: (Math.min(...Object.values(bouquet.prices!)) / 100).toFixed(2),
+        highPrice: (Math.max(...Object.values(bouquet.prices!)) / 100).toFixed(2),
+        availability: 'https://schema.org/InStock',
+      }
+    : {
+        '@type': 'Offer',
+        priceCurrency: 'EUR',
+        price: ((bouquet.price ?? 0) / 100).toFixed(2),
+        availability: 'https://schema.org/InStock',
+      },
 };
 ---
 
@@ -50,6 +64,7 @@ const productJsonLd = {
         <div class="detail-media">
           <div class="ph detail-ph" data-label={name}>
             <img
+              data-product-image
               src={asset(bouquet.images[0])}
               alt={name}
               width="1000"
@@ -65,16 +80,27 @@ const productJsonLd = {
           {category && <span class="kicker">{t(category.name, lang)}</span>}
           <h1>{name}</h1>
           <p class="detail-price">
-            <span class="muted small">{_('shop.from')}</span>
+            {hasSizes(bouquet) && <span class="muted small">{_('shop.from')}</span>}
             {formatPrice(lowestPrice(bouquet), lang)}
           </p>
+
+          {bouquet.discountPercent && <p class="detail-flag">{_('product.discount')}</p>}
           <hr class="rule" />
           <p class="lead">{t(bouquet.description, lang)}</p>
 
           <dl class="spec">
             <dt>{_('cfg.summary')}</dt>
             <dd>{t(bouquet.composition, lang)}</dd>
+            {bouquet.length && (
+              <>
+                <dt class="spec-more">{_('product.length')}</dt>
+                <dd>{bouquet.length}</dd>
+              </>
+            )}
           </dl>
+
+          {bouquet.variantsOnRequest && <p class="small muted detail-note">{_('product.variants')}</p>}
+          <p class="small muted detail-note">{_('shop.seasonal')}</p>
         </div>
       </div>
 
@@ -145,6 +171,26 @@ const productJsonLd = {
     font-family: var(--font-display), serif;
     font-size: min(2rem, 10vw);
     margin-bottom: var(--space-4);
+  }
+
+  .detail-flag {
+    display: inline-block;
+    margin: 0 0 var(--space-4);
+    padding: 0.35em 0.9em;
+    border: 1px solid var(--gold-dim);
+    border-radius: 999px;
+    font-size: 0.8rem;
+    color: var(--gold-lit);
+  }
+
+  .detail-note {
+    margin-top: var(--space-4);
+    padding-left: var(--space-4);
+    border-left: 1px solid var(--line-strong);
+  }
+
+  .spec-more {
+    margin-top: var(--space-3);
   }
 
   .detail-price .small {

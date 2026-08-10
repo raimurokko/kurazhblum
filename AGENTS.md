@@ -7,6 +7,12 @@ Siehe README.md für den vollen Überblick. Das Wichtigste beim Ändern:
   Produkten und Kursen sind `I18nText`-Objekte mit denselben vier Schlüsseln.
   Nie einen Text direkt in eine Komponente schreiben.
 - **Geld ist immer Cent als Ganzzahl.** Ausgabe nur über `formatPrice()`.
+- **Größen heißen M/L/XL**, nie S — das ist Galas Staffel. Ein Strauß hat
+  entweder `prices` (Staffel) oder `price` (Festpreis), nie beides; dafür gibt
+  es `hasSizes()`, `sizesOf()` und `priceFor()` in `src/data/shop.ts`.
+- **Weg A führt nie in die Kasse.** Die Verfügbarkeit muss vorher abgestimmt
+  werden; die Seite baut stattdessen eine fertige Nachricht. Wer daraus einen
+  Warenkorb macht, verspricht Blumen, die es vielleicht nicht gibt.
 - **Keine hart geschriebenen Pfade.** Interne Links über `path()`, Dateien aus
   `public/` über `asset()` (beides `src/i18n/config.ts`). Die Website läuft auf
   GitHub Pages in einem Unterverzeichnis — `"/brand/logo.png"` bricht dort.

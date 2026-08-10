@@ -77,7 +77,9 @@ const blurb = t(category.blurb, lang);
     letter-spacing: 0.1em;
     text-decoration: none;
     color: var(--cream-2);
-    white-space: nowrap;
+    /* Kein nowrap: „Дофамінові букети“ passt bei großer Schrift sonst nicht
+       mehr auf ein schmales Gerät. */
+    min-width: 0;
   }
 
   .filter:hover {

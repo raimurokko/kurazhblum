@@ -7,6 +7,9 @@ import {
   MIN_ORDER_DELIVERY,
   PRESENTATION_SURCHARGE,
   formatPrice,
+  imagesFor,
+  priceFor,
+  sizesOf,
   type Bouquet,
   type PresentationKey,
   type SizeKey,
@@ -21,8 +24,12 @@ interface Props {
 const { lang, bouquet } = Astro.props;
 const _ = useTranslations(lang);
 
-const sizes: SizeKey[] = ['s', 'm', 'l'];
+/** Leer bei Festpreis-Produkten — dann entfällt die Größenwahl ganz. */
+const sizes: SizeKey[] = sizesOf(bouquet);
 const presentations = bouquet.presentations;
+
+/** Erstes Foto je Größe, damit die Produktseite beim Wechsel mittauscht. */
+const bildJeGroesse = Object.fromEntries(sizes.map((size) => [size, asset(imagesFor(bouquet, size)[0])]));
 
 /**
  * Der Preis wird zweimal berechnet: hier im Browser für die Live-Anzeige und
@@ -31,7 +38,8 @@ const presentations = bouquet.presentations;
  */
 const pricing = {
   currencyLocale: lang,
-  sizes: bouquet.prices,
+  /** Festpreis-Produkte bekommen eine Pseudo-Größe, damit die Rechnung gleich bleibt. */
+  sizes: sizes.length ? bouquet.prices : { fixed: priceFor(bouquet) },
   presentations: Object.fromEntries(presentations.map((p) => [p, PRESENTATION_SURCHARGE[p]])),
   extras: Object.fromEntries(EXTRAS.map((e) => [e.id, e.price])),
   zones: Object.fromEntries(DELIVERY_ZONES.map((z) => [z.id, z.fee])),
@@ -56,26 +64,35 @@ const minDate = tomorrow.toISOString().slice(0, 10);
   data-min-warning={_('cfg.minorder.short')}
   data-busy-label={_('cfg.loading')}
   data-endpoint={asset('/api/checkout')}
+  data-images={JSON.stringify(bildJeGroesse)}
 >
   <h2 class="cfg-title">{_('cfg.title')}</h2>
 
-  <!-- Größe -->
-  <fieldset class="cfg-block">
-    <legend class="field-label">{_('cfg.size')}</legend>
-    <div class="choices choices--row">
-      {
-        sizes.map((size, index) => (
-          <label class="choice">
-            <input type="radio" name="size" value={size} checked={index === 1} />
-            <span class="choice-title">{_(`cfg.size.${size}` as UiKey)}</span>
-            <span class="choice-desc">{_(`cfg.size.${size}.desc` as UiKey)}</span>
-            <span class="choice-price">{formatPrice(bouquet.prices[size], lang)}</span>
-          </label>
-        ))
-      }
-    </div>
-    <p class="hint">{_('cfg.size.hint')}</p>
-  </fieldset>
+  <!-- Größe — entfällt bei Festpreis-Produkten -->
+  {
+    sizes.length > 0 && (
+      <fieldset class="cfg-block">
+        <legend class="field-label">{_('cfg.size')}</legend>
+        <div class="choices choices--row">
+          {sizes.map((size, index) => (
+            <label class="choice">
+              <input type="radio" name="size" value={size} checked={index === 0} />
+              <span class="choice-title">{_(`cfg.size.${size}` as UiKey)}</span>
+              <span class="choice-desc">{_(`cfg.size.${size}.desc` as UiKey)}</span>
+              <span class="choice-price">{formatPrice(priceFor(bouquet, size), lang)}</span>
+            </label>
+          ))}
+        </div>
+        <p class="hint">{_('cfg.size.hint')}</p>
+      </fieldset>
+    )
+  }
+
+  {
+    sizes.length === 0 && (
+      <input type="hidden" name="size" value="fixed" />
+    )
+  }
 
   <!-- Präsentation -->
   <fieldset class="cfg-block">
@@ -172,7 +189,7 @@ const minDate = tomorrow.toISOString().slice(0, 10);
 
     <div class="cfg-total">
       <span>{_('cfg.total')}</span>
-      <strong data-total>{formatPrice(bouquet.prices.m, lang)}</strong>
+      <strong data-total>{formatPrice(priceFor(bouquet, sizes[0]), lang)}</strong>
     </div>
     <p class="hint">{_('cfg.incl_vat')}</p>
 
@@ -364,6 +381,27 @@ const minDate = tomorrow.toISOString().slice(0, 10);
 
     const minWarningTemplate = form.dataset.minWarning ?? '';
 
+    /*
+      Fotos je Größe: Gala hat M, L und XL einzeln fotografiert. Beim Wechsel
+      tauscht das Bild auf der Produktseite mit — so sieht man, was man
+      bekommt, statt es aus einer Zahl schließen zu müssen.
+    */
+    let bilder: Record<string, string> = {};
+    try {
+      bilder = JSON.parse(form.dataset.images ?? '{}');
+    } catch {
+      /* kaputtes Attribut — dann bleibt das Bild einfach stehen */
+    }
+
+    const produktBild = document.querySelector<HTMLImageElement>('[data-product-image]');
+
+    function bildAktualisieren(size: string) {
+      const quelle = bilder[size];
+      if (!produktBild || !quelle || produktBild.getAttribute('src') === quelle) return;
+      produktBild.setAttribute('src', quelle);
+      produktBild.removeAttribute('srcset');
+    }
+
     function readSelection() {
       const data = new FormData(form);
       const size = String(data.get('size') ?? 'm');
@@ -380,6 +418,7 @@ const minDate = tomorrow.toISOString().slice(0, 10);
 
     function render() {
       const { size, presentation, zone, extras } = readSelection();
+      bildAktualisieren(size);
 
       const base = pricing.sizes[size] ?? 0;
       const surcharge = pricing.presentations[presentation] ?? 0;

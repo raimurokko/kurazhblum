@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import InquiryForm from '../../components/InquiryForm.astro';
+import ContactChannels from '../../components/ContactChannels.astro';
 import { localePaths, t, type Locale } from '../../i18n/config';
 import { useTranslations } from '../../i18n/ui';
 import { site } from '../../data/site';
@@ -59,6 +60,8 @@ const _ = useTranslations(lang);
       </div>
 
       <div>
+        <ContactChannels lang={lang} />
+        <hr class="rule kanal-trenner" />
         <InquiryForm lang={lang} topic="general" />
       </div>
     </div>
@@ -71,6 +74,12 @@ const _ = useTranslations(lang);
     gap: clamp(2rem, 1rem + 4vw, 4rem);
     grid-template-columns: 1fr;
     align-items: start;
+  }
+
+  /* Ohne min-width: 0 sperren sich Grid-Kinder gegen jede Breite unterhalb
+     ihres Inhalts — und geben `100%` weiter unten nichts zum Auflösen. */
+  .contact > div {
+    min-width: 0;
   }
 
   .details {
@@ -105,6 +114,11 @@ const _ = useTranslations(lang);
     margin: 0;
     text-align: right;
     color: var(--cream-2);
+  }
+
+  .kanal-trenner {
+    width: 100%;
+    margin: var(--space-6) 0;
   }
 
   .hours-head {

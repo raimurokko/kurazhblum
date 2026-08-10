@@ -8,6 +8,8 @@ import {
   MIN_ORDER_DELIVERY,
   PRESENTATION_SURCHARGE,
   bouquetBySlug,
+  priceFor,
+  sizesOf,
   type PresentationKey,
   type SizeKey,
 } from '../../data/shop';
@@ -17,7 +19,6 @@ import { WORKSHOP_DATES, formatBySlug } from '../../data/workshops';
 // Zahlungen brauchen einen Server — diese Route wird nicht vorgerendert.
 export const prerender = false;
 
-const SIZES: SizeKey[] = ['s', 'm', 'l'];
 const CARD_MESSAGE_MAX = 240;
 
 /** Stripe erwartet eigene Sprachcodes; unsere vier lassen sich direkt abbilden. */
@@ -88,7 +89,12 @@ export const POST: APIRoute = async ({ request, url }) => {
     const bouquet = bouquetBySlug(String(payload.slug ?? ''));
     if (!bouquet) return json({ error: 'unknown_product' }, 400);
 
-    const size = SIZES.includes(payload.size as SizeKey) ? (payload.size as SizeKey) : 'm';
+    // Festpreis-Produkte haben keine Größe; bei Staffelprodukten nur die
+    // Größen zulassen, die dieser Strauß tatsächlich anbietet.
+    const verfuegbar = sizesOf(bouquet);
+    const size: SizeKey | undefined = verfuegbar.includes(payload.size as SizeKey)
+      ? (payload.size as SizeKey)
+      : verfuegbar[0];
 
     const presentation = bouquet.presentations.includes(payload.presentation as PresentationKey)
       ? (payload.presentation as PresentationKey)
@@ -102,7 +108,7 @@ export const POST: APIRoute = async ({ request, url }) => {
 
     // Der Browser rechnet nur für die Anzeige. Verbindlich ist ausschließlich
     // diese Berechnung — sonst könnte man den Preis im Formular manipulieren.
-    const base = bouquet.prices[size];
+    const base = priceFor(bouquet, size);
     const surcharge = PRESENTATION_SURCHARGE[presentation];
     const extrasTotal = extras.reduce((sum, extra) => sum + extra.price, 0);
     const subtotal = base + surcharge + extrasTotal;
@@ -112,13 +118,14 @@ export const POST: APIRoute = async ({ request, url }) => {
     }
 
     const presentationLabel = presentation === 'bouquet' ? '' : ` — ${presentation}`;
+    const sizeLabel = size ? ` (${size.toUpperCase()})` : '';
     lineItems.push({
       quantity: 1,
       price_data: {
         currency: 'eur',
         unit_amount: subtotal - extrasTotal,
         product_data: {
-          name: `${t(bouquet.name, lang)} (${size.toUpperCase()})${presentationLabel}`,
+          name: `${t(bouquet.name, lang)}${sizeLabel}${presentationLabel}`,
           description: t(bouquet.blurb, lang).slice(0, 300),
         },
       },
@@ -151,7 +158,7 @@ export const POST: APIRoute = async ({ request, url }) => {
 
     metadata.kind = 'bouquet';
     metadata.product = bouquet.slug;
-    metadata.size = size;
+    metadata.size = size ?? '';
     metadata.presentation = presentation;
     metadata.zone = zone.id;
     metadata.extras = extras.map((extra) => extra.id).join(',');

@@ -1,7 +1,7 @@
 ---
 import { asset, path, t, type Locale } from '../i18n/config';
 import { useTranslations } from '../i18n/ui';
-import { formatPrice, lowestPrice, type Bouquet } from '../data/shop';
+import { formatPrice, hasSizes, lowestPrice, type Bouquet } from '../data/shop';
 
 interface Props {
   lang: Locale;
@@ -26,9 +26,10 @@ const image = asset(bouquet.images[0]);
     <h3 class="product-name"><a href={href}>{name}</a></h3>
     <p class="small muted product-blurb">{t(bouquet.blurb, lang)}</p>
     <p class="product-price">
-      <span class="muted small">{_('shop.from')}</span>
+      {hasSizes(bouquet) && <span class="muted small">{_('shop.from')}</span>}
       {formatPrice(lowestPrice(bouquet), lang)}
     </p>
+    {bouquet.discountPercent && <span class="tag tag--gold product-flag">{_('ways.c.badge')}</span>}
   </div>
 </article>
 
@@ -107,6 +108,10 @@ const image = asset(bouquet.images[0]);
     font-family: var(--font-display), serif;
     font-size: min(1.35rem, 9vw);
     color: var(--cream);
+  }
+
+  .product-flag {
+    align-self: flex-start;
   }
 
   .product-price .small {

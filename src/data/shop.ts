@@ -6,8 +6,14 @@ import type { I18nText, Locale } from '../i18n/config';
  */
 export type Cents = number;
 
-export type SizeKey = 's' | 'm' | 'l';
-export type PresentationKey = 'bouquet' | 'basket' | 'box' | 'vase';
+/**
+ * Galas eigene Staffel — sie verkauft M/L/XL, kein S. Das M ist mit 85 € der
+ * Einstieg und liegt damit genau auf dem Mindestbestellwert für Lieferung.
+ */
+export type SizeKey = 'm' | 'l' | 'xl';
+export const SIZES: SizeKey[] = ['m', 'l', 'xl'];
+
+export type PresentationKey = 'bouquet' | 'premium' | 'basket' | 'box' | 'vase';
 
 export interface Category {
   slug: string;
@@ -25,19 +31,40 @@ export interface Bouquet {
   description: I18nText;
   /** Was drin ist — wird als Liste ausgegeben. */
   composition: I18nText;
-  /** Preise je Größe, inkl. MwSt. */
-  prices: Record<SizeKey, Cents>;
+
+  /**
+   * Ein Strauß hat entweder eine Größenstaffel oder einen Festpreis.
+   * Die 101 Rosen und die 35 Päonienrosen gibt es nur in einer Ausführung —
+   * für sie würde eine erfundene Größenwahl etwas versprechen, das es nicht
+   * gibt. Genau eines von beiden setzen.
+   */
+  prices?: Record<SizeKey, Cents>;
+  price?: Cents;
+
+  /** Stiellänge, wo Gala sie angibt — z. B. „60 cm“. */
+  length?: string;
+  /** Blendet den Hinweis „andere Größen und Längen auf Anfrage“ ein. */
+  variantsOnRequest?: boolean;
+  /** Prozentualer Nachlass, z. B. 10 beim Überraschungsstrauß. */
+  discountPercent?: number;
+
   /** Welche Präsentationsformen für diesen Strauß sinnvoll sind. */
   presentations: PresentationKey[];
   images: string[];
+  /** Fotos je Größe — beim Wechsel im Konfigurator tauscht das Bild mit. */
+  imagesBySize?: Partial<Record<SizeKey, string[]>>;
   featured?: boolean;
   /** Nur in bestimmten Monaten (1–12) verfügbar; leer = ganzjährig. */
   season?: number[];
 }
 
-/** Aufpreis je Präsentationsform. */
+/**
+ * Aufpreis je Präsentationsform. Die Standardverpackung — von Hand gebunden,
+ * in Papier — steckt im Produktpreis; alles Edlere kostet extra.
+ */
 export const PRESENTATION_SURCHARGE: Record<PresentationKey, Cents> = {
   bouquet: 0,
+  premium: 1800,
   box: 1800,
   basket: 2500,
   vase: 3500,
@@ -248,14 +275,20 @@ export const BOUQUETS: Bouquet[] = [
     slug: 'dopamin-berlin',
     category: 'dopamin',
     featured: true,
-    prices: { s: 8500, m: 12500, l: 21000 },
-    presentations: ['bouquet', 'basket', 'box', 'vase'],
-    images: ['/images/products/dopamin-berlin.jpg'],
+    prices: { m: 8500, l: 15000, xl: 22000 },
+    variantsOnRequest: true,
+    presentations: ['bouquet', 'premium', 'basket', 'box', 'vase'],
+    images: ['/images/products/dopamin-berlin-l.webp'],
+    imagesBySize: {
+      m: ['/images/products/dopamin-berlin-m.webp', '/images/products/dopamin-berlin-m-2.webp'],
+      l: ['/images/products/dopamin-berlin-l.webp', '/images/products/dopamin-berlin-l-2.webp'],
+      xl: ['/images/products/dopamin-berlin-xl.webp'],
+    },
     name: {
-      de: 'Dopamin Berlin',
-      uk: 'Дофамін Берлін',
+      de: 'Dopamin-Berlin',
+      uk: 'Дофаміновий Берлін',
       en: 'Dopamine Berlin',
-      ru: 'Дофамин Берлин',
+      ru: 'Дофаминовый Берлин',
     },
     blurb: {
       de: 'Der Strauß, der am häufigsten wieder bestellt wird.',
@@ -264,24 +297,125 @@ export const BOUQUETS: Bouquet[] = [
       ru: 'Букет, который заказывают повторно чаще всего.',
     },
     description: {
-      de: 'Kein Schema, keine Symmetrie — nur Farben, die sich gegenseitig hochziehen. Ich stelle ihn jeden Morgen neu aus dem zusammen, was frisch hereinkommt. Zwei Dopamin-Sträuße sehen deshalb nie gleich aus, und genau das ist die Idee.',
-      uk: 'Жодної схеми, жодної симетрії — лише кольори, що підсилюють одне одного. Збираю його щоранку заново з того, що приходить свіжим. Тому два дофамінові букети ніколи не однакові — і в цьому вся суть.',
-      en: 'No scheme, no symmetry — only colours that lift each other. I compose it fresh each morning from whatever comes in. No two dopamine bouquets look alike, and that is exactly the point.',
-      ru: 'Никакой схемы, никакой симметрии — только цвета, которые вытягивают друг друга. Собираю его каждое утро заново из того, что приходит свежим. Два дофаминовых букета никогда не выглядят одинаково — в этом и смысл.',
+      de: 'Kein Schema, keine Symmetrie — nur Farben, die sich gegenseitig hochziehen. Ich stelle ihn jeden Morgen neu aus dem zusammen, was frisch hereinkommt. Zwei Dopamin-Sträuße sehen deshalb nie gleich aus, und genau das ist die Idee. Die Fotos zeigen jede Größe an einem echten Beispiel.',
+      uk: 'Жодної схеми, жодної симетрії — лише кольори, що підсилюють одне одного. Збираю його щоранку заново з того, що приходить свіжим. Тому два дофамінові букети ніколи не однакові — і в цьому вся суть. На фото кожен розмір показано на справжньому прикладі.',
+      en: 'No scheme, no symmetry — only colours that lift each other. I compose it fresh each morning from whatever comes in. No two dopamine bouquets look alike, and that is exactly the point. The photos show each size on a real example.',
+      ru: 'Никакой схемы, никакой симметрии — только цвета, которые вытягивают друг друга. Собираю его каждое утро заново из того, что приходит свежим. Два дофаминовых букета никогда не выглядят одинаково — в этом и смысл. На фото каждый размер показан на настоящем примере.',
     },
     composition: {
-      de: 'Wechselnd: Ranunkeln, Tulpen, Anemonen, Nelken, Eustoma, Beiwerk der Saison',
-      uk: 'Змінно: ранункулюси, тюльпани, анемони, гвоздики, еустома, сезонна зелень',
-      en: 'Changing: ranunculus, tulips, anemones, carnations, lisianthus, seasonal greenery',
-      ru: 'Переменно: ранункулюсы, тюльпаны, анемоны, гвоздики, эустома, сезонная зелень',
+      de: 'Wechselnd: Hortensien, Ranunkeln, Rittersporn, Nelken, Eustoma, Beiwerk der Saison',
+      uk: 'Змінно: гортензії, ранункулюси, дельфініум, гвоздики, еустома, сезонна зелень',
+      en: 'Changing: hydrangeas, ranunculus, delphinium, carnations, lisianthus, seasonal greenery',
+      ru: 'Переменно: гортензии, ранункулюсы, дельфиниум, гвоздики, эустома, сезонная зелень',
+    },
+  },
+  {
+    slug: 'ueberraschungsstrauss',
+    category: 'dopamin',
+    featured: true,
+    prices: { m: 8500, l: 13500, xl: 19800 },
+    discountPercent: 10,
+    variantsOnRequest: true,
+    presentations: ['bouquet', 'premium', 'basket', 'box', 'vase'],
+    images: ['/images/products/ueberraschung.webp'],
+    name: {
+      de: 'Überraschungsstrauß',
+      uk: 'Букет-сюрприз',
+      en: 'Surprise bouquet',
+      ru: 'Букет-сюрприз',
+    },
+    blurb: {
+      de: 'Ich wähle, Sie sparen. Zehn Prozent günstiger.',
+      uk: 'Обираю я — заощаджуєте ви. На десять відсотків дешевше.',
+      en: 'I choose, you save. Ten per cent less.',
+      ru: 'Выбираю я — экономите вы. На десять процентов дешевле.',
+    },
+    description: {
+      de: 'Sie überlassen mir die Auswahl, und ich binde aus den frischesten Blumen, die am Bestelltag da sind. Genau deshalb ist er günstiger: Ich kann nach Qualität einkaufen statt nach Liste, und nichts bleibt liegen. Sie sagen mir nur die Stimmung — hell, dunkel, warm, kühl — und bekommen vor der Lieferung ein Foto.',
+      uk: 'Ви лишаєте вибір мені, а я збираю з найсвіжіших квітів, які є в день замовлення. Саме тому він дешевший: я купую за якістю, а не за списком, і нічого не залишається. Ви кажете лише настрій — світлий, темний, теплий, холодний — і отримуєте фото перед доставкою.',
+      en: 'You leave the choice to me, and I tie the bouquet from the freshest flowers available on the day of your order. That is exactly why it costs less: I can buy by quality rather than by list, and nothing goes to waste. You only tell me the mood — light, dark, warm, cool — and get a photo before delivery.',
+      ru: 'Вы оставляете выбор мне, а я собираю из самых свежих цветов, которые есть в день заказа. Именно поэтому он дешевле: я покупаю по качеству, а не по списку, и ничего не остаётся. Вы говорите только настроение — светлое, тёмное, тёплое, холодное — и получаете фото перед доставкой.',
+    },
+    composition: {
+      de: 'Wechselnd nach Markt und Jahreszeit — die Auswahl liegt bei der Floristin',
+      uk: 'Змінюється залежно від ринку та сезону — вибір за флористкою',
+      en: 'Changes with the market and the season — the florist chooses',
+      ru: 'Меняется в зависимости от рынка и сезона — выбор за флористкой',
+    },
+  },
+  {
+    slug: '101-rosen-herz',
+    category: 'rosen',
+    featured: true,
+    price: 40000,
+    variantsOnRequest: true,
+    presentations: ['bouquet', 'premium', 'box'],
+    images: ['/images/products/101-rosen-herz.webp'],
+    name: {
+      de: 'Strauß aus 101 Rosen mit Herz',
+      uk: 'Букет із 101 троянди з серцем',
+      en: 'Bouquet of 101 roses with a heart',
+      ru: 'Букет из 101 розы с сердцем',
+    },
+    blurb: {
+      de: 'Hundertundeine. Das Herz sitzt in der Mitte.',
+      uk: 'Сто одна. Серце — посередині.',
+      en: 'A hundred and one. The heart sits in the middle.',
+      ru: 'Сто одна. Сердце — в середине.',
+    },
+    description: {
+      de: 'Rote Rosen als geschlossene Fläche, in die ein Herz aus weißen Rosen gesetzt ist. Er wird von Hand aufgebaut, Reihe für Reihe — das dauert, und man sieht es. Die Zahl ist Teil der Geste: 101 steht für „mehr als genug“. Andere Stückzahlen und andere Farbkombinationen mache ich gern, sprechen Sie mich an.',
+      uk: 'Червоні троянди суцільним полем, у яке вписане серце з білих. Збирається вручну, ряд за рядом — це довго, і це видно. Число — частина жесту: 101 означає «більш ніж достатньо». Інші кількості та поєднання кольорів роблю залюбки, звертайтеся.',
+      en: 'Red roses as a closed surface with a heart of white roses set into it. It is built by hand, row by row — that takes time, and you can see it. The number is part of the gesture: 101 stands for “more than enough”. Other counts and colour combinations are no problem, just ask.',
+      ru: 'Красные розы сплошным полем, в которое вписано сердце из белых. Собирается вручную, ряд за рядом — это долго, и это видно. Число — часть жеста: 101 означает «более чем достаточно». Другие количества и сочетания цветов делаю с удовольствием, обращайтесь.',
+    },
+    composition: {
+      de: '101 Rosen, rot mit weißem Herz',
+      uk: '101 троянда, червоні з білим серцем',
+      en: '101 roses, red with a white heart',
+      ru: '101 роза, красные с белым сердцем',
+    },
+  },
+  {
+    slug: 'paeonienrosen-35',
+    category: 'rosen',
+    featured: true,
+    price: 18000,
+    length: '60 cm',
+    variantsOnRequest: true,
+    presentations: ['bouquet', 'premium', 'box', 'vase'],
+    images: ['/images/products/paeonienrosen-35.webp', '/images/products/paeonienrosen-35-2.webp'],
+    name: {
+      de: 'Strauß aus 35 Päonienrosen',
+      uk: 'Букет із 35 піоновидних троянд',
+      en: 'Bouquet of 35 peony roses',
+      ru: 'Букет из 35 пионовидных роз',
+    },
+    blurb: {
+      de: 'Gefüllte Gartenrosen, die aussehen wie Pfingstrosen — aber das ganze Jahr.',
+      uk: 'Густомахрові садові троянди, схожі на півонії — але цілий рік.',
+      en: 'Full garden roses that look like peonies — but all year round.',
+      ru: 'Густомахровые садовые розы, похожие на пионы — но круглый год.',
+    },
+    description: {
+      de: 'Päonienrosen sind keine Pfingstrosen: Es sind stark gefüllte Gartenrosen, die deren Form nachbilden — mit dem Vorteil, dass es sie außerhalb der sieben Pfingstrosen-Wochen gibt und dass sie deutlich länger halten. Standardlänge 60 cm; jede andere Länge binde ich auf Wunsch.',
+      uk: 'Піоновидні троянди — це не півонії: це густомахрові садові троянди, що повторюють їхню форму. Перевага в тому, що вони є поза сімома тижнями півоній і стоять помітно довше. Стандартна довжина 60 см; будь-яку іншу зроблю на замовлення.',
+      en: 'Peony roses are not peonies: they are densely petalled garden roses that imitate the shape — with the advantage that they exist outside the seven weeks of peony season and last considerably longer. Standard length 60 cm; any other length on request.',
+      ru: 'Пионовидные розы — это не пионы: это густомахровые садовые розы, повторяющие их форму. Преимущество в том, что они есть вне семи недель пионового сезона и стоят заметно дольше. Стандартная длина 60 см; любую другую сделаю на заказ.',
+    },
+    composition: {
+      de: '35 Päonienrosen in Blassrosa, Stiellänge 60 cm',
+      uk: '35 піоновидних троянд у блідо-рожевому, довжина стебла 60 см',
+      en: '35 peony roses in pale pink, 60 cm stems',
+      ru: '35 пионовидных роз в бледно-розовом, длина стебля 60 см',
     },
   },
   {
     slug: 'rosen-pur',
     category: 'rosen',
-    featured: true,
-    prices: { s: 9500, m: 14500, l: 24500 },
-    presentations: ['bouquet', 'box', 'vase'],
+    prices: { m: 9500, l: 14500, xl: 24500 },
+    variantsOnRequest: true,
+    presentations: ['bouquet', 'premium', 'box', 'vase'],
     images: ['/images/products/rosen-pur.jpg'],
     name: { de: 'Rosen pur', uk: 'Тільки троянди', en: 'Roses only', ru: 'Только розы' },
     blurb: {
@@ -291,10 +425,10 @@ export const BOUQUETS: Bouquet[] = [
       ru: 'Один сорт, один цвет, ничего между.',
     },
     description: {
-      de: 'Wenn es keine Erklärung braucht. Ich arbeite mit ecuadorianischen und kenianischen Rosen mit langem Stiel und fester Knospe — S sind 15 Stiele, M sind 25, L sind 51. Farbe sagen Sie mir im Bestellhinweis, sonst wähle ich nach Tagesqualität.',
-      uk: 'Коли пояснення не потрібні. Працюю з еквадорськими та кенійськими трояндами з довгим стеблом і щільним бутоном — S це 15 стебел, M — 25, L — 51. Колір вкажіть у примітці до замовлення, інакше обираю за якістю дня.',
-      en: 'When it needs no explanation. I work with Ecuadorian and Kenyan roses, long stems and firm buds — S is 15 stems, M is 25, L is 51. Tell me the colour in the order note, otherwise I pick by the day’s quality.',
-      ru: 'Когда объяснения не нужны. Работаю с эквадорскими и кенийскими розами с длинным стеблем и плотным бутоном — S это 15 стеблей, M — 25, L — 51. Цвет укажите в примечании, иначе выберу по качеству дня.',
+      de: 'Wenn es keine Erklärung braucht. Ich arbeite mit ecuadorianischen und kenianischen Rosen mit langem Stiel und fester Knospe — M sind 25 Stiele, L sind 51, XL sind 101. Farbe sagen Sie mir im Bestellhinweis, sonst wähle ich nach Tagesqualität.',
+      uk: 'Коли пояснення не потрібні. Працюю з еквадорськими та кенійськими трояндами з довгим стеблом і щільним бутоном — M це 25 стебел, L — 51, XL — 101. Колір вкажіть у примітці до замовлення, інакше обираю за якістю дня.',
+      en: 'When it needs no explanation. I work with Ecuadorian and Kenyan roses, long stems and firm buds — M is 25 stems, L is 51, XL is 101. Tell me the colour in the order note, otherwise I pick by the day’s quality.',
+      ru: 'Когда объяснения не нужны. Работаю с эквадорскими и кенийскими розами с длинным стеблем и плотным бутоном — M это 25 стеблей, L — 51, XL — 101. Цвет укажите в примечании, иначе выберу по качеству дня.',
     },
     composition: {
       de: 'Rosen, 50–70 cm Stiel, Farbe nach Wunsch',
@@ -306,10 +440,10 @@ export const BOUQUETS: Bouquet[] = [
   {
     slug: 'pfingstrosen-wolke',
     category: 'pfingstrosen',
-    featured: true,
     season: [5, 6, 7],
-    prices: { s: 9500, m: 15500, l: 26000 },
-    presentations: ['bouquet', 'box', 'vase'],
+    prices: { m: 9500, l: 15500, xl: 26000 },
+    variantsOnRequest: true,
+    presentations: ['bouquet', 'premium', 'box', 'vase'],
     images: ['/images/products/pfingstrosen-wolke.jpg'],
     name: {
       de: 'Pfingstrosen-Wolke',
@@ -324,10 +458,10 @@ export const BOUQUETS: Bouquet[] = [
       ru: 'Семь недель в году, потом всё.',
     },
     description: {
-      de: 'Pfingstrosen kommen halb geschlossen ins Haus und öffnen sich bei Ihnen über zwei bis drei Tage — das ist der schönste Teil. Ich binde sie fast pur, nur mit etwas Grün, damit die Köpfe Platz haben.',
-      uk: 'Півонії приходять напівзакритими й розкриваються у вас протягом двох-трьох днів — це найкраща частина. Збираю їх майже чистими, лише з трохи зелені, щоб голівки мали простір.',
-      en: 'Peonies arrive half closed and open at your place over two or three days — that is the best part. I tie them almost pure, with just enough greenery to give the heads room.',
-      ru: 'Пионы приходят полузакрытыми и раскрываются у вас за два-три дня — это лучшая часть. Собираю их почти чистыми, лишь с небольшим количеством зелени, чтобы головкам было место.',
+      de: 'Echte Pfingstrosen, keine Päonienrosen. Sie kommen halb geschlossen ins Haus und öffnen sich bei Ihnen über zwei bis drei Tage — das ist der schönste Teil. Ich binde sie fast pur, nur mit etwas Grün, damit die Köpfe Platz haben.',
+      uk: 'Справжні півонії, не піоновидні троянди. Приходять напівзакритими й розкриваються у вас протягом двох-трьох днів — це найкраща частина. Збираю їх майже чистими, лише з трохи зелені, щоб голівки мали простір.',
+      en: 'Real peonies, not peony roses. They arrive half closed and open at your place over two or three days — that is the best part. I tie them almost pure, with just enough greenery to give the heads room.',
+      ru: 'Настоящие пионы, не пионовидные розы. Приходят полузакрытыми и раскрываются у вас за два-три дня — это лучшая часть. Собираю их почти чистыми, лишь с небольшим количеством зелени, чтобы головкам было место.',
     },
     composition: {
       de: 'Pfingstrosen in Weiß, Blassrosa oder Koralle, etwas Pistazie',
@@ -339,8 +473,9 @@ export const BOUQUETS: Bouquet[] = [
   {
     slug: 'hortensie-solo',
     category: 'hortensien',
-    prices: { s: 8500, m: 13500, l: 22500 },
-    presentations: ['bouquet', 'basket', 'vase'],
+    prices: { m: 8500, l: 13500, xl: 22500 },
+    variantsOnRequest: true,
+    presentations: ['bouquet', 'premium', 'basket', 'vase'],
     images: ['/images/products/hortensie-solo.jpg'],
     name: {
       de: 'Hortensie solo',
@@ -368,42 +503,10 @@ export const BOUQUETS: Bouquet[] = [
     },
   },
   {
-    slug: 'markt-am-morgen',
-    category: 'saison',
-    featured: true,
-    prices: { s: 8500, m: 11500, l: 18500 },
-    presentations: ['bouquet', 'basket', 'vase'],
-    images: ['/images/products/markt-am-morgen.jpg'],
-    name: {
-      de: 'Markt am Morgen',
-      uk: 'Ранковий ринок',
-      en: 'Morning market',
-      ru: 'Утренний рынок',
-    },
-    blurb: {
-      de: 'Was heute schön war. Sie überlassen mir die Auswahl.',
-      uk: 'Те, що сьогодні було гарним. Вибір лишаєте мені.',
-      en: 'Whatever was beautiful today. You leave the choice to me.',
-      ru: 'То, что сегодня было красивым. Выбор оставляете мне.',
-    },
-    description: {
-      de: 'Der ehrlichste Strauß im Sortiment: Ich kaufe morgens ein und binde aus dem, was am besten aussieht. Sie sagen mir nur die Stimmung — hell, dunkel, warm, kühl — und bekommen vor der Lieferung ein Foto.',
-      uk: 'Найчесніший букет в асортименті: закуповую вранці й збираю з того, що виглядає найкраще. Ви кажете лише настрій — світлий, темний, теплий, холодний — і отримуєте фото перед доставкою.',
-      en: 'The most honest bouquet in the range: I shop in the morning and tie from whatever looks best. You only tell me the mood — light, dark, warm, cool — and get a photo before delivery.',
-      ru: 'Самый честный букет в ассортименте: закупаюсь утром и собираю из того, что выглядит лучше всего. Вы говорите только настроение — светлое, тёмное, тёплое, холодное — и получаете фото перед доставкой.',
-    },
-    composition: {
-      de: 'Wechselnd nach Markt und Jahreszeit',
-      uk: 'Змінюється залежно від ринку та сезону',
-      en: 'Changes with the market and the season',
-      ru: 'Меняется в зависимости от рынка и сезона',
-    },
-  },
-  {
     slug: 'trocken-atelier',
     category: 'trocken',
-    prices: { s: 6500, m: 9500, l: 15500 },
-    presentations: ['bouquet', 'box', 'vase'],
+    prices: { m: 6500, l: 9500, xl: 15500 },
+    presentations: ['bouquet', 'premium', 'box', 'vase'],
     images: ['/images/products/trocken-atelier.jpg'],
     name: {
       de: 'Trocken, Atelier',
@@ -465,19 +568,43 @@ export function categoryBySlug(slug: string): Category | undefined {
   return CATEGORIES.find((c) => c.slug === slug);
 }
 
+/** Hat der Strauß eine Größenstaffel, oder gibt es ihn nur in einer Ausführung? */
+export function hasSizes(bouquet: Bouquet): boolean {
+  return bouquet.prices !== undefined;
+}
+
+/** Welche Größen dieser Strauß anbietet — leer bei Festpreis-Produkten. */
+export function sizesOf(bouquet: Bouquet): SizeKey[] {
+  return bouquet.prices ? SIZES.filter((size) => bouquet.prices![size] !== undefined) : [];
+}
+
+/** Grundpreis für eine Größe; bei Festpreis-Produkten immer derselbe Betrag. */
+export function priceFor(bouquet: Bouquet, size?: SizeKey): Cents {
+  if (bouquet.prices && size && bouquet.prices[size] !== undefined) return bouquet.prices[size];
+  if (bouquet.price !== undefined) return bouquet.price;
+  return lowestPrice(bouquet);
+}
+
 export function lowestPrice(bouquet: Bouquet): Cents {
-  return Math.min(...Object.values(bouquet.prices));
+  if (bouquet.prices) return Math.min(...Object.values(bouquet.prices));
+  return bouquet.price ?? 0;
+}
+
+/** Fotos für eine Größe, mit Rückfall auf die allgemeinen Bilder. */
+export function imagesFor(bouquet: Bouquet, size?: SizeKey): string[] {
+  const bySize = size ? bouquet.imagesBySize?.[size] : undefined;
+  return bySize?.length ? bySize : bouquet.images;
 }
 
 /** Preis einer konkreten Zusammenstellung — die einzige Stelle, an der gerechnet wird. */
 export function calculateTotal(input: {
   bouquet: Bouquet;
-  size: SizeKey;
+  size?: SizeKey;
   presentation: PresentationKey;
   extras: string[];
   zoneId: string;
 }): { subtotal: Cents; deliveryFee: Cents; total: Cents } {
-  const base = input.bouquet.prices[input.size];
+  const base = priceFor(input.bouquet, input.size);
   const presentation = PRESENTATION_SURCHARGE[input.presentation] ?? 0;
   const extras = input.extras.reduce((sum, id) => sum + (EXTRAS.find((e) => e.id === id)?.price ?? 0), 0);
   const subtotal = base + presentation + extras;

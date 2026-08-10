@@ -186,7 +186,10 @@ const weddingServices: { value: string; label: I18nText }[] = [
   .inq-row {
     display: grid;
     gap: var(--space-4);
-    grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+    /* px statt rem: In einem Grid ohne feste Breite kann `100%` nicht
+       aufgelöst werden, dann gewinnt der rem-Wert — und der wächst mit der
+       eingestellten Textgröße mit. */
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
   }
 
   .inq fieldset {

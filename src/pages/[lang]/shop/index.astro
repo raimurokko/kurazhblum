@@ -5,6 +5,7 @@ import TrustBar from '../../../components/TrustBar.astro';
 import { localePaths, path, t, type Locale } from '../../../i18n/config';
 import { useTranslations } from '../../../i18n/ui';
 import { BOUQUETS, CATEGORIES } from '../../../data/shop';
+import OrderWays from '../../../components/OrderWays.astro';
 
 export function getStaticPaths() {
   return localePaths();
@@ -22,6 +23,11 @@ const _ = useTranslations(lang);
         <h1>{_('shop.title')}</h1>
         <p class="lead">{_('shop.subtitle')}</p>
       </div>
+
+      <OrderWays lang={lang} />
+
+      <h2 class="katalog-titel" id="katalog">{_('ways.b.title')}</h2>
+      <p class="small muted seasonal">{_('shop.seasonal')}</p>
 
       <nav class="filters" aria-label={_('home.categories.kicker')}>
         <span class="filter is-active">{_('shop.filter.all')}</span>
@@ -44,6 +50,18 @@ const _ = useTranslations(lang);
 </BaseLayout>
 
 <style>
+  .katalog-titel {
+    font-size: min(1.9rem, 9vw);
+    margin: clamp(2.5rem, 1rem + 4vw, 4rem) 0 var(--space-3);
+  }
+
+  .seasonal {
+    max-width: var(--measure);
+    margin-bottom: var(--space-6);
+    padding-left: var(--space-4);
+    border-left: 1px solid var(--line-strong);
+  }
+
   .filters {
     display: flex;
     flex-wrap: wrap;
@@ -59,7 +77,9 @@ const _ = useTranslations(lang);
     letter-spacing: 0.1em;
     text-decoration: none;
     color: var(--cream-2);
-    white-space: nowrap;
+    /* Kein nowrap: „Дофамінові букети“ passt bei großer Schrift sonst nicht
+       mehr auf ein schmales Gerät. */
+    min-width: 0;
   }
 
   a.filter:hover {

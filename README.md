@@ -33,8 +33,10 @@ sauber mit einem Fehler statt still zu scheitern.
 
 In dieser Reihenfolge:
 
-1. **Bilder.** Alle Produkt-, Kategorie- und Atelierbilder sind derzeit
-   Platzhalter (dunkle Kacheln mit dem Namen darin). Siehe „Bilder pflegen“.
+1. **Bilder.** Für Dopamin-Berlin (M/L/XL), die 101 Rosen und die Päonienrosen
+   liegen Galas Fotos freigestellt vor. Kategoriekacheln, Atelierporträt,
+   Hochzeits- und Workshopbilder sowie der Instagram-Feed sind noch Platzhalter
+   (dunkle Kacheln mit dem Namen darin). Siehe „Bilder pflegen“.
 2. **Stammdaten.** In `src/data/site.ts` stehen überall `TODO`: echter Name der
    Inhaberin, Adresse, Telefonnummer, E-Mail, Umsatzsteuer-Status.
 3. **Rechtstexte.** `src/pages/[lang]/impressum.astro`, `datenschutz.astro`,
@@ -42,9 +44,11 @@ In dieser Reihenfolge:
    Lücken. Sie müssen einmal anwaltlich geprüft werden — ein fehlerhaftes
    Impressum oder eine falsche Widerrufsbelehrung sind in Deutschland
    abmahnfähig.
-4. **Preise und Sortiment.** `src/data/shop.ts` — die Preise orientieren sich an
-   den Preisstufen aus dem Instagram-Profil (85–100 € / 100–150 € / 200–250 €),
-   sind aber nicht bestätigt.
+4. **Preise und Sortiment.** `src/data/shop.ts` — Dopamin-Berlin, die 101 Rosen
+   und die 35 Päonienrosen stehen mit Galas bestätigten Preisen drin. Die
+   übrigen Sträuße (Rosen pur, Pfingstrosen, Hortensie, Trockenblumen) sind
+   noch geschätzt und brauchen ihre Freigabe — ebenso die Aufpreise für
+   Verpackung und Extras.
 5. **Workshop-Termine.** `src/data/workshops.ts` enthält Beispieltermine.
 6. **Die persönliche Geschichte** auf der Atelier-Seite. Die Absätze dort
    beschreiben bewusst nur die Arbeitsweise — der eigene Werdegang muss von
@@ -52,6 +56,34 @@ In dieser Reihenfolge:
 7. **Domain** in `astro.config.mjs` (`site`) und `src/data/site.ts` eintragen.
 
 ---
+
+## Sortiment und Bestellwege
+
+Gala verkauft in **drei Größen M/L/XL** — kein S; ihr M ist mit 85 € der
+Einstieg und liegt genau auf dem Mindestbestellwert. Nicht jeder Strauß hat
+eine Staffel: die 101 Rosen und die 35 Päonienrosen gibt es nur in einer
+Ausführung. Im Datenmodell heißt das: entweder `prices` (Staffel) **oder**
+`price` (Festpreis), nie beides.
+
+Es gibt **drei Wege zur Bestellung** (`src/components/OrderWays.astro`):
+
+| | Weg | Endet in |
+| :-- | :--- | :--- |
+| A | Strauß zusammenstellen | einer vorbereiteten Nachricht — **nicht** in der Kasse |
+| B | Fertigen Strauß wählen | Konfigurator → Stripe |
+| C | Überraschungsstrauß | Konfigurator → Stripe, 10 % günstiger |
+
+**Warum A nicht in die Kasse führt:** Gala hat kein Lager. Was heute frisch
+ist, entscheidet der Markt am Morgen — ein Warenkorb würde etwas zusagen, das
+sie nicht halten kann. Die Seite baut deshalb aus der Auswahl eine fertige
+Nachricht, die die Kundin selbst per WhatsApp oder E-Mail abschickt. Kein
+Formular, kein Server, keine Einwilligungskästchen — und es funktioniert auch
+auf GitHub Pages.
+
+Der Rabatt bei C ist **kein Streichpreis**. Ein Nachlass, der dauerhaft gilt,
+ist der Preis; ein durchgestrichener Preis, der nie verlangt wird, ist in
+Deutschland abmahnbar. Deshalb steht dort die Begründung statt eines
+durchgestrichenen Betrags.
 
 ## Aufbau
 
@@ -63,6 +95,7 @@ src/
 ├── data/
 │   ├── site.ts        Stammdaten, Öffnungszeiten, Lieferzeitfenster
 │   ├── shop.ts        Kategorien, Sträuße, Preise, Liefergebiete, Extras
+│   ├── flowers.ts     Auswahlliste für Weg A — keine Bestandsliste
 │   ├── workshops.ts   Kursformate und Termine
 │   └── instagram.ts   Verweise auf die lokalen Instagram-Bilder
 ├── layouts/           BaseLayout (Meta, hreflang, JSON-LD), LegalLayout
@@ -122,6 +155,12 @@ lokal liegen.
 
 4. Für Instagram-Bilder zusätzlich einen Eintrag in `src/data/instagram.ts`
    ergänzen (Permalink und Alternativtext in vier Sprachen)
+
+**Produktfotos werden freigestellt.** Galas Aufnahmen haben sehr verschiedene
+Hintergründe; im Raster wirkt das unruhig. `tools/fotos/` enthält zwei
+Skripte, die den Strauß lokal freistellen (Apples Vision-Framework, kein
+Cloud-Dienst) und einheitlich in 4:5 setzen. Ablauf und Grenzen stehen in
+`tools/fotos/README.md`.
 
 Solange eine Datei fehlt, zeigt die Website eine dunkle Platzhalterkachel mit
 dem Namen darin — nichts bricht, es sieht nur unfertig aus.
@@ -258,6 +297,11 @@ Zwei Fallen, die beim Bauen aufgefallen sind und leicht wieder zuschlagen:
 - **Media Queries rechnen mit der ursprünglichen Schriftgröße**, nicht mit der
   hochgesetzten. Die Kopfzeile kann deshalb nicht per Breakpoint umbauen — sie
   reagiert auf die Klassen `a11y-size-1/2/3` am `<html>`.
+- **`minmax(min(14rem, 100%), 1fr)` ist nur in Grids sicher, deren Breite
+  feststeht.** Steckt so ein Grid in einem Container, dessen Breite gerade erst
+  ermittelt wird, lässt sich `100%` nicht auflösen — dann gewinnt der
+  rem-Wert, und der wächst mit der Textgröße. In solchen Fällen px verwenden
+  und dem äußeren Grid-Kind `min-width: 0` geben.
 - **`behavior: 'smooth'` in `scrollTo()` schlägt die CSS-Regel
   `scroll-behavior`.** Wer irgendwo animiert scrollt, muss
   `prefers-reduced-motion` und die Klasse `a11y-motion` selbst abfragen —

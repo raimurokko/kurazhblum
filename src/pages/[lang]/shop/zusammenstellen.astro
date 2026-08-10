@@ -1,0 +1,224 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ContactChannels from '../../../components/ContactChannels.astro';
+import { localePaths, t, type Locale } from '../../../i18n/config';
+import { useTranslations, type UiKey } from '../../../i18n/ui';
+import { FLOWERS } from '../../../data/flowers';
+import { SIZES, formatPrice } from '../../../data/shop';
+
+export function getStaticPaths() {
+  return localePaths();
+}
+
+const lang = Astro.params.lang as Locale;
+const _ = useTranslations(lang);
+
+const stimmungen = ['light', 'bright', 'dark', 'mono'] as const;
+const budgets = [8500, 15000, 22000, 35000];
+
+/*
+  Weg A endet bewusst nicht im Warenkorb. Gala hat kein Lager — was heute da
+  ist, entscheidet der Markt am Morgen. Statt eines Formulars, das erst auf
+  einem Server landen müsste, baut die Seite aus der Auswahl eine fertige
+  Nachricht: die Kundin schickt sie selbst per WhatsApp oder E-Mail ab. Das
+  läuft ohne Server, ohne Einwilligungskästchen und kommt sofort an.
+*/
+---
+
+<BaseLayout lang={lang} title={_('build.title')} description={_('build.intro')} route="shop/zusammenstellen">
+  <section class="section">
+    <div class="wrap wrap-narrow">
+      <span class="kicker">{_('build.kicker')}</span>
+      <h1>{_('build.title')}</h1>
+      <p class="lead">{_('build.intro')}</p>
+      <p class="small muted why">{_('build.why')}</p>
+    </div>
+  </section>
+
+  <section class="section section--tint">
+    <div class="wrap wrap-narrow">
+      <form class="panel builder" data-builder>
+        <!-- Blumen -->
+        <fieldset class="build-block">
+          <legend class="field-label">{_('build.flowers')}</legend>
+          <div class="choices choices--row">
+            {
+              FLOWERS.map((flower) => (
+                <label class="choice choice--inline">
+                  <input type="checkbox" name="flowers" value={t(flower.name, lang)} />
+                  <span class="choice-title">{t(flower.name, lang)}</span>
+                </label>
+              ))
+            }
+          </div>
+          <p class="hint">{_('build.flowers.hint')}</p>
+        </fieldset>
+
+        <!-- Farbstimmung -->
+        <fieldset class="build-block">
+          <legend class="field-label">{_('build.mood')}</legend>
+          <div class="choices choices--row">
+            {
+              stimmungen.map((mood, index) => (
+                <label class="choice">
+                  <input type="radio" name="mood" value={_(`build.mood.${mood}` as UiKey)} checked={index === 1} />
+                  <span class="choice-title">{_(`build.mood.${mood}` as UiKey)}</span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <!-- Größe und Budget -->
+        <div class="build-row">
+          <label class="field">
+            <span class="field-label">{_('cfg.size')}</span>
+            <select class="select" name="size">
+              {SIZES.map((size) => <option value={_(`cfg.size.${size}` as UiKey)}>{_(`cfg.size.${size}` as UiKey)}</option>)}
+            </select>
+          </label>
+
+          <label class="field">
+            <span class="field-label">{_('build.budget')}</span>
+            <select class="select" name="budget">
+              {
+                budgets.map((cents, index) => (
+                  <option value={`${index === budgets.length - 1 ? '' : 'ca. '}${formatPrice(cents, lang)}`}>
+                    {index === budgets.length - 1 ? `${formatPrice(cents, lang)} +` : `ca. ${formatPrice(cents, lang)}`}
+                  </option>
+                ))
+              }
+            </select>
+          </label>
+        </div>
+
+        <label class="field">
+          <span class="field-label">{_('build.note')}</span>
+          <textarea class="textarea" name="note" rows="3" placeholder={_('build.note.placeholder')}></textarea>
+        </label>
+
+        <!-- Zusammenfassung -->
+        <div class="build-summary">
+          <h2 class="field-label">{_('build.summary')}</h2>
+          <p class="build-preview" data-preview>{_('build.summary.empty')}</p>
+          <p class="hint">{_('cfg.minorder')}</p>
+        </div>
+      </form>
+
+      <div class="build-send">
+        <h2 class="send-title">{_('build.send')}</h2>
+        <p class="hint">{_('build.send.hint')}</p>
+        <ContactChannels lang={lang} bare id="builder" subject={_('build.kicker')} />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .why {
+    max-width: var(--measure);
+    padding-left: var(--space-4);
+    border-left: 1px solid var(--line-strong);
+  }
+
+  .build-block {
+    border: 0;
+    padding: 0;
+    margin: 0 0 var(--space-6);
+    min-width: 0;
+  }
+
+  .build-block legend {
+    padding: 0;
+    margin-bottom: var(--space-3);
+  }
+
+  .build-row {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fit, minmax(min(12rem, 100%), 1fr));
+  }
+
+  .build-summary {
+    border-top: 1px solid var(--line-strong);
+    padding-top: var(--space-5);
+    margin-top: var(--space-4);
+  }
+
+  .build-preview {
+    white-space: pre-line;
+    color: var(--cream-2);
+    font-size: 0.95rem;
+    margin: var(--space-3) 0 var(--space-4);
+  }
+
+  .build-send {
+    margin-top: clamp(2rem, 1rem + 3vw, 3rem);
+  }
+
+  .send-title {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-2);
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-builder]');
+  const preview = document.querySelector<HTMLElement>('[data-preview]');
+  const channels = document.querySelector<HTMLElement>('[data-channels="builder"]');
+
+  if (form && preview && channels) {
+    const leer = preview.textContent ?? '';
+    const whatsappLink = channels.querySelector<HTMLAnchorElement>('[data-channel="whatsapp"]');
+    const mailLink = channels.querySelector<HTMLAnchorElement>('[data-channel="email"]');
+
+    // Beschriftungen aus dem Formular ziehen, damit die Nachricht in der
+    // Sprache der Seite entsteht — ohne die Texte hier zu wiederholen.
+    const label = (name: string): string =>
+      form.querySelector(`[name="${name}"]`)?.closest('.field, fieldset')?.querySelector('.field-label')
+        ?.textContent?.trim() ?? name;
+
+    function nachricht(): string {
+      const data = new FormData(form!);
+      const blumen = data.getAll('flowers').map(String);
+      const zeilen: string[] = [];
+
+      if (blumen.length) zeilen.push(`${label('flowers')}: ${blumen.join(', ')}`);
+      const mood = data.get('mood');
+      if (mood) zeilen.push(`${label('mood')}: ${mood}`);
+      zeilen.push(`${label('size')}: ${data.get('size')}`);
+      zeilen.push(`${label('budget')}: ${data.get('budget')}`);
+
+      const note = String(data.get('note') ?? '').trim();
+      if (note) zeilen.push(`${label('note')}: ${note}`);
+
+      return zeilen.join('\n');
+    }
+
+    function render() {
+      const text = nachricht();
+      const blumenGewaehlt = new FormData(form!).getAll('flowers').length > 0;
+      preview!.textContent = blumenGewaehlt ? text : leer;
+
+      // Die Links tragen den Text mit, damit Messenger und Mailprogramm
+      // vorausgefüllt aufgehen.
+      if (whatsappLink) {
+        const basis = whatsappLink.href.split('?')[0];
+        whatsappLink.href = `${basis}?text=${encodeURIComponent(text)}`;
+      }
+      if (mailLink) {
+        // Kein URLSearchParams: das kodiert Leerzeichen als „+“, und in einer
+        // mailto-Adresse bleibt das ein Pluszeichen — die Mail käme mit
+        // „Blumen:+Pfingstrosen“ an.
+        const [basis, query = ''] = mailLink.href.split('?');
+        const betreff = new URLSearchParams(query).get('subject') ?? '';
+        mailLink.href =
+          `${basis}?subject=${encodeURIComponent(betreff)}&body=${encodeURIComponent(text)}`;
+      }
+    }
+
+    form.addEventListener('change', render);
+    form.addEventListener('input', render);
+    render();
+  }
+</script>

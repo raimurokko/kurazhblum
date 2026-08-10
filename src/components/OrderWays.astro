@@ -1,0 +1,134 @@
+---
+import { path, type Locale } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const _ = useTranslations(lang);
+
+/*
+  Die drei Wege, wie bei Gala tatsächlich bestellt wird. Der Unterschied
+  zwischen A und den beiden anderen ist kein Design-Detail, sondern der Kern:
+  Weg A kann nicht in die Kasse führen, weil die Verfügbarkeit vorher
+  abgestimmt werden muss. Deshalb sieht A auch anders aus.
+*/
+const wege = [
+  {
+    id: 'a',
+    href: path(lang, 'shop/zusammenstellen'),
+    titel: _('ways.a.title'),
+    text: _('ways.a.text'),
+    cta: _('ways.a.cta'),
+    badge: '',
+  },
+  {
+    id: 'b',
+    href: '#katalog',
+    titel: _('ways.b.title'),
+    text: _('ways.b.text'),
+    cta: _('ways.b.cta'),
+    badge: '',
+  },
+  {
+    id: 'c',
+    href: path(lang, 'shop', 'ueberraschungsstrauss'),
+    titel: _('ways.c.title'),
+    text: _('ways.c.text'),
+    cta: _('ways.c.cta'),
+    badge: _('ways.c.badge'),
+  },
+];
+---
+
+<section class="ways" aria-labelledby="ways-title">
+  <span class="kicker">{_('ways.kicker')}</span>
+  <h2 id="ways-title" class="ways-title">{_('ways.title')}</h2>
+
+  <ul class="ways-grid">
+    {
+      wege.map((weg) => (
+        <li class="way">
+          <span class="way-mark" aria-hidden="true">
+            {weg.id.toUpperCase()}
+          </span>
+          {weg.badge && <span class="tag tag--gold way-badge">{weg.badge}</span>}
+          <h3 class="way-title">{weg.titel}</h3>
+          <p class="small muted way-text">{weg.text}</p>
+          <a class="link-arrow" href={weg.href}>
+            {weg.cta}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .ways {
+    margin-bottom: clamp(2rem, 1rem + 3vw, 3rem);
+  }
+
+  .ways-title {
+    font-size: min(1.9rem, 9vw);
+    margin-bottom: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  }
+
+  .ways-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  }
+
+  .way {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+    padding: var(--space-5);
+    background: var(--ink-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    transition: border-color 0.25s var(--ease);
+  }
+
+  .way:hover {
+    border-color: var(--line-strong);
+  }
+
+  .way-mark {
+    font-family: var(--font-display), serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+  }
+
+  .way-badge {
+    position: absolute;
+    top: var(--space-5);
+    right: var(--space-5);
+  }
+
+  .way-title {
+    font-size: min(1.35rem, 8vw);
+    margin: 0;
+  }
+
+  .way-text {
+    flex: 1;
+    margin: 0 0 var(--space-3);
+  }
+
+  /* Ganze Kachel klickbar, ohne den Link aus dem Lesefluss zu nehmen. */
+  .way .link-arrow::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+</style>
