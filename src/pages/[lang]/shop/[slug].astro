@@ -2,6 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Configurator from '../../../components/Configurator.astro';
 import ProductCard from '../../../components/ProductCard.astro';
+import ContactChannels from '../../../components/ContactChannels.astro';
 import { asset, LOCALES, path, t, type Locale } from '../../../i18n/config';
 import { useTranslations } from '../../../i18n/ui';
 import {
@@ -10,6 +11,7 @@ import {
   categoryBySlug,
   formatPrice,
   hasSizes,
+  isOrderable,
   lowestPrice,
 } from '../../../data/shop';
 
@@ -36,7 +38,9 @@ const productJsonLd = {
   description: t(bouquet.description, lang),
   image: new URL(asset(bouquet.images[0]), Astro.site).href,
   brand: { '@type': 'Brand', name: 'KURAZHBLUM' },
-  offers: hasSizes(bouquet)
+  offers: bouquet.priceOnRequest
+    ? undefined
+    : hasSizes(bouquet)
     ? {
         '@type': 'AggregateOffer',
         priceCurrency: 'EUR',
@@ -80,8 +84,16 @@ const productJsonLd = {
           {category && <span class="kicker">{t(category.name, lang)}</span>}
           <h1>{name}</h1>
           <p class="detail-price">
-            {hasSizes(bouquet) && <span class="muted small">{_('shop.from')}</span>}
-            {formatPrice(lowestPrice(bouquet), lang)}
+            {
+              bouquet.priceOnRequest ? (
+                <span class="detail-price-saison">{_('product.seasonal.price')}</span>
+              ) : (
+                <>
+                  {hasSizes(bouquet) && <span class="muted small">{_('shop.from')}</span>}
+                  {formatPrice(lowestPrice(bouquet), lang)}
+                </>
+              )
+            }
           </p>
 
           {bouquet.discountPercent && <p class="detail-flag">{_('product.discount')}</p>}
@@ -105,7 +117,22 @@ const productJsonLd = {
       </div>
 
       <div class="detail-cfg">
-        <Configurator lang={lang} bouquet={bouquet} />
+        {
+          isOrderable(bouquet) ? (
+            <Configurator lang={lang} bouquet={bouquet} />
+          ) : (
+            <div class="panel">
+              <h2 class="saison-titel">{_('product.seasonal.title')}</h2>
+              <p class="muted">{_('product.seasonal.text')}</p>
+              <ContactChannels
+                lang={lang}
+                bare
+                subject={name}
+                message={`${_('product.seasonal.cta')}: ${name}`}
+              />
+            </div>
+          )
+        }
       </div>
     </div>
   </section>
@@ -171,6 +198,17 @@ const productJsonLd = {
     font-family: var(--font-display), serif;
     font-size: min(2rem, 10vw);
     margin-bottom: var(--space-4);
+  }
+
+  .detail-price-saison {
+    font-family: var(--font-body), sans-serif;
+    font-size: 1rem;
+    color: var(--gold-lit);
+  }
+
+  .saison-titel {
+    font-size: min(1.5rem, 8vw);
+    margin-bottom: var(--space-3);
   }
 
   .detail-flag {

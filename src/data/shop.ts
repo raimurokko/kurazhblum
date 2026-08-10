@@ -48,6 +48,14 @@ export interface Bouquet {
   /** Prozentualer Nachlass, z. B. 10 beim Überraschungsstrauß. */
   discountPercent?: number;
 
+  /**
+   * Beispiel für Saisonware: Zusammensetzung UND Preis richten sich nach der
+   * Jahreszeit. Solche Sträuße haben bewusst keinen Preis und keine Kasse —
+   * ein Festbetrag wäre eine Zusage, die sich im Juli nicht halten lässt.
+   * Sie führen stattdessen zum Kundenservice.
+   */
+  priceOnRequest?: boolean;
+
   /** Welche Präsentationsformen für diesen Strauß sinnvoll sind. */
   presentations: PresentationKey[];
   images: string[];
@@ -244,16 +252,6 @@ export const CATEGORIES: Category[] = [
     },
   },
   {
-    slug: 'saison',
-    name: { de: 'Saisonblumen', uk: 'Сезонні квіти', en: 'Seasonal flowers', ru: 'Сезонные цветы' },
-    blurb: {
-      de: 'Was der Markt heute Morgen hergab. Wechselt jede Woche.',
-      uk: 'Те, що ринок дав сьогодні вранці. Змінюється щотижня.',
-      en: 'Whatever the market had this morning. Changes every week.',
-      ru: 'То, что дал рынок сегодня утром. Меняется каждую неделю.',
-    },
-  },
-  {
     slug: 'trocken',
     name: {
       de: 'Trockenblumen',
@@ -413,8 +411,7 @@ export const BOUQUETS: Bouquet[] = [
   {
     slug: 'rosen-pur',
     category: 'rosen',
-    prices: { m: 9500, l: 14500, xl: 24500 },
-    variantsOnRequest: true,
+    priceOnRequest: true,
     presentations: ['bouquet', 'premium', 'box', 'vase'],
     images: ['/images/products/rosen-pur.jpg'],
     name: { de: 'Rosen pur', uk: 'Тільки троянди', en: 'Roses only', ru: 'Только розы' },
@@ -441,8 +438,7 @@ export const BOUQUETS: Bouquet[] = [
     slug: 'pfingstrosen-wolke',
     category: 'pfingstrosen',
     season: [5, 6, 7],
-    prices: { m: 9500, l: 15500, xl: 26000 },
-    variantsOnRequest: true,
+    priceOnRequest: true,
     presentations: ['bouquet', 'premium', 'box', 'vase'],
     images: ['/images/products/pfingstrosen-wolke.jpg'],
     name: {
@@ -473,8 +469,7 @@ export const BOUQUETS: Bouquet[] = [
   {
     slug: 'hortensie-solo',
     category: 'hortensien',
-    prices: { m: 8500, l: 13500, xl: 22500 },
-    variantsOnRequest: true,
+    priceOnRequest: true,
     presentations: ['bouquet', 'premium', 'basket', 'vase'],
     images: ['/images/products/hortensie-solo.jpg'],
     name: {
@@ -505,7 +500,7 @@ export const BOUQUETS: Bouquet[] = [
   {
     slug: 'trocken-atelier',
     category: 'trocken',
-    prices: { m: 6500, l: 9500, xl: 15500 },
+    priceOnRequest: true,
     presentations: ['bouquet', 'premium', 'box', 'vase'],
     images: ['/images/products/trocken-atelier.jpg'],
     name: {
@@ -588,6 +583,14 @@ export function priceFor(bouquet: Bouquet, size?: SizeKey): Cents {
 export function lowestPrice(bouquet: Bouquet): Cents {
   if (bouquet.prices) return Math.min(...Object.values(bouquet.prices));
   return bouquet.price ?? 0;
+}
+
+/**
+ * Lässt sich dieser Strauß überhaupt an der Kasse bezahlen? Saisonbeispiele
+ * haben keinen Preis — dort führt der Weg zum Kundenservice.
+ */
+export function isOrderable(bouquet: Bouquet): boolean {
+  return !bouquet.priceOnRequest && (bouquet.prices !== undefined || bouquet.price !== undefined);
 }
 
 /** Fotos für eine Größe, mit Rückfall auf die allgemeinen Bilder. */

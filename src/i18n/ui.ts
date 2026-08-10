@@ -35,10 +35,10 @@ export const ui = {
     'home.featured.title': 'Aus dem Atelier',
     'home.featured.all': 'Alle Blumen ansehen',
 
-    'home.weddings.kicker': 'Hochzeiten & Events',
-    'home.weddings.title': 'Floristik für den größten Tag.',
+    'home.weddings.kicker': 'Veranstaltungen & Hochzeiten',
+    'home.weddings.title': 'Floristik, die eine Veranstaltung trägt.',
     'home.weddings.text':
-      'Brautstrauß, Zeremonienbogen, Tischgestaltung, Raumdekoration — von der ersten Skizze bis zum Abbau. Wir arbeiten in Berlin und Brandenburg.',
+      'Hochzeit, Firmenfeier, Ladeneröffnung, Jubiläum: Tischgestaltung, Empfang, Bühne, Raum — von der ersten Skizze bis zum Abbau. Wir arbeiten in Berlin und Brandenburg.',
     'home.weddings.cta': 'Unverbindlich anfragen',
 
     'home.workshops.kicker': 'Workshops & Kurse',
@@ -117,16 +117,16 @@ export const ui = {
     'cfg.loading': 'Einen Moment …',
 
     // — Hochzeiten —
-    'weddings.kicker': 'Hochzeiten & Events',
+    'weddings.kicker': 'Veranstaltungen & Hochzeiten',
     'weddings.title': 'Floristik, die den Raum trägt.',
     'weddings.intro':
-      'Von der ersten Farbskizze bis zum Abbau am nächsten Morgen. Wir gestalten Hochzeiten, Firmenfeiern und private Anlässe in Berlin und Brandenburg — vollständig oder in einzelnen Bausteinen.',
+      'Von der ersten Farbskizze bis zum Abbau am nächsten Morgen. Wir gestalten Hochzeiten, Firmenfeiern, Ladeneröffnungen, Jubiläen und private Anlässe in Berlin und Brandenburg — vollständig oder in einzelnen Bausteinen. Hochzeiten sind der größte Teil unserer Arbeit, aber längst nicht der einzige.',
     'weddings.services': 'Leistungen',
     'weddings.process': 'So läuft es ab',
-    'weddings.inquire': 'Hochzeit anfragen',
+    'weddings.inquire': 'Veranstaltung anfragen',
     'weddings.pricing.title': 'Was kostet das?',
     'weddings.pricing.text':
-      'Hochzeitsfloristik hat keinen Katalogpreis — sie hängt an Saison, Blumenauswahl, Location und Umfang. Als Orientierung: eine vollständige Gestaltung beginnt in der Regel bei 1.200 €, einzelne Bausteine wie Brautstrauß und Anstecker ab 180 €. Nach dem Gespräch bekommen Sie ein festes Angebot.',
+      'Veranstaltungsfloristik hat keinen Katalogpreis — sie hängt an Saison, Blumenauswahl, Location und Umfang. Als Orientierung: eine vollständige Hochzeitsgestaltung beginnt in der Regel bei 1.200 €, ein Firmenempfang oder eine Ladeneröffnung ab 450 €, einzelne Bausteine wie Brautstrauß und Anstecker ab 180 €. Nach dem Gespräch bekommen Sie ein festes Angebot.',
 
     // — Workshops —
     'workshops.kicker': 'Workshops & Kurse',
@@ -264,6 +264,13 @@ export const ui = {
     'product.length': 'Länge',
     'product.onesize': 'Nur in einer Ausführung',
     'product.discount': 'Zehn Prozent günstiger, weil ich die Blumen wähle.',
+    // — Saisonware ohne festen Preis —
+    'product.seasonal.badge': 'Saisonbeispiel',
+    'product.seasonal.price': 'Preis je nach Saison',
+    'product.seasonal.title': 'Ein Beispiel, kein Katalogartikel',
+    'product.seasonal.text':
+      'Diesen Strauß gibt es nicht das ganze Jahr in derselben Form. Welche Sorten hereinkommen, in welcher Qualität und zu welchem Preis, entscheidet die Jahreszeit — deshalb steht hier bewusst kein Betrag. Sagen Sie mir Ihren Termin und Ihre Vorstellung, dann bekommen Sie einen verbindlichen Preis.',
+    'product.seasonal.cta': 'Preis anfragen',
 
     // — Weg A: selbst zusammenstellen —
     'build.kicker': 'Strauß zusammenstellen',
@@ -325,10 +332,10 @@ export const ui = {
     'home.featured.title': 'З ательє',
     'home.featured.all': 'Усі квіти',
 
-    'home.weddings.kicker': 'Весілля та події',
-    'home.weddings.title': 'Флористика для найважливішого дня.',
+    'home.weddings.kicker': 'Події та весілля',
+    'home.weddings.title': 'Флористика, що тримає подію.',
     'home.weddings.text':
-      'Букет нареченої, весільна арка, оформлення столів і залу — від першого ескізу до демонтажу. Працюємо в Берліні та Бранденбурзі.',
+      'Весілля, корпоратив, відкриття магазину, ювілей: столи, зустріч гостей, сцена, зал — від першого ескізу до демонтажу. Працюємо в Берліні та Бранденбурзі.',
     'home.weddings.cta': 'Запитати без зобовʼязань',
 
     'home.workshops.kicker': 'Майстер-класи',
@@ -403,16 +410,16 @@ export const ui = {
     'cfg.minorder.short': 'Ще {amount} до мінімальної суми доставки.',
     'cfg.loading': 'Хвилинку …',
 
-    'weddings.kicker': 'Весілля та події',
+    'weddings.kicker': 'Події та весілля',
     'weddings.title': 'Флористика, що тримає простір.',
     'weddings.intro':
-      'Від першого ескізу кольорів до демонтажу наступного ранку. Оформлюємо весілля, корпоративні та приватні події в Берліні й Бранденбурзі — повністю або окремими частинами.',
+      'Від першого ескізу кольорів до демонтажу наступного ранку. Оформлюємо весілля, корпоративи, відкриття магазинів, ювілеї та приватні події в Берліні й Бранденбурзі — повністю або окремими частинами. Весілля — найбільша частина нашої роботи, але далеко не єдина.',
     'weddings.services': 'Послуги',
     'weddings.process': 'Як це відбувається',
-    'weddings.inquire': 'Запит на весілля',
+    'weddings.inquire': 'Запит на подію',
     'weddings.pricing.title': 'Скільки це коштує?',
     'weddings.pricing.text':
-      'Весільна флористика не має каталожної ціни — вона залежить від сезону, квітів, локації та обсягу. Для орієнтиру: повне оформлення зазвичай починається від 1 200 €, окремі позиції — букет нареченої з бутоньєркою — від 180 €. Після розмови ви отримаєте фіксовану пропозицію.',
+      'Флористика для подій не має каталожної ціни — вона залежить від сезону, квітів, локації та обсягу. Для орієнтиру: повне весільне оформлення зазвичай починається від 1 200 €, корпоративний прийом або відкриття магазину — від 450 €, окремі позиції на кшталт букета нареченої з бутоньєркою — від 180 €. Після розмови ви отримаєте фіксовану пропозицію.',
 
     'workshops.kicker': 'Майстер-класи',
     'workshops.title': 'Квіти власними руками.',
@@ -541,6 +548,12 @@ export const ui = {
     'product.length': 'Довжина',
     'product.onesize': 'Лише в одному виконанні',
     'product.discount': 'На десять відсотків дешевше, бо квіти обираю я.',
+    'product.seasonal.badge': 'Сезонний приклад',
+    'product.seasonal.price': 'Ціна залежить від сезону',
+    'product.seasonal.title': 'Це приклад, а не каталожна позиція',
+    'product.seasonal.text':
+      'Цей букет не буває цілий рік в однаковому вигляді. Які сорти надійдуть, у якій якості та за якою ціною — вирішує пора року, тому суми тут свідомо немає. Назвіть дату та своє уявлення, і ви отримаєте остаточну ціну.',
+    'product.seasonal.cta': 'Запитати ціну',
 
     'build.kicker': 'Зібрати букет',
     'build.title': 'Скажіть, що має бути всередині.',
@@ -600,10 +613,10 @@ export const ui = {
     'home.featured.title': 'From the atelier',
     'home.featured.all': 'See all flowers',
 
-    'home.weddings.kicker': 'Weddings & Events',
-    'home.weddings.title': 'Florals for the biggest day.',
+    'home.weddings.kicker': 'Events & Weddings',
+    'home.weddings.title': 'Florals that carry an occasion.',
     'home.weddings.text':
-      'Bridal bouquet, ceremony arch, table settings, room design — from the first sketch to the take-down. We work across Berlin and Brandenburg.',
+      'Wedding, company party, shop opening, anniversary: tables, reception, stage, room — from the first sketch to the take-down. We work across Berlin and Brandenburg.',
     'home.weddings.cta': 'Send a no-strings enquiry',
 
     'home.workshops.kicker': 'Workshops & Courses',
@@ -678,16 +691,16 @@ export const ui = {
     'cfg.minorder.short': '{amount} to go before delivery is possible.',
     'cfg.loading': 'One moment …',
 
-    'weddings.kicker': 'Weddings & Events',
+    'weddings.kicker': 'Events & Weddings',
     'weddings.title': 'Florals that carry the room.',
     'weddings.intro':
-      'From the first colour sketch to the take-down the next morning. We design weddings, company celebrations and private occasions in Berlin and Brandenburg — in full or piece by piece.',
+      'From the first colour sketch to the take-down the next morning. We design weddings, company celebrations, shop openings, anniversaries and private occasions in Berlin and Brandenburg — in full or piece by piece. Weddings are the largest part of our work, but far from the only one.',
     'weddings.services': 'Services',
     'weddings.process': 'How it works',
-    'weddings.inquire': 'Enquire about a wedding',
+    'weddings.inquire': 'Enquire about an event',
     'weddings.pricing.title': 'What does it cost?',
     'weddings.pricing.text':
-      'Wedding florals have no catalogue price — they depend on season, flower choice, venue and scale. For orientation: a full design usually starts at €1,200, individual pieces such as a bridal bouquet with buttonholes from €180. After our call you receive a fixed quote.',
+      'Event florals have no catalogue price — they depend on season, flower choice, venue and scale. For orientation: a full wedding design usually starts at €1,200, a company reception or shop opening from €450, individual pieces such as a bridal bouquet with buttonholes from €180. After our call you receive a fixed quote.',
 
     'workshops.kicker': 'Workshops & Courses',
     'workshops.title': 'Flowers with your own hands.',
@@ -816,6 +829,12 @@ export const ui = {
     'product.length': 'Length',
     'product.onesize': 'One version only',
     'product.discount': 'Ten per cent less, because I choose the flowers.',
+    'product.seasonal.badge': 'Seasonal example',
+    'product.seasonal.price': 'Price depends on the season',
+    'product.seasonal.title': 'An example, not a catalogue item',
+    'product.seasonal.text':
+      'This bouquet does not exist in the same form all year. Which varieties arrive, in what quality and at what price is decided by the season — which is why no amount is shown here. Tell me your date and what you have in mind, and you get a firm price.',
+    'product.seasonal.cta': 'Ask for a price',
 
     'build.kicker': 'Build your own bouquet',
     'build.title': 'Tell me what should go in.',
@@ -875,10 +894,10 @@ export const ui = {
     'home.featured.title': 'Из ателье',
     'home.featured.all': 'Все цветы',
 
-    'home.weddings.kicker': 'Свадьбы и события',
-    'home.weddings.title': 'Флористика для самого важного дня.',
+    'home.weddings.kicker': 'События и свадьбы',
+    'home.weddings.title': 'Флористика, которая держит событие.',
     'home.weddings.text':
-      'Букет невесты, свадебная арка, оформление столов и зала — от первого эскиза до демонтажа. Работаем в Берлине и Бранденбурге.',
+      'Свадьба, корпоратив, открытие магазина, юбилей: столы, встреча гостей, сцена, зал — от первого эскиза до демонтажа. Работаем в Берлине и Бранденбурге.',
     'home.weddings.cta': 'Задать вопрос без обязательств',
 
     'home.workshops.kicker': 'Мастер-классы',
@@ -953,16 +972,16 @@ export const ui = {
     'cfg.minorder.short': 'Ещё {amount} до минимальной суммы доставки.',
     'cfg.loading': 'Минутку …',
 
-    'weddings.kicker': 'Свадьбы и события',
+    'weddings.kicker': 'События и свадьбы',
     'weddings.title': 'Флористика, которая держит пространство.',
     'weddings.intro':
-      'От первого цветового эскиза до демонтажа на следующее утро. Оформляем свадьбы, корпоративные и частные события в Берлине и Бранденбурге — полностью или по частям.',
+      'От первого цветового эскиза до демонтажа на следующее утро. Оформляем свадьбы, корпоративы, открытия магазинов, юбилеи и частные события в Берлине и Бранденбурге — полностью или по частям. Свадьбы — самая большая часть нашей работы, но далеко не единственная.',
     'weddings.services': 'Услуги',
     'weddings.process': 'Как это происходит',
-    'weddings.inquire': 'Запрос на свадьбу',
+    'weddings.inquire': 'Запрос на событие',
     'weddings.pricing.title': 'Сколько это стоит?',
     'weddings.pricing.text':
-      'У свадебной флористики нет каталожной цены — она зависит от сезона, выбора цветов, площадки и объёма. Для ориентира: полное оформление обычно начинается от 1 200 €, отдельные позиции — букет невесты с бутоньеркой — от 180 €. После разговора вы получите фиксированное предложение.',
+      'У событийной флористики нет каталожной цены — она зависит от сезона, выбора цветов, площадки и объёма. Для ориентира: полное свадебное оформление обычно начинается от 1 200 €, корпоративный приём или открытие магазина — от 450 €, отдельные позиции вроде букета невесты с бутоньеркой — от 180 €. После разговора вы получите фиксированное предложение.',
 
     'workshops.kicker': 'Мастер-классы',
     'workshops.title': 'Цветы своими руками.',
@@ -1091,6 +1110,12 @@ export const ui = {
     'product.length': 'Длина',
     'product.onesize': 'Только в одном исполнении',
     'product.discount': 'На десять процентов дешевле, потому что цветы выбираю я.',
+    'product.seasonal.badge': 'Сезонный пример',
+    'product.seasonal.price': 'Цена зависит от сезона',
+    'product.seasonal.title': 'Это пример, а не каталожная позиция',
+    'product.seasonal.text':
+      'Этот букет не бывает круглый год в одном и том же виде. Какие сорта поступят, в каком качестве и по какой цене — решает время года, поэтому суммы здесь намеренно нет. Назовите дату и своё представление, и вы получите окончательную цену.',
+    'product.seasonal.cta': 'Запросить цену',
 
     'build.kicker': 'Собрать букет',
     'build.title': 'Скажите, что должно быть внутри.',

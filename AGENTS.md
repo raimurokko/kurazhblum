@@ -10,6 +10,9 @@ Siehe README.md für den vollen Überblick. Das Wichtigste beim Ändern:
 - **Größen heißen M/L/XL**, nie S — das ist Galas Staffel. Ein Strauß hat
   entweder `prices` (Staffel) oder `price` (Festpreis), nie beides; dafür gibt
   es `hasSizes()`, `sizesOf()` und `priceFor()` in `src/data/shop.ts`.
+- **Saisonbeispiele (`priceOnRequest`) haben keinen Preis und keine Kasse.**
+  Kein Betrag erfinden — `isOrderable()` entscheidet, und die API weist sie
+  serverseitig ab.
 - **Weg A führt nie in die Kasse.** Die Verfügbarkeit muss vorher abgestimmt
   werden; die Seite baut stattdessen eine fertige Nachricht. Wer daraus einen
   Warenkorb macht, verspricht Blumen, die es vielleicht nicht gibt.

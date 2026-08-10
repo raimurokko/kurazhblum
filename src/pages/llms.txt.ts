@@ -51,7 +51,7 @@ export const GET: APIRoute = ({ site: astroSite }) => {
       `- [${t(bouquet.name, DEFAULT_LOCALE)}](${url('shop', bouquet.slug)}): ` +
         `${t(bouquet.blurb, DEFAULT_LOCALE)} ` +
         `Kategorie ${t(category?.name ?? { de: '', uk: '', en: '', ru: '' }, DEFAULT_LOCALE)}, ` +
-        `ab ${formatPrice(lowestPrice(bouquet), DEFAULT_LOCALE)} in den Größen S/M/L.`,
+        `${bouquet.priceOnRequest ? 'Preis je nach Saison, auf Anfrage.' : `ab ${formatPrice(lowestPrice(bouquet), DEFAULT_LOCALE)}.`}`,
     );
   }
   lines.push('');

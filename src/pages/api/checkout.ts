@@ -8,6 +8,7 @@ import {
   MIN_ORDER_DELIVERY,
   PRESENTATION_SURCHARGE,
   bouquetBySlug,
+  isOrderable,
   priceFor,
   sizesOf,
   type PresentationKey,
@@ -88,6 +89,10 @@ export const POST: APIRoute = async ({ request, url }) => {
     /* ——— Strauß aus dem Konfigurator ————————————————————————————— */
     const bouquet = bouquetBySlug(String(payload.slug ?? ''));
     if (!bouquet) return json({ error: 'unknown_product' }, 400);
+
+    // Saisonbeispiele haben keinen Preis — sie dürfen gar nicht erst in die
+    // Kasse gelangen, auch nicht über einen nachgebauten Aufruf.
+    if (!isOrderable(bouquet)) return json({ error: 'price_on_request' }, 422);
 
     // Festpreis-Produkte haben keine Größe; bei Staffelprodukten nur die
     // Größen zulassen, die dieser Strauß tatsächlich anbietet.

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import InquiryForm from '../../components/InquiryForm.astro';
+import ContactChannels from '../../components/ContactChannels.astro';
 import { asset, localePaths, t, type I18nText, type Locale } from '../../i18n/config';
 import { useTranslations } from '../../i18n/ui';
 
@@ -14,30 +15,30 @@ const _ = useTranslations(lang);
 const services: { title: I18nText; text: I18nText }[] = [
   {
     title: {
-      de: 'Brautstrauß & Anstecker',
-      uk: 'Букет нареченої та бутоньєрки',
-      en: 'Bridal bouquet & buttonholes',
-      ru: 'Букет невесты и бутоньерки',
+      de: 'Persönliche Floristik',
+      uk: 'Персональна флористика',
+      en: 'Personal florals',
+      ru: 'Персональная флористика',
     },
     text: {
-      de: 'Der Strauß wird an Ihrem Kleid und Ihrer Größe ausgerichtet, nicht an einem Katalogbild. Anstecker und Haarschmuck passend dazu.',
-      uk: 'Букет підбирається під вашу сукню та зріст, а не під картинку з каталогу. Бутоньєрки та прикраса для волосся — у тон.',
-      en: 'The bouquet is built around your dress and your height, not a catalogue photo. Buttonholes and hairpieces to match.',
-      ru: 'Букет подбирается под ваше платье и рост, а не под картинку из каталога. Бутоньерки и украшение для волос — в тон.',
+      de: 'Brautstrauß, Anstecker, Haarschmuck — oder bei Firmenanlässen der Strauß für die Rednerin und die Ansteckblume fürs Team. Alles wird an der Person ausgerichtet, nicht an einem Katalogbild.',
+      uk: 'Букет нареченої, бутоньєрки, прикраса для волосся — або на корпоративних заходах букет для спікерки та бутоньєрки для команди. Усе підбирається під людину, а не під картинку з каталогу.',
+      en: 'Bridal bouquet, buttonholes, hairpieces — or, at company occasions, the bouquet for the speaker and buttonholes for the team. Everything is built around the person, not a catalogue photo.',
+      ru: 'Букет невесты, бутоньерки, украшение для волос — или на корпоративных мероприятиях букет для спикера и бутоньерки для команды. Всё подбирается под человека, а не под картинку из каталога.',
     },
   },
   {
     title: {
-      de: 'Zeremonie',
-      uk: 'Церемонія',
-      en: 'Ceremony',
-      ru: 'Церемония',
+      de: 'Zeremonie, Bühne, Empfang',
+      uk: 'Церемонія, сцена, зустріч гостей',
+      en: 'Ceremony, stage, reception',
+      ru: 'Церемония, сцена, приём',
     },
     text: {
-      de: 'Bogen, Altar, Stuhlreihen, Streublumen. Aufbau vor Ort, rechtzeitig vor den ersten Gästen.',
-      uk: 'Арка, вівтар, ряди стільців, пелюстки. Монтаж на місці, завчасно до приходу гостей.',
-      en: 'Arch, altar, aisle rows, petals. Set up on site, well before the first guests arrive.',
-      ru: 'Арка, алтарь, ряды стульев, лепестки. Монтаж на месте, задолго до прихода гостей.',
+      de: 'Trauungsbogen und Stuhlreihen bei der Hochzeit; Bühne, Rednerpult, Fotowand und Empfangstresen bei Firmenanlässen und Eröffnungen. Aufbau vor Ort, rechtzeitig vor den ersten Gästen.',
+      uk: 'Весільна арка та ряди стільців на весіллі; сцена, трибуна, фотозона та стійка реєстрації на корпоративах і відкриттях. Монтаж на місці, завчасно до приходу гостей.',
+      en: 'Ceremony arch and aisle rows at a wedding; stage, lectern, photo wall and reception desk at company occasions and openings. Set up on site, well before the first guests arrive.',
+      ru: 'Свадебная арка и ряды стульев на свадьбе; сцена, трибуна, фотозона и стойка регистрации на корпоративах и открытиях. Монтаж на месте, задолго до прихода гостей.',
     },
   },
   {
@@ -48,10 +49,10 @@ const services: { title: I18nText; text: I18nText }[] = [
       ru: 'Столы и зал',
     },
     text: {
-      de: 'Tischläufer aus Blumen, einzelne Gestecke, Kerzen, Eingang und Bar — abgestimmt auf Ihre Location statt gegen sie.',
-      uk: 'Квіткові доріжки, окремі композиції, свічки, вхід і бар — у злагоді з вашою локацією, а не всупереч їй.',
-      en: 'Floral runners, individual arrangements, candles, entrance and bar — tuned to your venue rather than against it.',
-      ru: 'Цветочные дорожки, отдельные композиции, свечи, вход и бар — в согласии с вашей площадкой, а не вопреки ей.',
+      de: 'Tischläufer aus Blumen, einzelne Gestecke, Kerzen, Eingang und Bar — abgestimmt auf Ihre Location statt gegen sie. Für Geschäfte und Büros auch als wiederkehrende Gestaltung im Wochen- oder Monatsrhythmus.',
+      uk: 'Квіткові доріжки, окремі композиції, свічки, вхід і бар — у злагоді з вашою локацією, а не всупереч їй. Для магазинів та офісів також як регулярне оформлення щотижня або щомісяця.',
+      en: 'Floral runners, individual arrangements, candles, entrance and bar — tuned to your venue rather than against it. For shops and offices also as a recurring arrangement, weekly or monthly.',
+      ru: 'Цветочные дорожки, отдельные композиции, свечи, вход и бар — в согласии с вашей площадкой, а не вопреки ей. Для магазинов и офисов также как регулярное оформление еженедельно или ежемесячно.',
     },
   },
   {
@@ -101,10 +102,10 @@ const steps: { title: I18nText; text: I18nText }[] = [
   {
     title: { de: 'Der Tag', uk: 'День', en: 'The day', ru: 'День' },
     text: {
-      de: 'Wir sind vor Ihnen da und gehen nach den letzten Gästen. Der Brautstrauß kommt am Morgen zu Ihnen, nicht in die Location.',
-      uk: 'Ми на місці раніше за вас і йдемо після останніх гостей. Букет нареченої привозимо вранці вам, а не в локацію.',
-      en: 'We arrive before you and leave after the last guests. The bridal bouquet comes to you in the morning, not to the venue.',
-      ru: 'Мы на месте раньше вас и уходим после последних гостей. Букет невесты привозим утром вам, а не на площадку.',
+      de: 'Wir sind vor Ihnen da und gehen nach den letzten Gästen. Bei Hochzeiten kommt der Brautstrauß am Morgen zu Ihnen, nicht in die Location.',
+      uk: 'Ми на місці раніше за вас і йдемо після останніх гостей. На весіллі букет нареченої привозимо вранці вам, а не в локацію.',
+      en: 'We arrive before you and leave after the last guests. At weddings the bridal bouquet comes to you in the morning, not to the venue.',
+      ru: 'Мы на месте раньше вас и уходим после последних гостей. На свадьбе букет невесты привозим утром вам, а не на площадку.',
     },
   },
 ];
@@ -174,6 +175,8 @@ const steps: { title: I18nText; text: I18nText }[] = [
       <div class="section-head">
         <h2>{_('weddings.inquire')}</h2>
       </div>
+      <ContactChannels lang={lang} subject={_('weddings.inquire')} />
+      <hr class="rule anfrage-trenner" />
       <InquiryForm lang={lang} topic="wedding" />
     </div>
   </section>
@@ -191,6 +194,11 @@ const steps: { title: I18nText; text: I18nText }[] = [
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  .anfrage-trenner {
+    width: 100%;
+    margin: var(--space-6) 0;
   }
 
   .steps {

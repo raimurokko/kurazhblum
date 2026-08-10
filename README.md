@@ -44,11 +44,11 @@ In dieser Reihenfolge:
    Lücken. Sie müssen einmal anwaltlich geprüft werden — ein fehlerhaftes
    Impressum oder eine falsche Widerrufsbelehrung sind in Deutschland
    abmahnfähig.
-4. **Preise und Sortiment.** `src/data/shop.ts` — Dopamin-Berlin, die 101 Rosen
-   und die 35 Päonienrosen stehen mit Galas bestätigten Preisen drin. Die
-   übrigen Sträuße (Rosen pur, Pfingstrosen, Hortensie, Trockenblumen) sind
-   noch geschätzt und brauchen ihre Freigabe — ebenso die Aufpreise für
-   Verpackung und Extras.
+4. **Preise.** Bepreist und bestellbar sind Dopamin-Berlin, der
+   Überraschungsstrauß, die 101 Rosen und die 35 Päonienrosen. Die übrigen
+   vier stehen als **Saisonbeispiele** ohne Preis da (`priceOnRequest`) —
+   Zusammensetzung und Preis richten sich dort nach der Jahreszeit. Noch
+   offen: die Aufpreise für Verpackung und Extras.
 5. **Workshop-Termine.** `src/data/workshops.ts` enthält Beispieltermine.
 6. **Die persönliche Geschichte** auf der Atelier-Seite. Die Absätze dort
    beschreiben bewusst nur die Arbeitsweise — der eigene Werdegang muss von
@@ -79,6 +79,17 @@ sie nicht halten kann. Die Seite baut deshalb aus der Auswahl eine fertige
 Nachricht, die die Kundin selbst per WhatsApp oder E-Mail abschickt. Kein
 Formular, kein Server, keine Einwilligungskästchen — und es funktioniert auch
 auf GitHub Pages.
+
+### Saisonbeispiele
+
+Vier Sträuße tragen `priceOnRequest: true`. Sie zeigen, was Gala macht, sind
+aber keine Katalogartikel: Sorten, Qualität und Preis hängen an der
+Jahreszeit. Deshalb steht dort kein Betrag, es gibt keinen Konfigurator, und
+die Kasse weist sie auch bei einem nachgebauten Aufruf mit `422` ab. Der Weg
+führt stattdessen zum Kundenservice — mit vorbereiteter Nachricht.
+
+Ein erfundener Preis wäre hier keine Vereinfachung, sondern eine Zusage, die
+sich im Juli nicht halten lässt.
 
 Der Rabatt bei C ist **kein Streichpreis**. Ein Nachlass, der dauerhaft gilt,
 ist der Preis; ein durchgestrichener Preis, der nie verlangt wird, ist in

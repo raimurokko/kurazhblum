@@ -25,11 +25,18 @@ const image = asset(bouquet.images[0]);
   <div class="product-body">
     <h3 class="product-name"><a href={href}>{name}</a></h3>
     <p class="small muted product-blurb">{t(bouquet.blurb, lang)}</p>
-    <p class="product-price">
-      {hasSizes(bouquet) && <span class="muted small">{_('shop.from')}</span>}
-      {formatPrice(lowestPrice(bouquet), lang)}
-    </p>
+    {
+      bouquet.priceOnRequest ? (
+        <p class="product-price product-price--saison">{_('product.seasonal.price')}</p>
+      ) : (
+        <p class="product-price">
+          {hasSizes(bouquet) && <span class="muted small">{_('shop.from')}</span>}
+          {formatPrice(lowestPrice(bouquet), lang)}
+        </p>
+      )
+    }
     {bouquet.discountPercent && <span class="tag tag--gold product-flag">{_('ways.c.badge')}</span>}
+    {bouquet.priceOnRequest && <span class="tag product-flag">{_('product.seasonal.badge')}</span>}
   </div>
 </article>
 
@@ -112,6 +119,12 @@ const image = asset(bouquet.images[0]);
 
   .product-flag {
     align-self: flex-start;
+  }
+
+  .product-price--saison {
+    font-family: var(--font-body), sans-serif;
+    font-size: 0.95rem;
+    color: var(--gold-lit);
   }
 
   .product-price .small {
