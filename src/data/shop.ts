@@ -445,7 +445,7 @@ export const BOUQUETS: Bouquet[] = [
     season: [5, 6, 7],
     priceOnRequest: true,
     presentations: ['bouquet', 'premium', 'box', 'vase'],
-    images: ['/images/products/pfingstrosen-wolke.png'],
+    images: ['/images/products/pfingstrosen-wolke.webp'],
     imagePlaceholder: true,
     name: {
       de: 'Pfingstrosen-Wolke',
