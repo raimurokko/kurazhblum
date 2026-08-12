@@ -37,15 +37,19 @@ In dieser Reihenfolge:
    liegen Galas Fotos freigestellt vor. Kategoriekacheln, Atelierporträt,
    Workshopbilder und der Instagram-Feed sind noch leere Platzhalterkacheln.
 
-   Zwei Fotos sind **vorläufig und sichtbar als „Platzhalter“ markiert**, weil
-   sie nur 1125 px breit sind: der Brautstrauß auf der Veranstaltungsseite
-   (`public/images/weddings/hero.png`) und die Pfingstrosen-Wolke
-   (`public/images/products/pfingstrosen-wolke.png`). Beide liegen als PNG vor
-   und wiegen rund 1,1 MB — für den Livegang durch höher aufgelöste Aufnahmen
-   ersetzen und dabei nach WebP wandeln (das drückt sie auf etwa ein Zehntel).
-   Die Markierung verschwindet, sobald `imagePlaceholder` beim Produkt
-   entfernt bzw. das `<span class="platzhalter-marke">` aus
-   `hochzeiten.astro` gelöscht wird.
+   Drei Fotos sind **vorläufig und sichtbar als „Platzhalter“ markiert**, weil
+   sie nur 1125 px breit sind:
+
+   | Datei | Wo |
+   | :--- | :--- |
+   | `public/images/weddings/hero.webp` | Veranstaltungsseite, Brautstrauß |
+   | `public/images/products/pfingstrosen-wolke.webp` | Produktseite Pfingstrosen |
+   | `public/images/workshops/teaser.webp` | Startseite, „Selbst binden lernen“ |
+
+   Alle drei als WebP (zusammen 412 KB statt 3,4 MB als PNG). Sobald bessere
+   Aufnahmen da sind: austauschen und die Markierung entfernen — bei
+   Produkten über das Feld `imagePlaceholder`, sonst über das
+   `<span class="platzhalter-marke">` in der jeweiligen Seite.
 2. **Stammdaten.** In `src/data/site.ts` stehen überall `TODO`: echter Name der
    Inhaberin, Adresse, Telefonnummer, E-Mail, Umsatzsteuer-Status.
 3. **Rechtstexte.** `src/pages/[lang]/impressum.astro`, `datenschutz.astro`,

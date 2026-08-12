@@ -115,8 +115,9 @@ const featured = BOUQUETS.filter((b) => b.featured).slice(0, 4);
   <!-- Workshops -->
   <section class="section split">
     <div class="wrap split-inner split-inner--reverse">
-      <div class="ph split-media" data-label={_('home.workshops.kicker')}>
-        <img src={asset("/images/workshops/teaser.jpg")} alt="" loading="lazy" decoding="async" onerror="this.remove()" />
+      <div class="ph split-media split-media--frei" data-label={_('home.workshops.kicker')}>
+        <img src={asset('/images/workshops/teaser.webp')} alt="" loading="lazy" decoding="async" onerror="this.remove()" />
+        <span class="platzhalter-marke">{_('common.placeholder')}</span>
       </div>
       <div>
         <span class="kicker">{_('home.workshops.kicker')}</span>
@@ -232,6 +233,25 @@ const featured = BOUQUETS.filter((b) => b.featured).slice(0, 4);
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  /* Freigestelltes Motiv: nicht beschneiden, sondern vollständig zeigen und
+     unten aufsetzen. Die Hutschachtel ist im Originalfoto angeschnitten —
+     zentriert würde sie schweben und der gerade Schnitt fiele auf. */
+  .split-media--frei img {
+    object-fit: contain;
+    object-position: center bottom;
+  }
+
+  /* Ohne Platzhalterkachel im Rücken: Ein freigestelltes Motiv soll auf dem
+     Seitenhintergrund stehen wie die Iris oben, nicht in einem sichtbaren
+     Rahmen mit Luft an den Seiten. */
+  .split-media--frei {
+    background: none;
+  }
+
+  .split-media--frei::after {
+    content: none;
   }
 
   @media (width >= 56rem) {
