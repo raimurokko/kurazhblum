@@ -19,8 +19,14 @@ export interface Category {
   slug: string;
   name: I18nText;
   blurb: I18nText;
-  /** Bild in public/images/categories/<slug>.jpg — bis dahin greift der Platzhalter. */
+  /**
+   * Bild in public/images/categories/. Ohne Angabe wird `<slug>.jpg` versucht
+   * und bis dahin greift die Platzhalterkachel. Endung immer mitschreiben —
+   * eine falsche lässt das Bild stillschweigend verschwinden.
+   */
   image?: string;
+  /** Vorläufige Aufnahme: blendet die sichtbare Platzhalter-Marke ein. */
+  imagePlaceholder?: boolean;
 }
 
 export interface Bouquet {
@@ -213,6 +219,8 @@ export const EXTRAS: Extra[] = [
 export const CATEGORIES: Category[] = [
   {
     slug: 'dopamin',
+    image: '/images/categories/dopamin.webp',
+    imagePlaceholder: true,
     name: {
       de: 'Dopamin-Sträuße',
       uk: 'Дофамінові букети',
@@ -228,6 +236,8 @@ export const CATEGORIES: Category[] = [
   },
   {
     slug: 'rosen',
+    image: '/images/categories/rosen.webp',
+    imagePlaceholder: true,
     name: { de: 'Rosen', uk: 'Троянди', en: 'Roses', ru: 'Розы' },
     blurb: {
       de: 'Klassisch, monochrom, in jeder Stückzahl. Auch als reine Rosenwand im Karton.',
@@ -248,6 +258,8 @@ export const CATEGORIES: Category[] = [
   },
   {
     slug: 'hortensien',
+    image: '/images/categories/hortensien.webp',
+    imagePlaceholder: true,
     name: { de: 'Hortensien', uk: 'Гортензії', en: 'Hydrangeas', ru: 'Гортензии' },
     blurb: {
       de: 'Große, weiche Köpfe — allein oder mit Rosen kombiniert.',

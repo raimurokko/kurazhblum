@@ -43,6 +43,52 @@ Danach den Pfad in `src/data/shop.ts` beim Produkt eintragen.
    zuschneiden: so geht nichts vom Strauß verloren, und alle Kacheln haben
    trotzdem dieselbe Form.
 
+Das Seitenverhältnis ist ein Parameter. Produktfotos bleiben bei 4:5;
+Kategoriekacheln sind quadratisch:
+
+```python
+aufbereiten('arbeit/schnitt.png', 'public/images/categories/rosen.webp',
+            1200, verhaeltnis=(1, 1))
+```
+
+Freigestellte Motive brauchen im Markup zusätzlich `--frei` an der Kachel
+(`background: none`, `::after { content: none }`) — sonst scheinen Verlauf und
+Beschriftung der Platzhalterkachel durch die durchsichtigen Flächen.
+
+## Wenn eine Person im Bild ist
+
+Vision trennt Vordergrund von Hintergrund, nicht Strauß von Trägerin. Wer den
+Strauß hält, bleibt stehen — die Zimmerwand fällt weg, die Person nicht.
+
+Der naheliegende Ausweg führt nicht ans Ziel: `VNGeneratePersonSegmentationRequest`
+liefert die Silhouette **samt dem, was die Person hält**. Bei einem
+Hortensienstrauß deckte die Personenmaske 74 % des Bildes ab und damit den
+Strauß gleich mit; abziehen hätte alles gelöscht. Getestet, verworfen.
+
+Was bleibt, ist ein Polygon entlang der Papierkante — `schnitt.py`, gesetzt
+zwischen Freistellen und Aufbereiten:
+
+```bash
+swift tools/fotos/freistellen.swift arbeit/foto.jpg arbeit/frei.png
+python3 tools/fotos/schnitt.py arbeit/frei.png arbeit/schnitt.png hortensien
+python3 tools/fotos/aufbereiten.py arbeit/schnitt.png \
+  public/images/categories/hortensien.webp 1200
+```
+
+Das dritte Argument ist entweder ein Name aus `POLYGONE` in `schnitt.py` — dort
+stehen die tatsächlich verwendeten Kanten der drei Kategoriekacheln — oder eine
+eigene Punktliste als JSON. Koordinaten sind Anteile der Breite und Höhe, nicht
+Pixel; so überleben sie jede Skalierung.
+
+Zum Ablesen der Kante hilft ein Raster: das freigestellte PNG mit Magenta
+hinterlegen, alle 5 % eine Linie ziehen und die Prozentwerte anschreiben. Dann
+lässt sich das Polygon direkt aus dem Bild ablesen, statt zu raten.
+
+**Was nicht geht.** Greift eine Hand mitten in die Stiele, sind beide nicht zu
+trennen. Beim Brautstrauß blieb deshalb nur der Blütenkopf; Stiele und Band
+gingen mit der Hand weg. Ein Kopf allein ist immer noch besser als ein halb
+weggeschnittener Daumen.
+
 ## Wenn ein Rest hängen bleibt
 
 Manchmal klebt ein Stück Hintergrund am Motiv und überlebt Schritt 1 — dann

@@ -60,14 +60,20 @@ const featured = BOUQUETS.filter((b) => b.featured).slice(0, 4);
           CATEGORIES.map((category) => (
             <li class="cat">
               <a href={path(lang, 'shop/kategorie', category.slug)}>
-                <div class="ph cat-ph" data-label={t(category.name, lang)}>
+                <div
+                  class:list={['ph', 'cat-ph', category.image && 'cat-ph--frei']}
+                  data-label={t(category.name, lang)}
+                >
                   <img
-                    src={asset(`/images/categories/${category.slug}.jpg`)}
+                    src={asset(category.image ?? `/images/categories/${category.slug}.jpg`)}
                     alt=""
                     loading="lazy"
                     decoding="async"
                     onerror="this.remove()"
                   />
+                  {category.imagePlaceholder && (
+                    <span class="platzhalter-marke">{_('common.placeholder')}</span>
+                  )}
                 </div>
                 <h3 class="cat-name">{t(category.name, lang)}</h3>
                 <p class="small muted">{t(category.blurb, lang)}</p>
@@ -197,6 +203,17 @@ const featured = BOUQUETS.filter((b) => b.featured).slice(0, 4);
     height: 100%;
     object-fit: cover;
     transition: transform 0.6s var(--ease);
+  }
+
+  /* Freigestellte Kachel: Verlauf und Beschriftung der Platzhalterkachel würden
+     sonst durch die durchsichtigen Flächen scheinen. Kategorien ohne eigenes
+     Foto behalten die Kachel — sie ist dort das Einzige, was zu sehen ist. */
+  .cat-ph--frei {
+    background: none;
+  }
+
+  .cat-ph--frei::after {
+    content: none;
   }
 
   .cat a:hover .cat-ph img {
