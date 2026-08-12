@@ -215,9 +215,17 @@ python3 tools/fotos/aufbereiten.py arbeit/frei.png \
 Domains und die Adressen laufen ab. Exportieren, lokal ablegen, Eintrag in
 `src/data/instagram.ts`.
 
-**Drei Platzhalter** tragen eine sichtbare Markierung (1125 px): Brautstrauß auf
-der Veranstaltungsseite, Pfingstrosen-Wolke, Workshop-Teaser. Bei Produkten
-hängt die Markierung am Feld `imagePlaceholder`.
+**Drei Platzhalter** tragen eine sichtbare Markierung (1125 px): Brautstrauß,
+Pfingstrosen-Wolke, Workshop-Teaser. Der Brautstrauß steht an zwei Stellen —
+auf der Veranstaltungsseite und als Teaser auf der Startseite —, weil es
+bislang nur diese eine Hochzeitsaufnahme gibt. Bei Produkten hängt die
+Markierung am Feld `imagePlaceholder`.
+
+> **Endungen prüfen.** Die Fotoskripte schreiben `.webp`; frühere Zwischenstufen
+> waren `.png`. Zeigt eine Referenz auf die falsche Endung, verschwindet das
+> Bild **stillschweigend** — `onerror="this.remove()"` lässt die Platzhalter-
+> kachel zurück, ohne Fehler in der Konsole. Nach jedem neuen Foto abgleichen,
+> dass die Referenz zur Datei in `public/images/` passt.
 
 **Immer WebP.** Dieselben drei Bilder wogen als PNG 3,4 MB und als WebP 412 KB.
 
