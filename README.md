@@ -6,6 +6,9 @@ Konfigurator, Hochzeits- und Event-Anfragen, Workshops mit Platzbuchung.
 Gebaut mit [Astro](https://astro.build) und TypeScript. Vier Sprachen:
 Deutsch (Hauptsprache), Ukrainisch, Englisch, Russisch.
 
+**Neu im Projekt?** [HANDOVER.md](HANDOVER.md) erklärt Stand, offene Punkte
+vor dem Livegang, die getroffenen Entscheidungen und die Fallstricke.
+
 ---
 
 ## Loslegen
