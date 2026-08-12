@@ -61,6 +61,11 @@ export interface Bouquet {
   images: string[];
   /** Fotos je Größe — beim Wechsel im Konfigurator tauscht das Bild mit. */
   imagesBySize?: Partial<Record<SizeKey, string[]>>;
+  /**
+   * Vorläufiges Foto in zu niedriger Auflösung. Wird auf der Website sichtbar
+   * markiert, damit niemand vergisst, es zu ersetzen.
+   */
+  imagePlaceholder?: boolean;
   featured?: boolean;
   /** Nur in bestimmten Monaten (1–12) verfügbar; leer = ganzjährig. */
   season?: number[];
@@ -440,7 +445,8 @@ export const BOUQUETS: Bouquet[] = [
     season: [5, 6, 7],
     priceOnRequest: true,
     presentations: ['bouquet', 'premium', 'box', 'vase'],
-    images: ['/images/products/pfingstrosen-wolke.jpg'],
+    images: ['/images/products/pfingstrosen-wolke.png'],
+    imagePlaceholder: true,
     name: {
       de: 'Pfingstrosen-Wolke',
       uk: 'Півонієва хмарка',

@@ -121,7 +121,8 @@ const steps: { title: I18nText; text: I18nText }[] = [
       </div>
 
       <div class="ph hero-band" data-label={_('weddings.kicker')}>
-        <img src={asset("/images/weddings/hero.jpg")} alt="" loading="lazy" decoding="async" onerror="this.remove()" />
+        <img src={asset('/images/weddings/hero.png')} alt="" loading="lazy" decoding="async" onerror="this.remove()" />
+        <span class="platzhalter-marke">{_('common.placeholder')}</span>
       </div>
     </div>
   </section>
@@ -183,8 +184,11 @@ const steps: { title: I18nText; text: I18nText }[] = [
 </BaseLayout>
 
 <style>
+  /* Das Foto ist hochformatig; ein 21:9-Band würde davon nur einen schmalen
+     Streifen zeigen. 16:9 und ein Bildausschnitt etwas oberhalb der Mitte
+     lassen Hände und Strauß im Bild. */
   .hero-band {
-    aspect-ratio: 21 / 9;
+    aspect-ratio: 16 / 9;
     border-radius: var(--radius-lg);
   }
 
@@ -194,6 +198,7 @@ const steps: { title: I18nText; text: I18nText }[] = [
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center 66%;
   }
 
   .anfrage-trenner {

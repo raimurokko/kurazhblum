@@ -35,8 +35,17 @@ In dieser Reihenfolge:
 
 1. **Bilder.** Für Dopamin-Berlin (M/L/XL), die 101 Rosen und die Päonienrosen
    liegen Galas Fotos freigestellt vor. Kategoriekacheln, Atelierporträt,
-   Hochzeits- und Workshopbilder sowie der Instagram-Feed sind noch Platzhalter
-   (dunkle Kacheln mit dem Namen darin). Siehe „Bilder pflegen“.
+   Workshopbilder und der Instagram-Feed sind noch leere Platzhalterkacheln.
+
+   Zwei Fotos sind **vorläufig und sichtbar als „Platzhalter“ markiert**, weil
+   sie nur 1125 px breit sind: der Brautstrauß auf der Veranstaltungsseite
+   (`public/images/weddings/hero.png`) und die Pfingstrosen-Wolke
+   (`public/images/products/pfingstrosen-wolke.png`). Beide liegen als PNG vor
+   und wiegen rund 1,1 MB — für den Livegang durch höher aufgelöste Aufnahmen
+   ersetzen und dabei nach WebP wandeln (das drückt sie auf etwa ein Zehntel).
+   Die Markierung verschwindet, sobald `imagePlaceholder` beim Produkt
+   entfernt bzw. das `<span class="platzhalter-marke">` aus
+   `hochzeiten.astro` gelöscht wird.
 2. **Stammdaten.** In `src/data/site.ts` stehen überall `TODO`: echter Name der
    Inhaberin, Adresse, Telefonnummer, E-Mail, Umsatzsteuer-Status.
 3. **Rechtstexte.** `src/pages/[lang]/impressum.astro`, `datenschutz.astro`,

@@ -19,6 +19,7 @@ const image = asset(bouquet.images[0]);
   <a class="product-media" href={href} tabindex="-1" aria-hidden="true">
     <div class="ph product-ph" data-label={name}>
       <img src={image} alt="" loading="lazy" decoding="async" onerror="this.remove()" />
+      {bouquet.imagePlaceholder && <span class="platzhalter-marke">{_('common.placeholder')}</span>}
     </div>
   </a>
 

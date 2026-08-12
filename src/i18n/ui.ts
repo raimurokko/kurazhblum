@@ -240,6 +240,7 @@ export const ui = {
     'common.notfound.text': 'Vielleicht ist sie verblüht. Zurück zur Startseite?',
     'common.home': 'Startseite',
     'common.top': 'Zum Seitenanfang',
+    'common.placeholder': 'Platzhalter',
     // — Die drei Wege zur Bestellung —
     'ways.kicker': 'Drei Wege',
     'ways.title': 'Wie möchten Sie bestellen?',
@@ -527,6 +528,7 @@ export const ui = {
     'common.notfound.text': 'Можливо, вона відцвіла. Повернутися на головну?',
     'common.home': 'Головна',
     'common.top': 'Догори сторінки',
+    'common.placeholder': 'Тимчасове фото',
     // — Три шляхи до замовлення —
     'ways.kicker': 'Три шляхи',
     'ways.title': 'Як бажаєте замовити?',
@@ -808,6 +810,7 @@ export const ui = {
     'common.notfound.text': 'It may have wilted. Back to the start?',
     'common.home': 'Home',
     'common.top': 'Back to top',
+    'common.placeholder': 'Placeholder',
     // — Three ways to order —
     'ways.kicker': 'Three ways',
     'ways.title': 'How would you like to order?',
@@ -1089,6 +1092,7 @@ export const ui = {
     'common.notfound.text': 'Возможно, она отцвела. Вернуться на главную?',
     'common.home': 'Главная',
     'common.top': 'Наверх страницы',
+    'common.placeholder': 'Временное фото',
     // — Три пути к заказу —
     'ways.kicker': 'Три пути',
     'ways.title': 'Как хотите заказать?',
