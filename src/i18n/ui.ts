@@ -114,6 +114,13 @@ export const ui = {
     'cfg.delivery': 'Lieferung',
     'cfg.delivery.date': 'Wunschtermin',
     'cfg.delivery.slot': 'Zeitfenster',
+    'cfg.delivery.early':
+      'Vor 14 Uhr wird es enger: eingekauft, gebunden und ausgefahren an einem Vormittag — deshalb der Aufschlag. Sonntags ist um 16 Uhr Schluss.',
+    'cfg.delivery.street': 'Straße',
+    'cfg.delivery.number': 'Hausnummer',
+    'cfg.delivery.zip': 'Postleitzahl',
+    'cfg.delivery.zip.hint': 'Berliner Postleitzahl, fünfstellig.',
+    'cfg.delivery.extra': 'Etage, Firma, Klingel (optional)',
     'cfg.delivery.zone': 'Liefergebiet',
     'cfg.delivery.beyond':
       'Maßgeblich ist der S-Bahn-Ring, nicht die Bezirksgrenze: Manche Ortsteile liegen teils in A, teils in B. Außerhalb Berlins liefere ich nach Absprache — schreiben Sie mir kurz.',
@@ -447,6 +454,13 @@ export const ui = {
     'cfg.delivery': 'Доставка',
     'cfg.delivery.date': 'Бажана дата',
     'cfg.delivery.slot': 'Часовий проміжок',
+    'cfg.delivery.early':
+      'До 14:00 часу менше: закупити, зібрати й доставити за один ранок — звідси доплата. У неділю працюємо до 16:00.',
+    'cfg.delivery.street': 'Вулиця',
+    'cfg.delivery.number': 'Номер будинку',
+    'cfg.delivery.zip': 'Поштовий індекс',
+    'cfg.delivery.zip.hint': 'Берлінський індекс, пʼять цифр.',
+    'cfg.delivery.extra': 'Поверх, компанія, дзвінок (необовʼязково)',
     'cfg.delivery.zone': 'Зона доставки',
     'cfg.delivery.beyond':
       'Визначальним є кільце S-Bahn, а не межа району: деякі місцевості лежать частково в A, частково в B. За межі Берліна доставляю за домовленістю — просто напишіть мені.',
@@ -767,6 +781,13 @@ export const ui = {
     'cfg.delivery': 'Delivery',
     'cfg.delivery.date': 'Preferred date',
     'cfg.delivery.slot': 'Time slot',
+    'cfg.delivery.early':
+      'Before 2 pm it gets tight: buying, tying and driving all in one morning — hence the surcharge. On Sundays we stop at 4 pm.',
+    'cfg.delivery.street': 'Street',
+    'cfg.delivery.number': 'House number',
+    'cfg.delivery.zip': 'Postcode',
+    'cfg.delivery.zip.hint': 'Berlin postcode, five digits.',
+    'cfg.delivery.extra': 'Floor, company, doorbell (optional)',
     'cfg.delivery.zone': 'Delivery area',
     'cfg.delivery.beyond':
       'What counts is the S-Bahn Ring, not the district boundary: some localities lie partly in A and partly in B. Outside Berlin I deliver by arrangement — just write to me.',
@@ -1087,6 +1108,13 @@ export const ui = {
     'cfg.delivery': 'Доставка',
     'cfg.delivery.date': 'Желаемая дата',
     'cfg.delivery.slot': 'Интервал времени',
+    'cfg.delivery.early':
+      'До 14:00 времени меньше: закупить, собрать и доставить за одно утро — отсюда доплата. По воскресеньям работаем до 16:00.',
+    'cfg.delivery.street': 'Улица',
+    'cfg.delivery.number': 'Номер дома',
+    'cfg.delivery.zip': 'Почтовый индекс',
+    'cfg.delivery.zip.hint': 'Берлинский индекс, пять цифр.',
+    'cfg.delivery.extra': 'Этаж, компания, звонок (необязательно)',
     'cfg.delivery.zone': 'Зона доставки',
     'cfg.delivery.beyond':
       'Определяющим является кольцо S-Bahn, а не граница района: некоторые местности лежат частично в A, частично в B. За пределы Берлина доставляю по договорённости — просто напишите мне.',

@@ -91,18 +91,45 @@ export const site = {
   deliveryWithinHours: 24,
 } as const;
 
-/** Zeitfenster für die Lieferung. */
-export const DELIVERY_SLOTS: { id: string; label: I18nText }[] = [
-  {
-    id: 'morning',
-    label: { de: '10 – 13 Uhr', uk: '10 – 13 год', en: '10 am – 1 pm', ru: '10 – 13 ч' },
-  },
-  {
-    id: 'afternoon',
-    label: { de: '13 – 17 Uhr', uk: '13 – 17 год', en: '1 – 5 pm', ru: '13 – 17 ч' },
-  },
-  {
-    id: 'evening',
-    label: { de: '17 – 20 Uhr', uk: '17 – 20 год', en: '5 – 8 pm', ru: '17 – 20 ч' },
-  },
-];
+/**
+ * Aufschlag für Lieferung vor 14 Uhr, in Cent.
+ *
+ * Gala kauft morgens am Großmarkt ein und bindet danach. Eine Lieferung am
+ * Vormittag heißt: einkaufen, binden und ausfahren in derselben knappen
+ * Spanne — eine Extrafahrt außerhalb der geplanten Route. Deshalb der
+ * Aufschlag, und deshalb nur der Vormittag.
+ */
+export const EARLY_DELIVERY_SURCHARGE = 1500;
+
+/** Ab dieser Stunde ist die Lieferung ohne Aufschlag. */
+const REGULAER_AB = 14;
+
+/** Erste und letzte Startstunde eines Fensters — 19 Uhr endet um 20 Uhr. */
+const ERSTE_STUNDE = 10;
+const LETZTE_STUNDE = 19;
+
+/**
+ * Lieferfenster im Stundentakt. Eine Stunde ist die Zusage, die sich halten
+ * lässt; halbe Stunden wären genauer angeschrieben und ungenauer gefahren.
+ *
+ * Sonntags schließt das Atelier um 16 Uhr. Fenster, die später beginnen,
+ * blendet der Konfigurator an diesem Tag aus — sie zu verkaufen hieße, eine
+ * Fahrt zuzusagen, die niemand macht.
+ */
+export const DELIVERY_SLOTS: { id: string; from: number; fee: number; label: I18nText }[] =
+  Array.from({ length: LETZTE_STUNDE - ERSTE_STUNDE + 1 }, (_, i) => ERSTE_STUNDE + i).map(
+    (stunde) => ({
+      id: String(stunde),
+      from: stunde,
+      fee: stunde < REGULAER_AB ? EARLY_DELIVERY_SURCHARGE : 0,
+      label: {
+        de: `${stunde} – ${stunde + 1} Uhr`,
+        uk: `${stunde} – ${stunde + 1} год`,
+        en: `${stunde}:00 – ${stunde + 1}:00`,
+        ru: `${stunde} – ${stunde + 1} ч`,
+      },
+    }),
+  );
+
+/** Sonntags ist um 16 Uhr Schluss — danach beginnt kein Fenster mehr. */
+export const SUNDAY_LAST_START = 15;

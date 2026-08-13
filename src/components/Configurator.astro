@@ -16,7 +16,7 @@ import {
   type PresentationKey,
   type SizeKey,
 } from '../data/shop';
-import { DELIVERY_SLOTS, site } from '../data/site';
+import { DELIVERY_SLOTS, SUNDAY_LAST_START, site } from '../data/site';
 
 interface Props {
   lang: Locale;
@@ -46,6 +46,9 @@ const pricing = {
   presentations: Object.fromEntries(presentations.map((p) => [p, PRESENTATION_SURCHARGE[p]])),
   extras: Object.fromEntries(EXTRAS.map((e) => [e.id, e.price])),
   zones: Object.fromEntries(DELIVERY_ZONES.map((z) => [z.id, z.fee])),
+  /** Aufschlag je Lieferfenster — vor 14 Uhr kostet extra. */
+  slots: Object.fromEntries(DELIVERY_SLOTS.map((s) => [s.id, s.fee])),
+  sundayLastStart: SUNDAY_LAST_START,
   minOrderDelivery: MIN_ORDER_DELIVERY,
   /** Formen mit Ab-Preis — das Gefäß wird vor der Lieferung abgestimmt. */
   from: PRESENTATION_FROM,
@@ -242,13 +245,66 @@ const minDate = tomorrow.toISOString().slice(0, 10);
       <label class="field">
         <span class="field-label">{_('cfg.delivery.date')}</span>
         <input class="input" type="date" name="date" min={minDate} required />
+        {/* Der Wochentag wird nachgetragen: „12.06.2027“ sagt niemandem, ob
+            das ein Samstag ist — und sonntags entfällt der späte Nachmittag. */}
+        <span class="hint" data-wochentag></span>
       </label>
 
       <label class="field">
         <span class="field-label">{_('cfg.delivery.slot')}</span>
-        <select class="select" name="slot">
-          {DELIVERY_SLOTS.map((slot) => <option value={slot.id}>{t(slot.label, lang)}</option>)}
+        <select class="select" name="slot" data-slot>
+          {
+            DELIVERY_SLOTS.map((slot) => (
+              <option value={slot.id} data-fee={slot.fee} data-from={slot.from} selected={slot.from === 14}>
+                {t(slot.label, lang)}
+                {slot.fee > 0 ? ` — + ${formatPrice(slot.fee, lang)}` : ''}
+              </option>
+            ))
+          }
         </select>
+      </label>
+    </div>
+
+    <p class="hint">{_('cfg.delivery.early')}</p>
+
+    <!--
+      Lieferadresse. Sie stand bisher nur bei Stripe — damit konnte jemand die
+      Zone „Lichtenberg“ wählen und an der Kasse eine Adresse in Spandau
+      eintragen. Jetzt steht sie hier, neben der Zone, und geht als Angabe mit
+      in die Bestellung. Straßenvorschläge aus derselben lokalen Berliner
+      Liste wie im Anfrageformular — kein Geocoder, keine fremde Anfrage.
+    -->
+    <div class="cfg-row">
+      <label class="field">
+        <span class="field-label">{_('cfg.delivery.street')}</span>
+        <input
+          class="input"
+          type="text"
+          name="street"
+          required
+          list="cfg-orte"
+          autocomplete="off"
+          data-orte={asset('/data/berlin-strassen.json')}
+        />
+        <datalist id="cfg-orte" />
+      </label>
+
+      <label class="field">
+        <span class="field-label">{_('cfg.delivery.number')}</span>
+        <input class="input" type="text" name="houseNumber" required autocomplete="address-line2" />
+      </label>
+    </div>
+
+    <div class="cfg-row">
+      <label class="field">
+        <span class="field-label">{_('cfg.delivery.zip')}</span>
+        <input class="input" type="text" name="zip" required inputmode="numeric" pattern="1[0-4][0-9]{3}" autocomplete="postal-code" />
+        <span class="hint">{_('cfg.delivery.zip.hint')}</span>
+      </label>
+
+      <label class="field">
+        <span class="field-label">{_('cfg.delivery.extra')}</span>
+        <input class="input" type="text" name="addressNote" autocomplete="off" />
       </label>
     </div>
   </fieldset>
@@ -429,6 +485,8 @@ const minDate = tomorrow.toISOString().slice(0, 10);
     presentations: Record<string, Record<string, number | null>>;
     extras: Record<string, number>;
     zones: Record<string, number>;
+    slots: Record<string, number>;
+    sundayLastStart: number;
     minOrderDelivery: number;
     from: string[];
     fromLabel: string;
@@ -558,8 +616,11 @@ const minDate = tomorrow.toISOString().slice(0, 10);
       const surcharge = pricing.presentations[presentation]?.[size] ?? 0;
       const extrasTotal = extras.reduce((sum, id) => sum + (pricing.extras[id] ?? 0), 0);
       const delivery = pricing.zones[zone] ?? 0;
+      // Der Aufschlag fürs Vormittagsfenster zählt zur Lieferung, nicht zur
+      // Ware — sonst hübe er den Mindestbestellwert künstlich.
+      const slotFee = pricing.slots[String(new FormData(form).get('slot') ?? '')] ?? 0;
       const subtotal = base + surcharge + extrasTotal;
-      const total = subtotal + delivery;
+      const total = subtotal + delivery + slotFee;
 
       if (totalEl) totalEl.textContent = fmt(total);
 
@@ -571,6 +632,10 @@ const minDate = tomorrow.toISOString().slice(0, 10);
         }
         const zoneOption = form.querySelector<HTMLSelectElement>('[name="zone"]')?.selectedOptions[0];
         rows.push([zoneOption?.dataset.name ?? '', delivery === 0 ? '—' : `+ ${fmt(delivery)}`]);
+        if (slotFee > 0) {
+          const slotOption = form.querySelector<HTMLSelectElement>('[data-slot]')?.selectedOptions[0];
+          rows.push([slotOption?.textContent?.split('—')[0].trim() ?? '', `+ ${fmt(slotFee)}`]);
+        }
 
         linesEl.replaceChildren(
           ...rows.map(([label, value]) => {
@@ -599,6 +664,97 @@ const minDate = tomorrow.toISOString().slice(0, 10);
         const selected = form.querySelector<HTMLSelectElement>('[name="zone"]');
         zoneHintEl.textContent = selected?.selectedOptions[0]?.dataset.hint ?? '';
       }
+    }
+
+    /*
+      Wochentag und Sonntagsregel. „12.06.2027“ sagt niemandem, ob das ein
+      Samstag ist — und sonntags schließt das Atelier um 16 Uhr, danach fährt
+      niemand mehr. Späte Fenster verschwinden an diesem Tag, statt eine
+      Lieferung zu verkaufen, die nicht stattfindet.
+    */
+    const datumFeld = form.querySelector<HTMLInputElement>('[name="date"]');
+    const slotFeld = form.querySelector<HTMLSelectElement>('[data-slot]');
+    const wochentagEl = form.querySelector<HTMLElement>('[data-wochentag]');
+
+    function datumPruefen(): void {
+      if (!datumFeld?.value || !slotFeld) return;
+      // Ortszeit erzwingen: `new Date('2027-06-12')` wäre UTC-Mitternacht und
+      // in westlichen Zeitzonen der Vortag.
+      const [jahr, monat, tag] = datumFeld.value.split('-').map(Number);
+      const datum = new Date(jahr, monat - 1, tag);
+      const istSonntag = datum.getDay() === 0;
+
+      if (wochentagEl) {
+        wochentagEl.textContent = datum.toLocaleDateString(INTL_LOCALE[lang] ?? 'de-DE', { weekday: 'long' });
+      }
+
+      let ersteGueltige: HTMLOptionElement | null = null;
+      for (const option of slotFeld.options) {
+        const beginn = Number(option.dataset.from ?? 0);
+        const passt = !istSonntag || beginn <= pricing.sundayLastStart;
+        option.hidden = !passt;
+        option.disabled = !passt;
+        if (passt && !ersteGueltige) ersteGueltige = option;
+      }
+      if (slotFeld.selectedOptions[0]?.disabled && ersteGueltige) ersteGueltige.selected = true;
+    }
+
+    datumFeld?.addEventListener('change', () => {
+      datumPruefen();
+      render();
+    });
+    datumPruefen();
+
+    /*
+      Straßenvorschläge, dieselbe lokale Liste wie im Anfrageformular: rund
+      9.000 Berliner Straßen, geladen erst beim ersten Klick ins Feld. Kein
+      Geocoder — der bekäme sonst bei jedem Tastendruck IP-Adresse und
+      Lieferadresse zu sehen.
+    */
+    const strasseFeld = form.querySelector<HTMLInputElement>('[name="street"][data-orte]');
+    const strasseListe = form.querySelector<HTMLDataListElement>('#cfg-orte');
+
+    if (strasseFeld && strasseListe) {
+      let strassen: string[] | null = null;
+      let laden: Promise<void> | null = null;
+
+      const strassenLaden = (): Promise<void> => {
+        laden ??= fetch(strasseFeld.dataset.orte ?? '')
+          .then((antwort) => (antwort.ok ? antwort.json() : []))
+          .then((daten) => {
+            strassen = Array.isArray(daten) ? daten : [];
+          })
+          .catch(() => {
+            strassen = [];
+          });
+        return laden;
+      };
+
+      const vorschlagen = (): void => {
+        const eingabe = strasseFeld.value.trim().toLowerCase();
+        if (!strassen || eingabe.length < 2) {
+          strasseListe.replaceChildren();
+          return;
+        }
+        const beginnt: string[] = [];
+        const enthaelt: string[] = [];
+        for (const strasse of strassen) {
+          const klein = strasse.toLowerCase();
+          if (klein.startsWith(eingabe)) beginnt.push(strasse);
+          else if (klein.includes(eingabe)) enthaelt.push(strasse);
+          if (beginnt.length >= 20) break;
+        }
+        strasseListe.replaceChildren(
+          ...[...beginnt, ...enthaelt].slice(0, 20).map((strasse) => {
+            const option = document.createElement('option');
+            option.value = strasse;
+            return option;
+          }),
+        );
+      };
+
+      strasseFeld.addEventListener('focus', () => void strassenLaden().then(vorschlagen), { once: true });
+      strasseFeld.addEventListener('input', () => void strassenLaden().then(vorschlagen));
     }
 
     form.addEventListener('change', render);
@@ -641,6 +797,10 @@ const minDate = tomorrow.toISOString().slice(0, 10);
             cardMessage: cardToggle?.checked ? String(data.get('cardMessage') ?? '') : '',
             invoice: data.get('invoice') === 'on',
             photo: data.get('photo') === 'on',
+            street: data.get('street'),
+            houseNumber: data.get('houseNumber'),
+            zip: data.get('zip'),
+            addressNote: data.get('addressNote'),
           }),
         });
 

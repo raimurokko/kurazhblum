@@ -15,13 +15,29 @@ import {
   type PresentationKey,
   type SizeKey,
 } from '../../data/shop';
-import { DELIVERY_SLOTS } from '../../data/site';
+import { DELIVERY_SLOTS, SUNDAY_LAST_START, site } from '../../data/site';
 import { WORKSHOP_DATES, formatBySlug } from '../../data/workshops';
 
 // Zahlungen brauchen einen Server — diese Route wird nicht vorgerendert.
 export const prerender = false;
 
 const CARD_MESSAGE_MAX = 240;
+
+/** Beschriftung des Aufschlags auf der Stripe-Rechnung. */
+const FRUEH_LABEL = {
+  de: 'Lieferung am Vormittag',
+  uk: 'Доставка вранці',
+  en: 'Morning delivery',
+  ru: 'Доставка утром',
+};
+
+/** Steuerzeichen raus — die Adresse landet in Stripe-Metadaten. */
+function clean(value: unknown, max: number): string {
+  return String(value ?? '')
+    .replace(/[\u0000-\u001f\u007f]/g, ' ')
+    .trim()
+    .slice(0, max);
+}
 
 /** Stripe erwartet eigene Sprachcodes; unsere vier lassen sich direkt abbilden. */
 const STRIPE_LOCALE: Record<Locale, Stripe.Checkout.SessionCreateParams.Locale> = {
@@ -59,11 +75,9 @@ export const POST: APIRoute = async ({ request, url }) => {
 
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
   const metadata: Record<string, string> = { lang };
-  let mode: 'bouquet' | 'workshop' = 'bouquet';
 
   /* ——— Workshop-Platz ——————————————————————————————————————————— */
   if (payload.kind === 'workshop') {
-    mode = 'workshop';
     const date = WORKSHOP_DATES.find((entry) => entry.id === payload.dateId);
     if (!date) return json({ error: 'unknown_date' }, 400);
     if (date.seatsLeft <= 0) return json({ error: 'sold_out' }, 409);
@@ -115,6 +129,22 @@ export const POST: APIRoute = async ({ request, url }) => {
     const zone = DELIVERY_ZONES.find((entry) => entry.id === payload.zone);
     if (!zone) return json({ error: 'unknown_zone' }, 400);
 
+    // Das Lieferfenster kostet vor 14 Uhr extra. Auch das wird hier noch
+    // einmal aufgelöst — im Browser ließe sich der Aufschlag sonst wegnehmen.
+    const slot = DELIVERY_SLOTS.find((entry) => entry.id === String(payload.slot ?? ''));
+    if (!slot) return json({ error: 'unknown_slot' }, 400);
+
+    // Sonntags schließt das Atelier um 16 Uhr; ein spätes Fenster an diesem
+    // Tag ist keine Lieferung, die jemand fährt.
+    const datum = String(payload.date ?? '');
+    if (/^\d{4}-\d{2}-\d{2}$/.test(datum)) {
+      const [jahr, monat, tag] = datum.split('-').map(Number);
+      const istSonntag = new Date(jahr, monat - 1, tag).getDay() === 0;
+      if (istSonntag && slot.from > SUNDAY_LAST_START) {
+        return json({ error: 'slot_closed' }, 422);
+      }
+    }
+
     const extraIds = Array.isArray(payload.extras) ? payload.extras.map(String) : [];
     const extras = EXTRAS.filter((extra) => extraIds.includes(extra.id));
 
@@ -165,7 +195,17 @@ export const POST: APIRoute = async ({ request, url }) => {
       });
     }
 
-    const slot = DELIVERY_SLOTS.find((entry) => entry.id === payload.slot);
+    if (slot.fee > 0) {
+      lineItems.push({
+        quantity: 1,
+        price_data: {
+          currency: 'eur',
+          unit_amount: slot.fee,
+          product_data: { name: `${t(slot.label, lang)} — ${t(FRUEH_LABEL, lang)}` },
+        },
+      });
+    }
+
     const cardMessage = String(payload.cardMessage ?? '').slice(0, CARD_MESSAGE_MAX);
 
     metadata.kind = 'bouquet';
@@ -174,8 +214,18 @@ export const POST: APIRoute = async ({ request, url }) => {
     metadata.presentation = presentation;
     metadata.zone = zone.id;
     metadata.extras = extras.map((extra) => extra.id).join(',');
-    metadata.date = String(payload.date ?? '');
-    metadata.slot = slot?.id ?? '';
+    metadata.date = datum;
+    metadata.slot = slot.id;
+    // Die Lieferadresse steht jetzt im Formular und nicht mehr nur bei
+    // Stripe — sonst ließe sich Zone „Lichtenberg“ wählen und an der Kasse
+    // eine Adresse in Spandau eintragen.
+    metadata.address = [
+      `${clean(payload.street, 120)} ${clean(payload.houseNumber, 20)}`.trim(),
+      `${clean(payload.zip, 10)} ${site.address.city}`.trim(),
+      clean(payload.addressNote, 120),
+    ]
+      .filter(Boolean)
+      .join(', ');
     metadata.cardMessage = cardMessage;
     // Nicht alle brauchen eine Rechnung — wer sie ankreuzt, bekommt sie an die
     // E-Mail-Adresse, die Stripe an der Kasse ohnehin erhebt.
@@ -201,9 +251,9 @@ export const POST: APIRoute = async ({ request, url }) => {
       cancel_url: cancelUrl,
       metadata,
       // Adresse fürs Lieferziel — bei Workshops nicht nötig.
-      ...(mode === 'bouquet'
-        ? { shipping_address_collection: { allowed_countries: ['DE'] as Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry[] } }
-        : {}),
+      // Keine zweite Adressabfrage: Sie steht bereits im Konfigurator und
+      // liegt in den Metadaten. Zweimal tippen zu lassen wäre der sicherste
+      // Weg, zwei verschiedene Adressen zu bekommen.
       phone_number_collection: { enabled: true },
     });
 
