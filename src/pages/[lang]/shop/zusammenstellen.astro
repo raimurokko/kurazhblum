@@ -4,7 +4,7 @@ import ContactChannels from '../../../components/ContactChannels.astro';
 import { localePaths, t, type Locale } from '../../../i18n/config';
 import { useTranslations, type UiKey } from '../../../i18n/ui';
 import { FLOWERS } from '../../../data/flowers';
-import { SIZES, formatPrice } from '../../../data/shop';
+import { SIZES, SIZE_ENTRY_PRICES, formatPrice } from '../../../data/shop';
 
 export function getStaticPaths() {
   return localePaths();
@@ -14,7 +14,15 @@ const lang = Astro.params.lang as Locale;
 const _ = useTranslations(lang);
 
 const stimmungen = ['light', 'bright', 'dark', 'mono'] as const;
-const budgets = [8500, 15000, 22000, 35000];
+
+/*
+  Budgetstufen. Die ersten drei sind die Einstiegspreise der Staffel, die
+  letzte ist die offene Stufe nach oben. Weil Größe und Budget getrennt
+  gewählt werden, blendet das Skript unten alle Stufen aus, die unter dem
+  Einstieg der gewählten Größe liegen — sonst ließe sich ein XL-Strauß für
+  85 € anfragen, und Gala müsste die Anfrage mit einer Absage beantworten.
+*/
+const budgets = [SIZE_ENTRY_PRICES.m, SIZE_ENTRY_PRICES.l, SIZE_ENTRY_PRICES.xl, 35000];
 
 /*
   Weg A endet bewusst nicht im Warenkorb. Gala hat kein Lager — was heute da
@@ -73,17 +81,26 @@ const budgets = [8500, 15000, 22000, 35000];
         <div class="build-row">
           <label class="field">
             <span class="field-label">{_('cfg.size')}</span>
-            <select class="select" name="size">
-              {SIZES.map((size) => <option value={_(`cfg.size.${size}` as UiKey)}>{_(`cfg.size.${size}` as UiKey)}</option>)}
+            <select class="select" name="size" data-size>
+              {
+                SIZES.map((size) => (
+                  <option value={_(`cfg.size.${size}` as UiKey)} data-min={SIZE_ENTRY_PRICES[size]}>
+                    {_(`cfg.size.${size}` as UiKey)} ({_('shop.from')} {formatPrice(SIZE_ENTRY_PRICES[size], lang)})
+                  </option>
+                ))
+              }
             </select>
           </label>
 
           <label class="field">
             <span class="field-label">{_('build.budget')}</span>
-            <select class="select" name="budget">
+            <select class="select" name="budget" data-budget>
               {
                 budgets.map((cents, index) => (
-                  <option value={`${index === budgets.length - 1 ? '' : 'ca. '}${formatPrice(cents, lang)}`}>
+                  <option
+                    value={`${index === budgets.length - 1 ? '' : 'ca. '}${formatPrice(cents, lang)}`}
+                    data-cents={cents}
+                  >
                     {index === budgets.length - 1 ? `${formatPrice(cents, lang)} +` : `ca. ${formatPrice(cents, lang)}`}
                   </option>
                 ))
@@ -91,6 +108,8 @@ const budgets = [8500, 15000, 22000, 35000];
             </select>
           </label>
         </div>
+
+        <p class="hint build-hint">{_('build.budget.hint')}</p>
 
         <label class="field">
           <span class="field-label">{_('build.note')}</span>
@@ -195,7 +214,40 @@ const budgets = [8500, 15000, 22000, 35000];
       return zeilen.join('\n');
     }
 
+    /*
+      Größe und Budget hängen zusammen: Ein XL-Strauß beginnt bei 220 €, eine
+      Anfrage über „ca. 85 €“ wäre für ihn nicht erfüllbar. Stufen unterhalb
+      des Einstiegs verschwinden deshalb aus der Liste, statt nur gesperrt zu
+      werden — eine ausgegraute Option lädt zum Klicken ein und erklärt nichts.
+
+      `hidden` *und* `disabled`: Ersteres nehmen moderne Browser aus der
+      aufgeklappten Liste, Letzteres verhindert, dass eine ausgeblendete Stufe
+      per Tastatur doch noch gewählt wird.
+    */
+    const sizeSelect = form.querySelector<HTMLSelectElement>('[data-size]');
+    const budgetSelect = form.querySelector<HTMLSelectElement>('[data-budget]');
+
+    function budgetsFiltern(): void {
+      if (!sizeSelect || !budgetSelect) return;
+      const einstieg = Number(sizeSelect.selectedOptions[0]?.dataset.min ?? 0);
+
+      let ersteGueltige: HTMLOptionElement | null = null;
+      for (const option of budgetSelect.options) {
+        const passt = Number(option.dataset.cents ?? 0) >= einstieg;
+        option.hidden = !passt;
+        option.disabled = !passt;
+        if (passt && !ersteGueltige) ersteGueltige = option;
+      }
+
+      // Wer von M auf XL wechselt, steht sonst auf einer Stufe, die es für XL
+      // nicht mehr gibt — der Browser lässt die Auswahl einfach stehen.
+      if (budgetSelect.selectedOptions[0]?.disabled && ersteGueltige) {
+        ersteGueltige.selected = true;
+      }
+    }
+
     function render() {
+      budgetsFiltern();
       const text = nachricht();
       const blumenGewaehlt = new FormData(form!).getAll('flowers').length > 0;
       preview!.textContent = blumenGewaehlt ? text : leer;

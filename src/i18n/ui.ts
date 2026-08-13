@@ -300,6 +300,8 @@ export const ui = {
     'build.mood.dark': 'Dunkel und satt',
     'build.mood.mono': 'Einfarbig',
     'build.budget': 'Budget',
+    'build.budget.hint':
+      'Das Budget richtet sich nach der Größe — kleinere Stufen blende ich aus, sobald sie für die gewählte Größe nicht mehr reichen.',
     'build.note': 'Anmerkung',
     'build.note.placeholder': 'Anlass, Wunschtermin, Lieferadresse, alles was hilft.',
     'build.summary': 'Ihre Auswahl',
@@ -595,6 +597,8 @@ export const ui = {
     'build.mood.dark': 'Темна й насичена',
     'build.mood.mono': 'Одноколірна',
     'build.budget': 'Бюджет',
+    'build.budget.hint':
+      'Бюджет залежить від розміру — менші щаблі зникають, щойно вони перестають покривати обраний розмір.',
     'build.note': 'Примітка',
     'build.note.placeholder': 'Привід, бажана дата, адреса доставки — усе, що допоможе.',
     'build.summary': 'Ваш вибір',
@@ -889,6 +893,8 @@ export const ui = {
     'build.mood.dark': 'Dark and deep',
     'build.mood.mono': 'Single colour',
     'build.budget': 'Budget',
+    'build.budget.hint':
+      'The budget follows the size — smaller steps disappear once they no longer cover the size you picked.',
     'build.note': 'Note',
     'build.note.placeholder': 'Occasion, preferred date, delivery address — whatever helps.',
     'build.summary': 'Your selection',
@@ -1183,6 +1189,8 @@ export const ui = {
     'build.mood.dark': 'Тёмная и глубокая',
     'build.mood.mono': 'Одноцветная',
     'build.budget': 'Бюджет',
+    'build.budget.hint':
+      'Бюджет зависит от размера — меньшие ступени исчезают, как только их не хватает для выбранного размера.',
     'build.note': 'Примечание',
     'build.note.placeholder': 'Повод, желаемая дата, адрес доставки — всё, что поможет.',
     'build.summary': 'Ваш выбор',

@@ -13,6 +13,19 @@ export type Cents = number;
 export type SizeKey = 'm' | 'l' | 'xl';
 export const SIZES: SizeKey[] = ['m', 'l', 'xl'];
 
+/**
+ * Einstiegspreise der Staffel. Sie stehen hier und nicht nur am Dopamin-Strauß,
+ * weil auch Weg A sie braucht: Dort wählt man Größe und Budget getrennt, und
+ * ohne diese Zahlen ließe sich ein XL-Strauß für 85 € anfragen — ein Betrag,
+ * für den es ihn nicht gibt. Was ein Strauß am Ende kostet, hängt an den
+ * Blumen; günstiger als der Einstieg wird er in dieser Größe aber nie.
+ */
+export const SIZE_ENTRY_PRICES: Record<SizeKey, Cents> = {
+  m: 8500,
+  l: 15000,
+  xl: 22000,
+};
+
 export type PresentationKey = 'bouquet' | 'premium' | 'basket' | 'box' | 'vase';
 
 export interface Category {
