@@ -186,6 +186,20 @@ const minDate = tomorrow.toISOString().slice(0, 10);
     <p class="hint">{_('cfg.invoice.hint')}</p>
   </fieldset>
 
+  <!--
+    Foto vor der Lieferung. Gala fotografiert nicht jeden Strauß — deshalb zum
+    Ankreuzen und nicht als Zusage. Wer es möchte, sagt es hier, statt es
+    hinterher nachzufragen, wenn der Strauß schon unterwegs ist.
+  -->
+  <fieldset class="cfg-block">
+    <legend class="field-label">{_('cfg.photo')}</legend>
+    <label class="switch">
+      <input type="checkbox" name="photo" />
+      <span>{_('cfg.photo.yes')}</span>
+    </label>
+    <p class="hint">{_('cfg.photo.hint')}</p>
+  </fieldset>
+
   <!-- Extras -->
   <fieldset class="cfg-block">
     <legend class="field-label">{_('cfg.extras')}</legend>
@@ -626,6 +640,7 @@ const minDate = tomorrow.toISOString().slice(0, 10);
             slot: data.get('slot'),
             cardMessage: cardToggle?.checked ? String(data.get('cardMessage') ?? '') : '',
             invoice: data.get('invoice') === 'on',
+            photo: data.get('photo') === 'on',
           }),
         });
 

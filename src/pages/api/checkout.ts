@@ -180,6 +180,8 @@ export const POST: APIRoute = async ({ request, url }) => {
     // Nicht alle brauchen eine Rechnung — wer sie ankreuzt, bekommt sie an die
     // E-Mail-Adresse, die Stripe an der Kasse ohnehin erhebt.
     metadata.invoice = payload.invoice === true ? 'ja' : 'nein';
+    // Foto vor der Lieferung — nur auf Wunsch, Gala fotografiert nicht jeden Strauß.
+    metadata.photo = payload.photo === true ? 'ja' : 'nein';
   }
 
   // Erst prüfen, dann bezahlen: die Validierung oben läuft auch ohne

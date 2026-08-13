@@ -215,10 +215,10 @@ export const DELIVERY_ZONES: DeliveryZone[] = [
       ru: 'Берлин — тарифная зона B',
     },
     hint: {
-      de: 'Außerhalb des Rings bis zur Stadtgrenze: Pankow, Spandau, Steglitz-Zehlendorf, Reinickendorf, Marzahn-Hellersdorf, Köpenick, Tempelhof — außer Lichtenberg, das eigene Zeile hat',
-      uk: 'Поза кільцем до межі міста: Панков, Шпандау, Штегліц-Целендорф, Райнікендорф, Марцан-Гелерсдорф, Кьопенік, Темпельгоф — окрім Ліхтенберга, який має власний рядок',
-      en: 'Outside the Ring up to the city boundary: Pankow, Spandau, Steglitz-Zehlendorf, Reinickendorf, Marzahn-Hellersdorf, Köpenick, Tempelhof — except Lichtenberg, which has its own line',
-      ru: 'За кольцом до границы города: Панков, Шпандау, Штеглиц-Целендорф, Райниккендорф, Марцан-Хеллерсдорф, Кёпеник, Темпельхоф — кроме Лихтенберга, у которого своя строка',
+      de: 'Außerhalb des Rings bis zur Stadtgrenze: Pankow, Spandau, Steglitz-Zehlendorf, Reinickendorf, Marzahn-Hellersdorf, Köpenick, Tempelhof — außer Lichtenberg, siehe oben zweite Zeile',
+      uk: 'Поза кільцем до межі міста: Панков, Шпандау, Штегліц-Целендорф, Райнікендорф, Марцан-Гелерсдорф, Кьопенік, Темпельгоф — окрім Ліхтенберга, див. другий рядок вище',
+      en: 'Outside the Ring up to the city boundary: Pankow, Spandau, Steglitz-Zehlendorf, Reinickendorf, Marzahn-Hellersdorf, Köpenick, Tempelhof — except Lichtenberg, see the second line above',
+      ru: 'За кольцом до границы города: Панков, Шпандау, Штеглиц-Целендорф, Райниккендорф, Марцан-Хеллерсдорф, Кёпеник, Темпельхоф — кроме Лихтенберга, см. вторую строку выше',
     },
   },
 ];
