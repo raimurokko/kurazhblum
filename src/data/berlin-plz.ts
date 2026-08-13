@@ -1,219 +1,67 @@
+import zuordnung from './berlin-plz.json';
+
 /**
- * Alle 190 Berliner Postleitzahlen, aus OpenStreetMap (ODbL).
+ * Postleitzahl → Berliner Bezirk, aus OpenStreetMap (ODbL).
  *
- * Wozu: Der Konfigurator lässt eine Lieferzone wählen und daneben eine
- * Adresse eintippen. Ohne Abgleich ließe sich Zone „Lichtenberg“ für 15 €
- * wählen und eine Adresse in Hamburg eintragen — die Zone bestimmte den
- * Preis, die Adresse niemanden.
+ * Wozu: Der Konfigurator lässt eine Lieferzone wählen und daneben eine Adresse
+ * eintippen. Ohne Abgleich ließe sich Zone „Lichtenberg“ für 15 € wählen und
+ * eine Adresse in Spandau eintragen — die Zone bestimmte den Preis, die
+ * Adresse niemanden.
  *
- * Diese Liste beantwortet die Frage, die sich sicher beantworten lässt:
- * Liegt die Adresse überhaupt in Berlin? Alles außerhalb liefert Gala nur
- * nach Absprache, also darf es nicht durch die Kasse laufen.
- *
- * Was hier bewusst **nicht** steht: eine Zuordnung Postleitzahl →
- * Tarifbereich A oder B. Die Tarifgrenze ist der S-Bahn-Ring, und der
- * schneidet quer durch Postleitzahlgebiete — eine solche Tabelle wäre
- * geraten, nicht abgeleitet. Für die feinere Prüfung (Zone „Lichtenberg“
- * gegen eine Adresse in Spandau) fehlt noch die Zuordnung
- * Postleitzahl → Bezirk; sie holt `tools/orte/plz.py`, sobald Overpass
- * wieder antwortet.
+ * 56 der 190 Postleitzahlen liegen in mehreren Bezirken; deshalb steht je
+ * Postleitzahl eine Liste und keine einzelne Angabe. Geprüft wird immer gegen
+ * die ganze Liste: Reicht ein Bezirk aus, ist die Zone plausibel.
  *
  * Erneuern: `python3 tools/orte/plz.py`
  */
-export const BERLIN_PLZ: readonly string[] = [
-  "10115",
-  "10117",
-  "10119",
-  "10178",
-  "10179",
-  "10243",
-  "10245",
-  "10247",
-  "10249",
-  "10315",
-  "10317",
-  "10318",
-  "10319",
-  "10365",
-  "10367",
-  "10369",
-  "10405",
-  "10407",
-  "10409",
-  "10435",
-  "10437",
-  "10439",
-  "10551",
-  "10553",
-  "10555",
-  "10557",
-  "10559",
-  "10585",
-  "10587",
-  "10589",
-  "10623",
-  "10625",
-  "10627",
-  "10629",
-  "10707",
-  "10709",
-  "10711",
-  "10713",
-  "10715",
-  "10717",
-  "10719",
-  "10777",
-  "10779",
-  "10781",
-  "10783",
-  "10785",
-  "10787",
-  "10789",
-  "10823",
-  "10825",
-  "10827",
-  "10829",
-  "10961",
-  "10963",
-  "10965",
-  "10967",
-  "10969",
-  "10997",
-  "10999",
-  "12043",
-  "12045",
-  "12047",
-  "12049",
-  "12051",
-  "12053",
-  "12055",
-  "12057",
-  "12059",
-  "12099",
-  "12101",
-  "12103",
-  "12105",
-  "12107",
-  "12109",
-  "12157",
-  "12159",
-  "12161",
-  "12163",
-  "12165",
-  "12167",
-  "12169",
-  "12203",
-  "12205",
-  "12207",
-  "12209",
-  "12247",
-  "12249",
-  "12277",
-  "12279",
-  "12305",
-  "12307",
-  "12309",
-  "12347",
-  "12349",
-  "12351",
-  "12353",
-  "12355",
-  "12357",
-  "12359",
-  "12435",
-  "12437",
-  "12439",
-  "12459",
-  "12487",
-  "12489",
-  "12524",
-  "12526",
-  "12527",
-  "12555",
-  "12557",
-  "12559",
-  "12587",
-  "12589",
-  "12619",
-  "12621",
-  "12623",
-  "12627",
-  "12629",
-  "12679",
-  "12681",
-  "12683",
-  "12685",
-  "12687",
-  "12689",
-  "13051",
-  "13053",
-  "13055",
-  "13057",
-  "13059",
-  "13086",
-  "13088",
-  "13089",
-  "13125",
-  "13127",
-  "13129",
-  "13156",
-  "13158",
-  "13159",
-  "13187",
-  "13189",
-  "13347",
-  "13349",
-  "13351",
-  "13353",
-  "13355",
-  "13357",
-  "13359",
-  "13403",
-  "13405",
-  "13407",
-  "13409",
-  "13435",
-  "13437",
-  "13439",
-  "13465",
-  "13467",
-  "13469",
-  "13503",
-  "13505",
-  "13507",
-  "13509",
-  "13581",
-  "13583",
-  "13585",
-  "13587",
-  "13589",
-  "13591",
-  "13593",
-  "13595",
-  "13597",
-  "13599",
-  "13627",
-  "13629",
-  "14050",
-  "14052",
-  "14053",
-  "14055",
-  "14057",
-  "14059",
-  "14089",
-  "14109",
-  "14129",
-  "14163",
-  "14165",
-  "14167",
-  "14169",
-  "14193",
-  "14195",
-  "14197",
-  "14199",
-];
+export const PLZ_BEZIRKE: Record<string, string[]> = zuordnung;
 
 /** Gehört diese Postleitzahl zu Berlin? */
 export function istBerlinerPlz(plz: string): boolean {
-  return BERLIN_PLZ.includes(plz.trim());
+  return plz.trim() in PLZ_BEZIRKE;
+}
+
+/**
+ * Bezirke, die **vollständig außerhalb** des S-Bahn-Rings liegen und damit
+ * nie im Tarifbereich A sein können.
+ *
+ * Lichtenberg fehlt hier bewusst, obwohl es praktisch ebenfalls ganz in B
+ * liegt: Die Ringbahnhöfe am Westrand (Ostkreuz, Frankfurter Allee) gehören
+ * noch zu A. Wer dort Zone A wählt, zahlt 20 € statt 15 € — zu viel, nicht zu
+ * wenig. Diese Richtung muss die Prüfung nicht verhindern.
+ */
+const NUR_TARIFBEREICH_B = [
+  'Spandau',
+  'Steglitz-Zehlendorf',
+  'Marzahn-Hellersdorf',
+  'Reinickendorf',
+];
+
+/**
+ * Passt die Postleitzahl zur gewählten Zone?
+ *
+ * Geprüft wird nur, was sich sicher sagen lässt — und nur in die Richtung, die
+ * Gala Geld kostet: eine zu billige Zone. Wo der Ring einen Bezirk teilt
+ * (Neukölln, Prenzlauer Berg, Schöneberg, Wedding, Alt-Treptow), sagt die
+ * Prüfung nichts, statt etwas zu behaupten.
+ *
+ * `null` heißt: in Ordnung. Sonst der Grund, als Schlüssel für den Text.
+ */
+export function zonenFehler(plz: string, zoneId: string): 'outside' | 'not_lichtenberg' | 'not_zone_a' | null {
+  const sauber = plz.trim();
+  if (zoneId === 'pickup') return null;
+
+  const bezirke = PLZ_BEZIRKE[sauber];
+  if (!bezirke) return 'outside';
+
+  // Die günstigste Zone gilt nur für den Bezirk rund ums Atelier.
+  if (zoneId === 'lichtenberg' && !bezirke.includes('Lichtenberg')) return 'not_lichtenberg';
+
+  // Tarifbereich A ist unmöglich, wenn jeder in Frage kommende Bezirk
+  // vollständig außerhalb des Rings liegt.
+  if (zoneId === 'a' && bezirke.every((bezirk) => NUR_TARIFBEREICH_B.includes(bezirk))) {
+    return 'not_zone_a';
+  }
+
+  return null;
 }

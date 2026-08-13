@@ -17,7 +17,7 @@ import {
   type SizeKey,
 } from '../data/shop';
 import { DELIVERY_SLOTS, SUNDAY_LAST_START, site } from '../data/site';
-import { BERLIN_PLZ } from '../data/berlin-plz';
+import { PLZ_BEZIRKE } from '../data/berlin-plz';
 
 interface Props {
   lang: Locale;
@@ -50,8 +50,10 @@ const pricing = {
   /** Aufschlag je Lieferfenster — vor 14 Uhr kostet extra. */
   slots: Object.fromEntries(DELIVERY_SLOTS.map((s) => [s.id, s.fee])),
   sundayLastStart: SUNDAY_LAST_START,
-  /** Gültige Postleitzahlen — alles andere liegt nicht in Berlin. */
-  berlinPlz: BERLIN_PLZ,
+  /** Postleitzahl → Bezirke; entscheidet, ob die Zone zur Adresse passt. */
+  plzBezirke: PLZ_BEZIRKE,
+  /** Bezirke vollständig außerhalb des S-Bahn-Rings — dort ist A unmöglich. */
+  nurB: ['Spandau', 'Steglitz-Zehlendorf', 'Marzahn-Hellersdorf', 'Reinickendorf'],
   minOrderDelivery: MIN_ORDER_DELIVERY,
   /** Formen mit Ab-Preis — das Gefäß wird vor der Lieferung abgestimmt. */
   from: PRESENTATION_FROM,
@@ -98,7 +100,9 @@ const minDate = tomorrow.toISOString().slice(0, 10);
   data-slug={bouquet.slug}
   data-lang={lang}
   data-min-warning={_('cfg.minorder.short')}
-  data-plz-warning={_('cfg.delivery.zip.outside')}
+  data-plz-outside={_('cfg.delivery.zip.outside')}
+  data-plz-lichtenberg={_('cfg.delivery.zip.lichtenberg')}
+  data-plz-zone-a={_('cfg.delivery.zip.zonea')}
   data-busy-label={_('cfg.loading')}
   data-endpoint={asset('/api/checkout')}
   data-images={JSON.stringify(bildJeGroesse)}
@@ -304,6 +308,7 @@ const minDate = tomorrow.toISOString().slice(0, 10);
         <span class="field-label">{_('cfg.delivery.zip')}</span>
         <input class="input" type="text" name="zip" required inputmode="numeric" pattern="1[0-4][0-9]{3}" autocomplete="postal-code" />
         <span class="hint">{_('cfg.delivery.zip.hint')}</span>
+        <span class="hint hint--fehler" hidden data-plz-meldung></span>
       </label>
 
       <label class="field">
@@ -491,7 +496,8 @@ const minDate = tomorrow.toISOString().slice(0, 10);
     zones: Record<string, number>;
     slots: Record<string, number>;
     sundayLastStart: number;
-    berlinPlz: string[];
+    plzBezirke: Record<string, string[]>;
+    nurB: string[];
     minOrderDelivery: number;
     from: string[];
     fromLabel: string;
@@ -721,13 +727,33 @@ const minDate = tomorrow.toISOString().slice(0, 10);
     function plzPruefen(): void {
       if (!plzFeld) return;
       const wert = plzFeld.value.trim();
-      const fremd = wert.length === 5 && !pricing.berlinPlz.includes(wert);
-      plzFeld.setCustomValidity(fremd ? (form.dataset.plzWarning ?? '') : '');
-      plzFeld.classList.toggle('input--fehler', fremd);
+      const zone = String(new FormData(form).get('zone') ?? '');
+
+      let meldung = '';
+      if (wert.length === 5 && zone !== 'pickup') {
+        const bezirke = pricing.plzBezirke[wert];
+        if (!bezirke) {
+          meldung = form.dataset.plzOutside ?? '';
+        } else if (zone === 'lichtenberg' && !bezirke.includes('Lichtenberg')) {
+          meldung = form.dataset.plzLichtenberg ?? '';
+        } else if (zone === 'a' && bezirke.every((b) => pricing.nurB.includes(b))) {
+          meldung = form.dataset.plzZoneA ?? '';
+        }
+      }
+
+      plzFeld.setCustomValidity(meldung);
+      plzFeld.classList.toggle('input--fehler', Boolean(meldung));
+      if (plzHinweisEl) {
+        plzHinweisEl.textContent = meldung;
+        plzHinweisEl.hidden = !meldung;
+      }
     }
 
+    const plzHinweisEl = form.querySelector<HTMLElement>('[data-plz-meldung]');
     plzFeld?.addEventListener('input', plzPruefen);
     plzFeld?.addEventListener('blur', plzPruefen);
+    // Auch beim Zonenwechsel: Die Adresse bleibt, die Zone ändert sich.
+    form.addEventListener('change', plzPruefen);
 
     datumFeld?.addEventListener('change', () => {
       datumPruefen();

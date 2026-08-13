@@ -16,7 +16,7 @@ import {
   type SizeKey,
 } from '../../data/shop';
 import { DELIVERY_SLOTS, SUNDAY_LAST_START, site } from '../../data/site';
-import { istBerlinerPlz } from '../../data/berlin-plz';
+import { zonenFehler } from '../../data/berlin-plz';
 import { WORKSHOP_DATES, formatBySlug } from '../../data/workshops';
 
 // Zahlungen brauchen einen Server — diese Route wird nicht vorgerendert.
@@ -222,8 +222,9 @@ export const POST: APIRoute = async ({ request, url }) => {
     // darüber hinaus läuft nach Absprache und darf nicht durch die Kasse
     // laufen, wo ein fester Betrag berechnet wird.
     const plz = clean(payload.zip, 10);
-    if (zone.id !== 'pickup' && !istBerlinerPlz(plz)) {
-      return json({ error: 'zip_outside_berlin' }, 422);
+    const plzFehler = zonenFehler(plz, zone.id);
+    if (plzFehler) {
+      return json({ error: `zip_${plzFehler}` }, 422);
     }
 
     // Die Lieferadresse steht jetzt im Formular und nicht mehr nur bei

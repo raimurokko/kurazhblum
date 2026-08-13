@@ -586,6 +586,12 @@ label {
   border-color: var(--mauve-deep);
 }
 
+/* Meldung unter einem Feld. Mauve statt Rot: Auf dem dunklen Grund erreicht
+   Rot den Kontrastwert nicht, Mauve ist die Warnfarbe der Palette. */
+.hint--fehler {
+  color: var(--mauve);
+}
+
 /* — Hilfsklassen ———————————————————————————————————————————————————— */
 
 .visually-hidden {

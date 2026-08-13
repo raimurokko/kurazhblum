@@ -273,10 +273,17 @@ Die **Postleitzahl** wird gegen die 190 Berliner Postleitzahlen geprüft
 (`src/data/berlin-plz.ts`). Vorher ließ sich Zone „Lichtenberg“ für 15 € wählen
 und an der Kasse eine Adresse in Hamburg eintragen.
 
+Dazu kommt die Zone: `src/data/berlin-plz.json` hält je Postleitzahl ihre
+Bezirke — 56 der 190 liegen in mehreren. Zone „Lichtenberg“ mit einer Adresse
+in Spandau wird abgewiesen, ebenso Tarifbereich A, wenn jeder in Frage
+kommende Bezirk vollständig außerhalb des Rings liegt.
+
 > **Keine Tabelle Postleitzahl → Tarifbereich.** Der Ring schneidet quer durch
 > Postleitzahlgebiete; eine solche Zuordnung wäre geraten und würde
-> Bestellungen abweisen, die in Ordnung sind. Wo sich nichts Sicheres sagen
-> lässt, sagt die Prüfung nichts.
+> Bestellungen abweisen, die in Ordnung sind. Wo er einen Bezirk teilt —
+> Neukölln, Prenzlauer Berg, Schöneberg, Wedding, Alt-Treptow —, sagt die
+> Prüfung nichts. Und sie prüft nur die Richtung, die Gala Geld kostet: eine zu
+> billige Zone. Wer zu viel zahlen will, darf das.
 
 > **Fachlicher Hinweis.** Päonienrosen sind *keine* Pfingstrosen. Es sind stark
 > gefüllte Gartenrosen, die deren Form nachbilden. Sie stehen deshalb unter
@@ -474,10 +481,8 @@ markiert, damit sie niemand für bestätigt hält:
 - Ein zweites Hochzeitsmotiv — derzeit läuft dasselbe Foto auf Startseite und
   Veranstaltungsseite
 
-**Eine offene Baustelle im Code:**
+**Offene Baustellen im Code:**
 
-Die feinere Zonenprüfung — Zone „Lichtenberg“ gegen eine Adresse in Spandau —
-braucht die Zuordnung Postleitzahl → Bezirk. Das Skript dafür ist fertig
-(`tools/orte/plz.py`), aber Overpass hat am 13.08.2026 über zehn Minuten lang
-nur `504` geliefert. Es wiederholt inzwischen mit Pausen über drei Spiegel und
-muss nur noch einmal durchlaufen.
+Keine mehr. Die Zonenprüfung ist seit dem 13.08.2026 vollständig: 190
+Postleitzahlen mit ihren Bezirken in `src/data/berlin-plz.json`, erneuerbar
+über `tools/orte/plz.py`.

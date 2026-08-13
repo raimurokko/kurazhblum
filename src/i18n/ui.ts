@@ -121,6 +121,8 @@ export const ui = {
     'cfg.delivery.zip': 'Postleitzahl',
     'cfg.delivery.zip.hint': 'Berliner Postleitzahl, fünfstellig.',
     'cfg.delivery.zip.outside': 'Diese Postleitzahl liegt nicht in Berlin. Außerhalb liefere ich nur nach Absprache — schreiben Sie mir kurz.',
+    'cfg.delivery.zip.lichtenberg': 'Diese Postleitzahl liegt nicht in Lichtenberg. Bitte wählen Sie den passenden Tarifbereich.',
+    'cfg.delivery.zip.zonea': 'Diese Adresse liegt außerhalb des S-Bahn-Rings — dort gilt Tarifbereich B.',
     'cfg.delivery.extra': 'Etage, Firma, Klingel (optional)',
     'cfg.delivery.zone': 'Liefergebiet',
     'cfg.delivery.beyond':
@@ -469,6 +471,8 @@ export const ui = {
     'cfg.delivery.zip': 'Поштовий індекс',
     'cfg.delivery.zip.hint': 'Берлінський індекс, пʼять цифр.',
     'cfg.delivery.zip.outside': 'Цей індекс не належить Берліну. За межі міста доставляю лише за домовленістю — напишіть мені.',
+    'cfg.delivery.zip.lichtenberg': 'Цей індекс не в Ліхтенберзі. Оберіть, будь ласка, відповідну тарифну зону.',
+    'cfg.delivery.zip.zonea': 'Ця адреса за межами кільця S-Bahn — там діє тарифна зона B.',
     'cfg.delivery.extra': 'Поверх, компанія, дзвінок (необовʼязково)',
     'cfg.delivery.zone': 'Зона доставки',
     'cfg.delivery.beyond':
@@ -804,6 +808,8 @@ export const ui = {
     'cfg.delivery.zip': 'Postcode',
     'cfg.delivery.zip.hint': 'Berlin postcode, five digits.',
     'cfg.delivery.zip.outside': 'This postcode is not in Berlin. Outside the city I deliver by arrangement only — just write to me.',
+    'cfg.delivery.zip.lichtenberg': 'This postcode is not in Lichtenberg. Please pick the matching fare zone.',
+    'cfg.delivery.zip.zonea': 'This address lies outside the S-Bahn Ring — fare zone B applies there.',
     'cfg.delivery.extra': 'Floor, company, doorbell (optional)',
     'cfg.delivery.zone': 'Delivery area',
     'cfg.delivery.beyond':
@@ -1139,6 +1145,8 @@ export const ui = {
     'cfg.delivery.zip': 'Почтовый индекс',
     'cfg.delivery.zip.hint': 'Берлинский индекс, пять цифр.',
     'cfg.delivery.zip.outside': 'Этот индекс не относится к Берлину. За пределы города доставляю только по договорённости — напишите мне.',
+    'cfg.delivery.zip.lichtenberg': 'Этот индекс не в Лихтенберге. Выберите, пожалуйста, подходящую тарифную зону.',
+    'cfg.delivery.zip.zonea': 'Этот адрес за кольцом S-Bahn — там действует тарифная зона B.',
     'cfg.delivery.extra': 'Этаж, компания, звонок (необязательно)',
     'cfg.delivery.zone': 'Зона доставки',
     'cfg.delivery.beyond':
