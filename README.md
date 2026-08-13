@@ -360,9 +360,18 @@ enthalten TODO-Markierungen (Kontaktadresse, Domain, `Expires`-Datum).
 
 Bewusste Entscheidungen, die beim Ändern nicht verloren gehen sollten:
 
-- **Schriften werden selbst gehostet.** Astro lädt Cormorant Garamond und Inter
-  beim Build herunter und liefert sie vom eigenen Server aus. Keine Verbindung
-  zu Google Fonts — das ist in Deutschland ein realer Abmahngrund.
+- **Schriften liegen im Repository.** Cormorant Garamond und Inter stehen als
+  WebFonts in `src/fonts/`, die OFL-Lizenzen in `public/fonts/`. Keine
+  Verbindung zu Google Fonts — das ist in Deutschland ein realer Abmahngrund.
+
+  Bis August 2026 lud Astros `google()`-Provider die Dateien bei jedem Build
+  herunter. Zur Laufzeit war das unbedenklich, der Build hing aber an URLs,
+  die Google ohne Ankündigung dreht: Am 13.08.2026 lieferte eine davon einen
+  404 und der Pages-Build brach ab. Beide Familien sind Variable Fonts, ein
+  Schnitt deckt die ganze Gewichtsspanne ab — zwölf Dateien mit 432 KB statt
+  vorher sechzehn mit 591 KB. Zum Aktualisieren: `python3
+  tools/schriften/holen.py`, dann die ausgegebenen Blöcke in
+  `astro.config.mjs` eintragen.
 - **Kein Tracking, keine Analyse-Cookies, keine Social-Media-Pixel.** Deshalb
   braucht die Website auch kein Cookie-Banner.
 - **Instagram-Bilder liegen lokal.** Es entsteht keine Verbindung zu Meta,

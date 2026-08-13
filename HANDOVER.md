@@ -260,8 +260,10 @@ den anderen Sprachen steht ein Hinweis darauf.
 
 Bewusste Entscheidungen, die beim Ändern nicht verloren gehen sollten:
 
-- **Schriften werden selbst gehostet.** Keine Verbindung zu Google Fonts — in
-  Deutschland ein realer Abmahngrund.
+- **Schriften liegen im Repository**, nicht bei Google. Keine Verbindung zu
+  Google Fonts — in Deutschland ein realer Abmahngrund. Seit August 2026 auch
+  nicht mehr beim Bauen: Der frühere Abruf von fonts.gstatic.com brach den
+  Build, als Google eine Datei-URL drehte.
 - **Kein Tracking, keine Analyse-Cookies, keine Pixel.** Deshalb braucht die
   Website auch kein Cookie-Banner.
 - **Instagram-Bilder liegen lokal.** Keine Verbindung zu Meta, solange niemand
