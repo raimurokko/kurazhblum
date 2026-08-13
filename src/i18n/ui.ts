@@ -54,13 +54,13 @@ export const ui = {
 
     // — Vertrauensleiste —
     'trust.delivery.title': 'Lieferung in Berlin',
-    'trust.delivery.text': 'Am selben Tag, wenn Sie bis 14 Uhr bestellen.',
+    'trust.delivery.text': 'Innerhalb von 24 Stunden nach Ihrer Bestellung.',
     'trust.photo.title': 'Foto vor der Lieferung',
-    'trust.photo.text': 'Sie sehen Ihren Strauß, bevor er das Atelier verlässt.',
+    'trust.photo.text': 'Auf Anfrage — sagen Sie bei der Bestellung Bescheid.',
     'trust.card.title': 'Grußkarte gratis',
-    'trust.card.text': 'Von Hand geschrieben, zu jedem Strauß.',
-    'trust.handmade.title': 'Kein Lager, keine Chemie',
-    'trust.handmade.text': 'Frisch eingekauft, von Hand gebunden, nichts auf Vorrat.',
+    'trust.card.text': 'Von Hand geschrieben, auf Wunsch bei der Bestellung.',
+    'trust.handmade.title': 'Nur frische Ware',
+    'trust.handmade.text': 'Individuell abgestimmt, mit jeder Kundin und jedem Kunden.',
 
     // — Shop —
     'shop.title': 'Blumen',
@@ -362,13 +362,13 @@ export const ui = {
     'home.instagram.cta': 'Підписатися в Instagram',
 
     'trust.delivery.title': 'Доставка в Берліні',
-    'trust.delivery.text': 'Того ж дня, якщо замовити до 14:00.',
+    'trust.delivery.text': 'Протягом 24 годин після оформлення замовлення.',
     'trust.photo.title': 'Фото перед доставкою',
-    'trust.photo.text': 'Ви бачите свій букет, перш ніж він поїде з ательє.',
+    'trust.photo.text': 'Надається на запит — просто зазначте при замовленні.',
     'trust.card.title': 'Листівка безкоштовно',
-    'trust.card.text': 'Написана від руки, до кожного букета.',
-    'trust.handmade.title': 'Без складу та хімії',
-    'trust.handmade.text': 'Свіжа закупівля, ручна робота, нічого про запас.',
+    'trust.card.text': 'Підписана від руки, за бажанням при оформленні замовлення.',
+    'trust.handmade.title': 'Тільки свіжа поставка',
+    'trust.handmade.text': 'Індивідуальний підхід до кожного клієнта.',
 
     'shop.title': 'Квіти',
     'shop.subtitle':
@@ -655,13 +655,13 @@ export const ui = {
     'home.instagram.cta': 'Follow on Instagram',
 
     'trust.delivery.title': 'Delivery in Berlin',
-    'trust.delivery.text': 'Same day when you order before 2 pm.',
+    'trust.delivery.text': 'Within 24 hours of placing your order.',
     'trust.photo.title': 'A photo before delivery',
-    'trust.photo.text': 'You see your bouquet before it leaves the atelier.',
+    'trust.photo.text': 'On request — just say so when you order.',
     'trust.card.title': 'Free greeting card',
-    'trust.card.text': 'Hand-written, with every bouquet.',
-    'trust.handmade.title': 'No warehouse, no chemicals',
-    'trust.handmade.text': 'Bought fresh, tied by hand, nothing kept in stock.',
+    'trust.card.text': 'Hand-written, on request when you order.',
+    'trust.handmade.title': 'Only fresh supply',
+    'trust.handmade.text': 'An individual approach for every customer.',
 
     'shop.title': 'Flowers',
     'shop.subtitle':
@@ -917,7 +917,7 @@ export const ui = {
     'home.hero.kicker': 'Цветочное ателье в Берлине',
     'home.hero.title': 'Цветы, что создают момент.',
     'home.hero.text':
-      'Букеты ручной работы, свадебная флористика и оформление событий — из небольшого ателье в Берлине, с украинским почерком.',
+      'Букеты ручной работы, свадебная флористика и оформление мероприятий — из небольшого ателье в Берлине, с украинским почерком.',
     'home.hero.cta': 'Выбрать букет',
     'home.hero.cta2': 'Запрос на оформление мероприятия',
 
@@ -948,13 +948,13 @@ export const ui = {
     'home.instagram.cta': 'Подписаться в Instagram',
 
     'trust.delivery.title': 'Доставка по Берлину',
-    'trust.delivery.text': 'В тот же день при заказе до 14:00.',
+    'trust.delivery.text': 'В течение 24 часов после оформления заказа.',
     'trust.photo.title': 'Фото перед доставкой',
-    'trust.photo.text': 'Вы видите свой букет до того, как он уедет из ателье.',
+    'trust.photo.text': 'Предоставляется по запросу — укажите при оформлении заказа.',
     'trust.card.title': 'Открытка бесплатно',
-    'trust.card.text': 'Написана от руки, к каждому букету.',
-    'trust.handmade.title': 'Без склада и химии',
-    'trust.handmade.text': 'Свежая закупка, ручная работа, ничего про запас.',
+    'trust.card.text': 'Подписана вручную. Можно добавить при оформлении заказа.',
+    'trust.handmade.title': 'Только свежая поставка',
+    'trust.handmade.text': 'Индивидуальный подход к каждому клиенту.',
 
     'shop.title': 'Цветы',
     'shop.subtitle':

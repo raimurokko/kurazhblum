@@ -78,8 +78,9 @@ function extraLabel(extra: { price: number; from?: boolean }): string {
   return extra.from ? `${_('shop.from')} ${betrag}` : betrag;
 }
 
-// Frühester Liefertermin: morgen. Same-day läuft telefonisch, das ist ehrlicher
-// als ein Formular, das den Redaktionsschluss nicht kennt.
+// Frühester Liefertermin: morgen. Das deckt sich mit der Zusage „innerhalb
+// von 24 Stunden“ — heute noch anzubieten hieße, einen Tag zu versprechen,
+// dessen Route schon steht.
 const tomorrow = new Date();
 tomorrow.setDate(tomorrow.getDate() + 1);
 const minDate = tomorrow.toISOString().slice(0, 10);

@@ -64,8 +64,12 @@ export const site = {
     ru: 'закрыто',
   } satisfies I18nText,
 
-  /** Bestellschluss für Lieferung am selben Tag. */
-  sameDayCutoff: '14:00',
+  /**
+   * Zusage für die Lieferung, in Stunden ab Bestelleingang. Der frühere
+   * Redaktionsschluss um 14 Uhr ist entfallen: Gala liefert innerhalb von
+   * 24 Stunden und will nicht, dass für Eilfälle angerufen wird.
+   */
+  deliveryWithinHours: 24,
 } as const;
 
 /** Zeitfenster für die Lieferung. */

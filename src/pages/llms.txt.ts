@@ -38,7 +38,7 @@ export const GET: APIRoute = ({ site: astroSite }) => {
   lines.push(`- Standort: ${site.address.city}, Deutschland`);
   lines.push(`- Liefergebiet: ${DELIVERY_ZONES.filter((z) => z.id !== 'pickup').map((z) => t(z.name, DEFAULT_LOCALE)).join('; ')}`);
   lines.push(`- Mindestbestellwert für Lieferung: ${formatPrice(MIN_ORDER_DELIVERY, DEFAULT_LOCALE)} (Abholung ohne Mindestwert)`);
-  lines.push(`- Lieferung am selben Tag bei Bestellung bis ${site.sameDayCutoff} Uhr, telefonisch`);
+  lines.push('- Lieferung innerhalb von 24 Stunden nach der Bestellung');
   lines.push(`- Sprachen der Website: ${LOCALES.join(', ')}`);
   lines.push(`- Instagram: ${site.instagramUrl}`);
   lines.push('');

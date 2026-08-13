@@ -132,26 +132,16 @@ export interface DeliveryZone {
 }
 
 /**
- * A und B sind die **VBB-Tarifbereiche**, dieselben, die auf jedem
- * BVG-Ticket stehen. Das ist keine Auslegung, sondern Galas eigene Sprache —
- * und ein Glücksfall: In Berlin weiß fast jede Kundin, ob sie in A oder B
- * wohnt, weil sie es beim Fahrkartenkauf jedes Mal entscheiden muss.
+ * A und B sind die VBB-Tarifbereiche vom BVG-Ticket.
  *
- * Die entscheidende Eigenheit: **Die Grenze ist der S-Bahn-Ring, nicht die
- * Bezirksgrenze.** Mehrere Ortsteile werden vom Ring durchschnitten und
- * liegen teils in A, teils in B — Neukölln, Prenzlauer Berg, Schöneberg,
- * Wedding, Alt-Treptow. Die Ringbahnhöfe selbst zählen noch zu A. Wer die
- * Zonen nach Bezirken sortiert, rechnet deshalb systematisch falsch; die
- * Hinweise nennen darum Grenzbahnhöfe statt Bezirksnamen.
+ * Die Grenze ist der S-Bahn-Ring, nicht die Bezirksgrenze — Neukölln,
+ * Prenzlauer Berg, Schöneberg, Wedding und Alt-Treptow liegen teils in A,
+ * teils in B, die Ringbahnhöfe noch in A. Deshalb nennen die Hinweise
+ * Grenzbahnhöfe statt Bezirksnamen.
  *
- * **Tarifbereich C ist absichtlich nicht dabei.** C ist kein Berliner
- * Gebiet, sondern das Brandenburger Umland samt Potsdam, Schönefeld und BER —
- * und Gala hat „kein Potsdam“ gesagt. Ganz Berlin ist AB; damit deckt die
- * Auswahl ihr Liefergebiet vollständig ab. Alles darüber hinaus läuft über
- * den Hinweis unter der Auswahl nach Absprache.
- *
- * Lichtenberg liegt praktisch vollständig in B, steht hier aber als eigene,
- * günstigste Zone: Es ist der Bezirk rund ums Atelier.
+ * Tarifbereich C ist kein Berliner Gebiet, sondern das Brandenburger Umland
+ * mit Potsdam und BER; ganz Berlin ist AB. Lichtenberg liegt in B, steht hier
+ * aber günstiger, weil das Atelier dort ist.
  */
 export const DELIVERY_ZONES: DeliveryZone[] = [
   {
@@ -406,10 +396,10 @@ export const BOUQUETS: Bouquet[] = [
       ru: 'Выбираю я — экономите вы. На десять процентов дешевле.',
     },
     description: {
-      de: 'Sie überlassen mir die Auswahl, und ich binde aus den frischesten Blumen, die am Bestelltag da sind. Genau deshalb ist er günstiger: Ich kann nach Qualität einkaufen statt nach Liste, und nichts bleibt liegen. Sie sagen mir nur die Stimmung — hell, dunkel, warm, kühl — und bekommen vor der Lieferung ein Foto.',
-      uk: 'Ви лишаєте вибір мені, а я збираю з найсвіжіших квітів, які є в день замовлення. Саме тому він дешевший: я купую за якістю, а не за списком, і нічого не залишається. Ви кажете лише настрій — світлий, темний, теплий, холодний — і отримуєте фото перед доставкою.',
-      en: 'You leave the choice to me, and I tie the bouquet from the freshest flowers available on the day of your order. That is exactly why it costs less: I can buy by quality rather than by list, and nothing goes to waste. You only tell me the mood — light, dark, warm, cool — and get a photo before delivery.',
-      ru: 'Вы оставляете выбор мне, а я собираю из самых свежих цветов, которые есть в день заказа. Именно поэтому он дешевле: я покупаю по качеству, а не по списку, и ничего не остаётся. Вы говорите только настроение — светлое, тёмное, тёплое, холодное — и получаете фото перед доставкой.',
+      de: 'Sie überlassen mir die Auswahl, und ich binde aus den frischesten Blumen, die am Bestelltag da sind. Genau deshalb ist er günstiger: Ich kann nach Qualität einkaufen statt nach Liste, und nichts bleibt liegen. Sie sagen mir nur die Stimmung — hell, dunkel, warm, kühl — und können vor der Lieferung ein Foto anfordern.',
+      uk: 'Ви лишаєте вибір мені, а я збираю з найсвіжіших квітів, які є в день замовлення. Саме тому він дешевший: я купую за якістю, а не за списком, і нічого не залишається. Ви кажете лише настрій — світлий, темний, теплий, холодний — і можете попросити фото перед доставкою.',
+      en: 'You leave the choice to me, and I tie the bouquet from the freshest flowers available on the day of your order. That is exactly why it costs less: I can buy by quality rather than by list, and nothing goes to waste. You only tell me the mood — light, dark, warm, cool — and can ask for a photo before delivery.',
+      ru: 'Вы оставляете выбор мне, а я собираю из самых свежих цветов, которые есть в день заказа. Именно поэтому он дешевле: я покупаю по качеству, а не по списку, и ничего не остаётся. Вы говорите только настроение — светлое, тёмное, тёплое, холодное — и можете запросить фото перед доставкой.',
     },
     composition: {
       de: 'Wechselnd nach Markt und Jahreszeit — die Auswahl liegt bei der Floristin',
