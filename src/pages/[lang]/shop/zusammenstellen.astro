@@ -5,6 +5,8 @@ import { localePaths, t, type Locale } from '../../../i18n/config';
 import { useTranslations, type UiKey } from '../../../i18n/ui';
 import { FLOWERS } from '../../../data/flowers';
 import { SIZES, SIZE_ENTRY_PRICES, formatPrice } from '../../../data/shop';
+import { DELIVERY_SLOTS, SUNDAY_LAST_START } from '../../../data/site';
+import { asset } from '../../../i18n/config';
 
 export function getStaticPaths() {
   return localePaths();
@@ -23,6 +25,11 @@ const stimmungen = ['light', 'bright', 'dark', 'mono'] as const;
   85 € anfragen, und Gala müsste die Anfrage mit einer Absage beantworten.
 */
 const budgets = [SIZE_ENTRY_PRICES.m, SIZE_ENTRY_PRICES.l, SIZE_ENTRY_PRICES.xl, 35000];
+
+/** Frühester Termin: morgen — dieselbe Zusage wie im Konfigurator. */
+const morgen = new Date();
+morgen.setDate(morgen.getDate() + 1);
+const minDate = morgen.toISOString().slice(0, 10);
 
 /*
   Weg A endet bewusst nicht im Warenkorb. Gala hat kein Lager — was heute da
@@ -45,7 +52,7 @@ const budgets = [SIZE_ENTRY_PRICES.m, SIZE_ENTRY_PRICES.l, SIZE_ENTRY_PRICES.xl,
 
   <section class="section section--tint">
     <div class="wrap wrap-narrow">
-      <form class="panel builder" data-builder>
+      <form class="panel builder" data-builder data-sonntag-grenze={SUNDAY_LAST_START}>
         <!-- Blumen -->
         <fieldset class="build-block">
           <legend class="field-label">{_('build.flowers')}</legend>
@@ -60,6 +67,17 @@ const budgets = [SIZE_ENTRY_PRICES.m, SIZE_ENTRY_PRICES.l, SIZE_ENTRY_PRICES.xl,
             }
           </div>
           <p class="hint">{_('build.flowers.hint')}</p>
+
+          {/*
+            Die Liste sagt, womit Gala regelmäßig arbeitet — sie ist keine
+            Grenze. Wer Wicken, Mohn oder Flieder möchte, schreibt es hier
+            hinein, statt es in die Anmerkung zu quetschen, wo es zwischen
+            Anlass und Lieferadresse untergeht.
+          */}
+          <label class="field build-eigene">
+            <span class="field-label">{_('build.flowers.own')}</span>
+            <input class="input" type="text" name="ownFlowers" placeholder={_('build.flowers.own.placeholder')} />
+          </label>
         </fieldset>
 
         <!-- Farbstimmung -->
@@ -71,6 +89,7 @@ const budgets = [SIZE_ENTRY_PRICES.m, SIZE_ENTRY_PRICES.l, SIZE_ENTRY_PRICES.xl,
                 <label class="choice">
                   <input type="radio" name="mood" value={_(`build.mood.${mood}` as UiKey)} checked={index === 1} />
                   <span class="choice-title">{_(`build.mood.${mood}` as UiKey)}</span>
+                  <span class="choice-desc">{_(`build.mood.${mood}.desc` as UiKey)}</span>
                 </label>
               ))
             }
@@ -114,6 +133,96 @@ const budgets = [SIZE_ENTRY_PRICES.m, SIZE_ENTRY_PRICES.l, SIZE_ENTRY_PRICES.xl,
         <label class="field">
           <span class="field-label">{_('build.note')}</span>
           <textarea class="textarea" name="note" rows="3" placeholder={_('build.note.placeholder')}></textarea>
+        </label>
+
+        <!--
+          Ab hier ist es eine Bestellung und kein Stimmungsbild mehr. Weg A
+          führt weiterhin nicht in die Kasse — die Verfügbarkeit klärt Gala
+          vorher —, aber alles, was sie zum Binden und Ausfahren braucht,
+          gehört in dieselbe Nachricht. Sonst folgen drei Rückfragen.
+        -->
+        <fieldset class="build-block">
+          <legend class="field-label">{_('build.contact')}</legend>
+          <div class="build-row">
+            <label class="field">
+              <span class="field-label">{_('form.firstname')}</span>
+              <input class="input" type="text" name="firstName" autocomplete="given-name" />
+            </label>
+            <label class="field">
+              <span class="field-label">{_('form.lastname')}</span>
+              <input class="input" type="text" name="lastName" autocomplete="family-name" />
+            </label>
+          </div>
+          <div class="build-row">
+            <label class="field">
+              <span class="field-label">{_('form.email')}</span>
+              <input class="input" type="email" name="email" autocomplete="email" />
+            </label>
+            <label class="field">
+              <span class="field-label">{_('form.phone')}</span>
+              <input class="input" type="tel" name="phone" autocomplete="tel" />
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="build-block">
+          <legend class="field-label">{_('cfg.delivery')}</legend>
+          <div class="build-row">
+            <label class="field">
+              <span class="field-label">{_('cfg.delivery.date')}</span>
+              <input class="input" type="date" name="deliveryDate" min={minDate} />
+              <span class="hint" data-wochentag></span>
+            </label>
+            <label class="field">
+              <span class="field-label">{_('cfg.delivery.slot')}</span>
+              <select class="select" name="slot" data-slot>
+                {
+                  DELIVERY_SLOTS.map((slot) => (
+                    <option value={t(slot.label, lang)} data-from={slot.from} selected={slot.from === 14}>
+                      {t(slot.label, lang)}
+                      {slot.fee > 0 ? ` — + ${formatPrice(slot.fee, lang)}` : ''}
+                    </option>
+                  ))
+                }
+              </select>
+            </label>
+          </div>
+          <p class="hint">{_('cfg.delivery.early')}</p>
+
+          <div class="build-row">
+            <label class="field">
+              <span class="field-label">{_('cfg.delivery.street')}</span>
+              <input
+                class="input"
+                type="text"
+                name="street"
+                list="build-orte"
+                autocomplete="off"
+                data-orte={asset('/data/berlin-strassen.json')}
+              />
+              <datalist id="build-orte" />
+            </label>
+            <label class="field">
+              <span class="field-label">{_('cfg.delivery.number')}</span>
+              <input class="input" type="text" name="houseNumber" />
+            </label>
+          </div>
+
+          <div class="build-row">
+            <label class="field">
+              <span class="field-label">{_('cfg.delivery.zip')}</span>
+              <input class="input" type="text" name="zip" inputmode="numeric" autocomplete="postal-code" />
+            </label>
+            <label class="field">
+              <span class="field-label">{_('cfg.delivery.extra')}</span>
+              <input class="input" type="text" name="addressNote" />
+            </label>
+          </div>
+        </fieldset>
+
+        <label class="field">
+          <span class="field-label">{_('cfg.card.message')}</span>
+          <textarea class="textarea" name="cardMessage" rows="2" maxlength="240" placeholder={_('cfg.card.placeholder')}></textarea>
         </label>
 
         <!-- Zusammenfassung -->
@@ -194,39 +303,51 @@ const budgets = [SIZE_ENTRY_PRICES.m, SIZE_ENTRY_PRICES.l, SIZE_ENTRY_PRICES.xl,
     // Beschriftungen aus dem Formular ziehen, damit die Nachricht in der
     // Sprache der Seite entsteht — ohne die Texte hier zu wiederholen.
     const label = (name: string): string =>
-      form.querySelector(`[name="${name}"]`)?.closest('.field, fieldset')?.querySelector('.field-label')
-        ?.textContent?.trim() ?? name;
+      form
+        .querySelector(`[name="${name}"]`)
+        ?.closest('.field, fieldset')
+        ?.querySelector('.field-label')
+        ?.textContent?.replace(/\s+/g, ' ')
+        .trim() ?? name;
 
+    /*
+      Die Nachricht liest das Formular ab, statt eine zweite Liste von Feldern
+      zu pflegen: Wer unten ein Feld ergänzt, muss hier nichts nachtragen.
+      Leere Felder fallen weg — eine Zeile „Telefon:“ ohne Nummer sagt weniger
+      als gar keine.
+    */
     function nachricht(): string {
       const data = new FormData(form!);
-      const blumen = data.getAll('flowers').map(String);
       const zeilen: string[] = [];
 
-      if (blumen.length) zeilen.push(`${label('flowers')}: ${blumen.join(', ')}`);
-      const mood = data.get('mood');
-      if (mood) zeilen.push(`${label('mood')}: ${mood}`);
-      // Die sichtbare Beschriftung, nicht der Wert: Sie trägt den
-      // Einstiegspreis mit, und der gehört in die Nachricht — Gala sieht damit
-      // sofort, von welcher Staffel die Anfrage ausgeht.
-      const sizeSelect = form!.querySelector<HTMLSelectElement>('[data-size]');
-      zeilen.push(`${label('size')}: ${sizeSelect?.selectedOptions[0]?.textContent?.trim() ?? data.get('size')}`);
-      zeilen.push(`${label('budget')}: ${data.get('budget')}`);
+      const blumen = data.getAll('flowers').map(String);
+      const eigene = String(data.get('ownFlowers') ?? '').trim();
+      const alleBlumen = [...blumen, ...(eigene ? [eigene] : [])];
+      if (alleBlumen.length) zeilen.push(`${label('flowers')}: ${alleBlumen.join(', ')}`);
 
-      const note = String(data.get('note') ?? '').trim();
-      if (note) zeilen.push(`${label('note')}: ${note}`);
+      for (const feld of form!.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+        'input:not([type="checkbox"]), select, textarea',
+      )) {
+        if (feld.name === 'ownFlowers' || !feld.value.trim()) continue;
+        // Radioknöpfe stehen alle im Formular, gemeint ist nur der gewählte.
+        if (feld instanceof HTMLInputElement && feld.type === 'radio' && !feld.checked) continue;
+        // Die sichtbare Beschriftung, nicht der Wert: Bei Größe und Fenster
+        // trägt sie den Preis beziehungsweise den Aufschlag mit.
+        const wert =
+          feld instanceof HTMLSelectElement
+            ? feld.selectedOptions[0]?.textContent?.trim() ?? feld.value
+            : feld.value.trim();
+        zeilen.push(`${label(feld.name)}: ${wert}`);
+      }
 
       return zeilen.join('\n');
     }
 
     /*
       Größe und Budget hängen zusammen: Ein XL-Strauß beginnt bei 220 €, eine
-      Anfrage über „ca. 85 €“ wäre für ihn nicht erfüllbar. Stufen unterhalb
-      des Einstiegs verschwinden deshalb aus der Liste, statt nur gesperrt zu
-      werden — eine ausgegraute Option lädt zum Klicken ein und erklärt nichts.
-
-      `hidden` *und* `disabled`: Ersteres nehmen moderne Browser aus der
-      aufgeklappten Liste, Letzteres verhindert, dass eine ausgeblendete Stufe
-      per Tastatur doch noch gewählt wird.
+      Anfrage über „ca. 85 €“ wäre für ihn nicht erfüllbar. Stufen darunter
+      verschwinden, statt nur gesperrt zu werden — eine ausgegraute Option
+      lädt zum Klicken ein und erklärt nichts.
     */
     const sizeSelect = form.querySelector<HTMLSelectElement>('[data-size]');
     const budgetSelect = form.querySelector<HTMLSelectElement>('[data-budget]');
@@ -242,18 +363,103 @@ const budgets = [SIZE_ENTRY_PRICES.m, SIZE_ENTRY_PRICES.l, SIZE_ENTRY_PRICES.xl,
         option.disabled = !passt;
         if (passt && !ersteGueltige) ersteGueltige = option;
       }
-
-      // Wer von M auf XL wechselt, steht sonst auf einer Stufe, die es für XL
-      // nicht mehr gibt — der Browser lässt die Auswahl einfach stehen.
-      if (budgetSelect.selectedOptions[0]?.disabled && ersteGueltige) {
-        ersteGueltige.selected = true;
-      }
+      if (budgetSelect.selectedOptions[0]?.disabled && ersteGueltige) ersteGueltige.selected = true;
     }
+
+    /*
+      Wochentag und Sonntagsregel, wie im Konfigurator: Sonntags schließt das
+      Atelier um 16 Uhr. Ein Fenster danach anzubieten hieße, eine Fahrt
+      zuzusagen, die niemand macht — auch wenn diese Nachricht erst noch
+      bestätigt wird.
+    */
+    const INTL_LOCALE: Record<string, string> = { de: 'de-DE', uk: 'uk-UA', en: 'en-IE', ru: 'ru-RU' };
+    const seitenSprache = document.documentElement.lang || 'de';
+    const datumFeld = form.querySelector<HTMLInputElement>('[name="deliveryDate"]');
+    const slotFeld = form.querySelector<HTMLSelectElement>('[data-slot]');
+    const wochentagEl = form.querySelector<HTMLElement>('[data-wochentag]');
+    const sonntagGrenze = Number(form.dataset.sonntagGrenze ?? 15);
+
+    function datumPruefen(): void {
+      if (!datumFeld?.value || !slotFeld) return;
+      // Ortszeit erzwingen: `new Date('2027-06-12')` wäre UTC-Mitternacht.
+      const [jahr, monat, tag] = datumFeld.value.split('-').map(Number);
+      const datum = new Date(jahr, monat - 1, tag);
+
+      if (wochentagEl) {
+        wochentagEl.textContent = datum.toLocaleDateString(INTL_LOCALE[seitenSprache] ?? 'de-DE', {
+          weekday: 'long',
+        });
+      }
+
+      const istSonntag = datum.getDay() === 0;
+      let ersteGueltige: HTMLOptionElement | null = null;
+      for (const option of slotFeld.options) {
+        const passt = !istSonntag || Number(option.dataset.from ?? 0) <= sonntagGrenze;
+        option.hidden = !passt;
+        option.disabled = !passt;
+        if (passt && !ersteGueltige) ersteGueltige = option;
+      }
+      if (slotFeld.selectedOptions[0]?.disabled && ersteGueltige) ersteGueltige.selected = true;
+    }
+
+    /* Straßenvorschläge aus derselben lokalen Berliner Liste — kein Geocoder. */
+    const strasseFeld = form.querySelector<HTMLInputElement>('[name="street"][data-orte]');
+    const strasseListe = form.querySelector<HTMLDataListElement>('#build-orte');
+
+    if (strasseFeld && strasseListe) {
+      let strassen: string[] | null = null;
+      let laden: Promise<void> | null = null;
+
+      const strassenLaden = (): Promise<void> => {
+        laden ??= fetch(strasseFeld.dataset.orte ?? '')
+          .then((antwort) => (antwort.ok ? antwort.json() : []))
+          .then((daten) => {
+            strassen = Array.isArray(daten) ? daten : [];
+          })
+          .catch(() => {
+            strassen = [];
+          });
+        return laden;
+      };
+
+      const vorschlagen = (): void => {
+        const eingabe = strasseFeld.value.trim().toLowerCase();
+        if (!strassen || eingabe.length < 2) {
+          strasseListe.replaceChildren();
+          return;
+        }
+        const beginnt: string[] = [];
+        const enthaelt: string[] = [];
+        for (const strasse of strassen) {
+          const klein = strasse.toLowerCase();
+          if (klein.startsWith(eingabe)) beginnt.push(strasse);
+          else if (klein.includes(eingabe)) enthaelt.push(strasse);
+          if (beginnt.length >= 20) break;
+        }
+        strasseListe.replaceChildren(
+          ...[...beginnt, ...enthaelt].slice(0, 20).map((strasse) => {
+            const option = document.createElement('option');
+            option.value = strasse;
+            return option;
+          }),
+        );
+      };
+
+      strasseFeld.addEventListener('focus', () => void strassenLaden().then(vorschlagen), { once: true });
+      strasseFeld.addEventListener('input', () => void strassenLaden().then(vorschlagen));
+    }
+
+    // Am Formular statt am Feld: So greift die Regel auch, wenn die Eingabe
+    // anders zustande kommt als durch Tippen — etwa beim Wiederherstellen.
+    form.addEventListener('change', datumPruefen);
+    datumPruefen();
 
     function render() {
       budgetsFiltern();
       const text = nachricht();
-      const blumenGewaehlt = new FormData(form!).getAll('flowers').length > 0;
+      const daten = new FormData(form!);
+      const blumenGewaehlt =
+        daten.getAll('flowers').length > 0 || String(daten.get('ownFlowers') ?? '').trim().length > 0;
       preview!.textContent = blumenGewaehlt ? text : leer;
 
       // Die Links tragen den Text mit, damit Messenger und Mailprogramm
