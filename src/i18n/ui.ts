@@ -177,6 +177,8 @@ export const ui = {
     'form.phone': 'Telefon',
     'form.date': 'Datum',
     'form.location': 'Adresse des Veranstaltungsortes',
+    'form.location.hint':
+      'Vorschläge: Berliner Straßen aus OpenStreetMap, lokal durchsucht — es geht keine Eingabe an einen fremden Dienst. Der Name der Location tut es auch. © OpenStreetMap-Mitwirkende',
     'form.guests': 'Anzahl Gäste',
     'form.budget': 'Budgetrahmen',
     'form.services': 'Gewünschte Leistungen',
@@ -488,6 +490,8 @@ export const ui = {
     'form.phone': 'Телефон',
     'form.date': 'Дата',
     'form.location': 'Адреса місця проведення',
+    'form.location.hint':
+      'Підказки: берлінські вулиці з OpenStreetMap, пошук відбувається локально — жодне введення не йде до стороннього сервісу. Назва локації теж підійде. © Учасники OpenStreetMap',
     'form.guests': 'Кількість гостей',
     'form.budget': 'Орієнтовний бюджет',
     'form.services': 'Потрібні послуги',
@@ -790,6 +794,8 @@ export const ui = {
     'form.phone': 'Phone',
     'form.date': 'Date',
     'form.location': 'Address of the venue',
+    'form.location.hint':
+      'Suggestions: Berlin streets from OpenStreetMap, searched locally — nothing you type goes to an outside service. The name of the venue works too. © OpenStreetMap contributors',
     'form.guests': 'Number of guests',
     'form.budget': 'Budget range',
     'form.services': 'What you need',
@@ -1092,6 +1098,8 @@ export const ui = {
     'form.phone': 'Телефон',
     'form.date': 'Дата',
     'form.location': 'Адрес места проведения',
+    'form.location.hint':
+      'Подсказки: берлинские улицы из OpenStreetMap, поиск идёт локально — ничего из введённого не уходит стороннему сервису. Название площадки тоже подойдёт. © Участники OpenStreetMap',
     'form.guests': 'Количество гостей',
     'form.budget': 'Ориентировочный бюджет',
     'form.services': 'Нужные услуги',

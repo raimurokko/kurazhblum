@@ -206,9 +206,25 @@ const berlinDistricts: { value: string; label: string }[] = [
   {
     showEventFields && (
       <div class="inq-row">
+        {/*
+          Adresse mit Vorschlägen aus einer lokal liegenden Liste Berliner
+          Straßen. `datalist` schlägt vor, ohne die Eingabe einzuschränken —
+          wichtig, weil viele den Namen der Location tippen („Alte Börse“) und
+          nicht die Straße. Die Liste wird erst beim ersten Klick ins Feld
+          nachgeladen, siehe Skript unten.
+        */}
         <label class="field">
           <span class="field-label">{_('form.location')}</span>
-          <input class="input" type="text" name="location" />
+          <input
+            class="input"
+            type="text"
+            name="location"
+            list="orte-berlin"
+            autocomplete="off"
+            data-orte={asset('/data/berlin-strassen.json')}
+          />
+          <datalist id="orte-berlin" />
+          <span class="hint">{_('form.location.hint')}</span>
         </label>
 
         <label class="field">
@@ -458,6 +474,75 @@ const berlinDistricts: { value: string; label: string }[] = [
     // einem Reset oder wenn der Browser Felder wiederherstellt.
     form.addEventListener('change', budgetKoppeln);
     budgetKoppeln();
+
+    /* ——— Adressvorschläge ————————————————————————————————————————————— */
+
+    /*
+      Rund 9.000 Berliner Straßennamen, lokal. Kein Geocoder-Aufruf: Der würde
+      bei jedem Tastendruck IP-Adresse und Eingabe an einen Dritten schicken,
+      und ausgerechnet eine Veranstaltungsadresse verrät mehr als das übliche
+      Surfen. Die Liste kommt vom eigenen Server, gefiltert wird im Browser.
+
+      Erst beim ersten Klick ins Feld geladen — 168 KB gehören nicht in den
+      Seitenaufbau, wenn die meisten Anfragen den Ort gar nicht ausfüllen.
+
+      Nicht alle 9.000 in die datalist: Das wäre ein Baum aus 9.000 Knoten für
+      jede Tastatureingabe. Zwanzig Treffer reichen, mehr zeigt kein Browser
+      sinnvoll an.
+    */
+    const ortFeld = form.querySelector<HTMLInputElement>('[name="location"][data-orte]');
+    const ortListe = form.querySelector<HTMLDataListElement>('#orte-berlin');
+
+    if (ortFeld && ortListe) {
+      let strassen: string[] | null = null;
+      let laden: Promise<void> | null = null;
+
+      function strassenLaden(): Promise<void> {
+        if (!laden) {
+          laden = fetch(ortFeld!.dataset.orte ?? '')
+            .then((antwort) => (antwort.ok ? antwort.json() : []))
+            .then((daten) => {
+              strassen = Array.isArray(daten) ? daten : [];
+            })
+            .catch(() => {
+              // Ohne Liste bleibt das Feld ein normales Textfeld. Kein Grund,
+              // die Anfrage daran scheitern zu lassen.
+              strassen = [];
+            });
+        }
+        return laden;
+      }
+
+      function vorschlagen(): void {
+        const eingabe = ortFeld!.value.trim().toLowerCase();
+        if (!strassen || eingabe.length < 2) {
+          ortListe!.replaceChildren();
+          return;
+        }
+
+        // Erst was vorne passt, dann was irgendwo passt — „Haupt“ soll
+        // Hauptstraße zeigen, nicht Bahnhofshauptweg.
+        const beginnt: string[] = [];
+        const enthaelt: string[] = [];
+        for (const strasse of strassen) {
+          const klein = strasse.toLowerCase();
+          if (klein.startsWith(eingabe)) beginnt.push(strasse);
+          else if (klein.includes(eingabe)) enthaelt.push(strasse);
+          if (beginnt.length >= 20) break;
+        }
+
+        ortListe!.replaceChildren(
+          ...[...beginnt, ...enthaelt].slice(0, 20).map((strasse) => {
+            const option = document.createElement('option');
+            option.value = strasse;
+            return option;
+          }),
+        );
+      }
+
+      ortFeld.addEventListener('focus', () => void strassenLaden().then(vorschlagen), { once: true });
+      ortFeld.addEventListener('input', () => void strassenLaden().then(vorschlagen));
+    }
 
     /* ——— Anfrage selbst abschicken ——————————————————————————————————— */
 
