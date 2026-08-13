@@ -141,6 +141,7 @@ export const PRESENTATION_SURCHARGE: Record<
  * bekommt, hat ein Versprechen bezahlt.
  */
 export const PRESENTATION_IMAGE: Partial<Record<PresentationKey, string>> = {
+  basket: '/images/presentations/korb.webp',
   box: '/images/presentations/hutschachtel.webp',
 };
 
@@ -351,34 +352,6 @@ export const CATEGORIES: Category[] = [
       ru: 'Только в сезон – с мая до начала июня.',
     },
   },
-  {
-    slug: 'hortensien',
-    image: '/images/categories/hortensien.webp',
-    imagePlaceholder: true,
-    name: { de: 'Hortensien', uk: 'Гортензії', en: 'Hydrangeas', ru: 'Гортензии' },
-    blurb: {
-      de: 'Große Hortensienköpfe im Mono-Strauß oder im Mix. Saisonblume — Verfügbarkeit klären wir vorher.',
-      uk: 'Великі голівки гортензії в моно-букеті або в міксі. Сезонна квітка — наявність уточнюємо заздалегідь.',
-      en: 'Big hydrangea heads in a mono bouquet or in a mix. A seasonal flower — we check availability in advance.',
-      ru: 'Большие шапочки гортензии в моно-букете или в микс букетах. Сезонный цветок, наличие уточняется заранее.',
-    },
-  },
-  {
-    slug: 'trocken',
-    imagePending: true,
-    name: {
-      de: 'Trockenblumen',
-      uk: 'Сухоцвіти',
-      en: 'Dried flowers',
-      ru: 'Сухоцветы',
-    },
-    blurb: {
-      de: 'Halten Monate statt Tage. Gut für die Einrichtung und für Geschenke per Post.',
-      uk: 'Тримаються місяцями, а не днями. Добре для оздоблення інтерʼєру та подарунків поштою.',
-      en: 'Last months, not days. Good for interiors and for gifts by post.',
-      ru: 'Стоят месяцами, а не днями. Хороши для украшения интерьеров и подарков по почте.',
-    },
-  },
 ];
 
 export const BOUQUETS: Bouquet[] = [
@@ -522,33 +495,6 @@ export const BOUQUETS: Bouquet[] = [
     },
   },
   {
-    slug: 'rosen-pur',
-    category: 'rosen',
-    priceOnRequest: true,
-    presentations: ['bouquet', 'premium', 'box', 'vase'],
-    images: [],
-    imagePending: true,
-    name: { de: 'Rosen pur', uk: 'Тільки троянди', en: 'Roses only', ru: 'Только розы' },
-    blurb: {
-      de: 'Eine Sorte, eine Farbe — zeitlose Klassik, nichts Überflüssiges.',
-      uk: 'Один сорт, один колір — вічна класика і нічого зайвого.',
-      en: 'One variety, one colour — timeless classic, nothing superfluous.',
-      ru: 'Один сорт, один цвет – вечная классика и ничего лишнего.',
-    },
-    description: {
-      de: 'Wenn es keine Erklärung braucht. Ich arbeite mit ecuadorianischen und kenianischen Rosen mit langem Stiel und fester Knospe — M sind 25 Stiele, L sind 51, XL sind 101. Farbe sagen Sie mir im Bestellhinweis, sonst wähle ich nach Tagesqualität.',
-      uk: 'Коли пояснення не потрібні. Працюю з еквадорськими та кенійськими трояндами з довгим стеблом і щільним бутоном — M це 25 стебел, L — 51, XL — 101. Колір вкажіть у примітці до замовлення, інакше обираю за якістю дня.',
-      en: 'When it needs no explanation. I work with Ecuadorian and Kenyan roses, long stems and firm buds — M is 25 stems, L is 51, XL is 101. Tell me the colour in the order note, otherwise I pick by the day’s quality.',
-      ru: 'Когда объяснения не нужны. Работаю с эквадорскими и кенийскими розами с длинным стеблем и плотным бутоном — M это 25 стеблей, L — 51, XL — 101. Цвет укажите в примечании, иначе выберу по качеству дня.',
-    },
-    composition: {
-      de: 'Rosen, 50–70 cm Stiel, Farbe nach Wunsch',
-      uk: 'Троянди, стебло 50–70 см, колір на вибір',
-      en: 'Roses, 50–70 cm stems, colour of your choice',
-      ru: 'Розы, стебель 50–70 см, цвет на выбор',
-    },
-  },
-  {
     slug: 'pfingstrosen-wolke',
     category: 'pfingstrosen',
     season: [5, 6],
@@ -578,78 +524,6 @@ export const BOUQUETS: Bouquet[] = [
       uk: 'Півонії білі, блідо-рожеві або коралові, трохи фісташки',
       en: 'Peonies in white, pale pink or coral, a little pistache',
       ru: 'Пионы белые, бледно-розовые или коралловые, немного фисташки',
-    },
-  },
-  {
-    slug: 'hortensie-solo',
-    category: 'hortensien',
-    priceOnRequest: true,
-    presentations: ['bouquet', 'premium', 'basket', 'vase'],
-    /*
-      ⚠️ TODO: Foto fehlt weiterhin — die Datei gibt es nicht, das Bild
-      verschwindet stillschweigend. Aus dem Laufwerk passt keine Aufnahme:
-      `hortensie-calla-blau.webp` liegt zwar freigestellt bereit, zeigt aber
-      eine blaue Hortensie mit Callas und Rittersporn. Das ist weder mono noch
-      eine der hier genannten Farben. Gebraucht wird eine reine Hortensie in
-      Weiß, Salbei oder Altrosa.
-    */
-    images: [],
-    imagePending: true,
-    name: {
-      de: 'Mono-Hortensie',
-      uk: 'Моно-гортензія',
-      en: 'Mono hydrangea',
-      ru: 'Моно гортензия',
-    },
-    blurb: {
-      de: 'Dichte Köpfe, die unglaublich viel hermachen.',
-      uk: 'Густі голівки, що справляють неймовірне враження.',
-      en: 'Dense heads that make an incredible impression.',
-      ru: 'Густые шапочки, производящие невероятное впечатление.',
-    },
-    description: {
-      de: 'Hortensien füllen einen Raum wie kaum eine andere Blume. Wichtig ist nur, dass sie sofort ins Wasser kommen — die Pflegekarte liegt bei, und im Korb bringe ich sie mit eigener Wasserquelle.',
-      uk: 'Гортензії заповнюють простір, як мало яка інша квітка. Головне — одразу поставити у воду; картка догляду додається, а в кошику привожу з власним джерелом води.',
-      en: 'Hydrangeas fill a room like almost no other flower. The one rule is water, straight away — a care card is included, and in a basket they come with their own water source.',
-      ru: 'Гортензии заполняют пространство, как мало какой цветок. Главное — сразу в воду; карточка ухода прилагается, а в корзине привожу с собственным источником воды.',
-    },
-    composition: {
-      de: 'Hortensien in Weiß, Salbei oder Altrosa, Eukalyptus',
-      uk: 'Гортензії білі, шавлієві або пудрові, евкаліпт',
-      en: 'Hydrangeas in white, sage or dusty pink, eucalyptus',
-      ru: 'Гортензии белые, шалфейные или пудровые, эвкалипт',
-    },
-  },
-  {
-    slug: 'trocken-atelier',
-    category: 'trocken',
-    priceOnRequest: true,
-    presentations: ['bouquet', 'premium', 'box', 'vase'],
-    images: [],
-    imagePending: true,
-    name: {
-      de: 'Trockenblumen',
-      uk: 'Сухоцвіти',
-      en: 'Dried flowers',
-      ru: 'Сухоцветы',
-    },
-    blurb: {
-      de: 'Stehen mindestens ein halbes Jahr und brauchen kein Wasser.',
-      uk: 'Стоять щонайменше пів року й не потребують води.',
-      en: 'Last at least half a year and need no water.',
-      ru: 'Стоят минимум полгода и не требуют воды.',
-    },
-    description: {
-      de: 'Gebleichte Gräser, Pampas, Lagurus und getrocknete Hortensie in gedeckten Tönen. Versandfähig — wenn der Strauß nach Hamburg oder München soll, ist das hier die richtige Wahl.',
-      uk: 'Вибілені трави, пампаси, лагурус і сушена гортензія в приглушених тонах. Можна відправляти поштою — якщо букет має поїхати до Гамбурга чи Мюнхена, це правильний вибір.',
-      en: 'Bleached grasses, pampas, bunny tails and dried hydrangea in muted tones. Shippable — if the bouquet has to travel to Hamburg or Munich, this is the one.',
-      ru: 'Отбеленные травы, пампасы, лагурус и сушёная гортензия в приглушённых тонах. Можно отправлять почтой — если букет едет в Гамбург или Мюнхен, это верный выбор.',
-    },
-    composition: {
-      de: 'Pampasgras, Lagurus, Hortensie, Eukalyptus — alles getrocknet',
-      uk: 'Пампасна трава, лагурус, гортензія, евкаліпт — усе сушене',
-      en: 'Pampas grass, bunny tails, hydrangea, eucalyptus — all dried',
-      ru: 'Пампасная трава, лагурус, гортензия, эвкалипт — всё сушёное',
     },
   },
 ];

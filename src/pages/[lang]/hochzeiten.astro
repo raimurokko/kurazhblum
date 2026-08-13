@@ -143,6 +143,43 @@ const steps: { title: I18nText; text: I18nText }[] = [
     </div>
   </section>
 
+  {/*
+    Zwei Bildflächen direkt hinter den Leistungen, weil sie genau die zwei
+    Hälften zeigen, die der Abschnitt darüber aufzählt: der Bogen für die
+    Trauung, die Tischgestaltung für den Saal. Bis hierher trug die Seite ein
+    einziges Foto, und dasselbe lief zusätzlich auf der Startseite.
+  */}
+  <section class="section">
+    <div class="wrap">
+      <div class="grid grid--2 weddings-galerie">
+        <figure>
+          <div class="ph galerie-ph" data-label={_('weddings.gallery.arch')}>
+            <img
+              src={asset('/images/weddings/bogen.webp')}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              onerror="this.remove()"
+            />
+          </div>
+          <figcaption class="small muted">{_('weddings.gallery.arch')}</figcaption>
+        </figure>
+        <figure>
+          <div class="ph galerie-ph" data-label={_('weddings.gallery.table')}>
+            <img
+              src={asset('/images/weddings/tisch.webp')}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              onerror="this.remove()"
+            />
+          </div>
+          <figcaption class="small muted">{_('weddings.gallery.table')}</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="wrap">
       <div class="section-head">
@@ -188,6 +225,26 @@ const steps: { title: I18nText; text: I18nText }[] = [
   .hero-band {
     aspect-ratio: 16 / 9;
     border-radius: var(--radius-lg);
+  }
+
+  /* Hochformat, weil beide Aufnahmen hochkant sind — ein Querformat daraus
+     zu schneiden hieße, den halben Bogen wegzunehmen. */
+  .weddings-galerie figure {
+    margin: 0;
+  }
+
+  .galerie-ph {
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-2);
+  }
+
+  .galerie-ph img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .hero-band img {

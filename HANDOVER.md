@@ -13,7 +13,7 @@ fürs Weiterarbeiten in `AGENTS.md`.
 | Stand | Commit `55820c2`, 13.08.2026 |
 | Repository | <https://github.com/raimurokko/kurazhblum> |
 | Vorschau | <https://raimurokko.github.io/kurazhblum/> |
-| Umfang | 113 Seiten, 4 Sprachen, 8 Sträuße, 283 Textschlüssel je Sprache, 47 Quelldateien |
+| Umfang | 94 Seiten, 4 Sprachen, 5 Sträuße, 292 Textschlüssel je Sprache, 48 Quelldateien |
 
 ---
 
@@ -32,7 +32,7 @@ Entwicklungsarbeit.
 | Stammdaten, WhatsApp, Impressum | fertig | Halyna Zharuk, Storkower Straße, § 19 UStG |
 | Barrierefreiheit | fertig | Panel, Erklärung, geprüft bei 320 px und 150 % |
 | Veröffentlichung auf GitHub Pages | fertig | Baut bei jedem Push automatisch |
-| Produktfotos | teilweise | 6 Sträuße und 4 Kategorien bebildert; wo nichts da ist, steht sichtbar „Bild folgt“ |
+| Produktfotos | **fertig** | Alle 5 Sträuße und 3 Kategorien bebildert; zwei Kacheln noch als Platzhalter markiert |
 | Preise | teilweise | Größen, Verpackung, Zonen und Fenster bestätigt; eine Lücke siehe § 12 |
 | Stripe-Zugang | **offen** | Ohne Schlüssel keine Kasse — der Rest der Website läuft |
 | Rechtstexte | **ungeprüft** | Entwürfe mit sichtbaren Lücken, anwaltlich prüfen lassen |
@@ -118,7 +118,7 @@ TypeScript-Objekte im Repository.
 src/
 ├── i18n/
 │   ├── config.ts      Sprachen, path()/asset()-Helfer, I18nText-Typ
-│   └── ui.ts          956 Oberflächentexte in vier Sprachen
+│   └── ui.ts          1.168 Oberflächentexte in vier Sprachen
 ├── data/
 │   ├── site.ts        Stammdaten, Öffnungszeiten, Lieferzeitfenster
 │   ├── shop.ts        Kategorien, Sträuße, Preise, Liefergebiete
@@ -208,10 +208,7 @@ dieselbe Zahl nicht an zwei Orten gepflegt wird.
 | Überraschungsstrauß | Dopamin-Sträuße | ab 85 / 135 / 198 € | abgeleitet |
 | 101 Rosen mit Herz | Rosen | 400 € | bestätigt |
 | 35 Päonienrosen, 60 cm | Rosen | 180 € | bestätigt |
-| Rosen pur | Rosen | je nach Saison | Saisonware |
 | Pfingstrosen | Pfingstrosen | je nach Saison | Saisonware |
-| Mono-Hortensie | Hortensien | je nach Saison | Saisonware |
-| Trockenblumen | Trockenblumen | je nach Saison | Saisonware |
 
 Drei Modelle im Datentyp, genau eines der ersten beiden setzen:
 
@@ -313,12 +310,10 @@ python3 tools/fotos/aufbereiten.py arbeit/frei.png \
 Domains und die Adressen laufen ab. Exportieren, lokal ablegen, Eintrag in
 `src/data/instagram.ts`.
 
-**Vier Platzhalter** tragen eine sichtbare Markierung (1125 px): Brautstrauß,
-Pfingstrosen, Workshop-Teaser und die drei Kategoriekacheln Dopamin, Rosen und
-Hortensien. Der Brautstrauß steht an zwei Stellen —
-auf der Veranstaltungsseite und als Teaser auf der Startseite —, weil es
-bislang nur diese eine Hochzeitsaufnahme gibt. Bei Produkten hängt die
-Markierung am Feld `imagePlaceholder`.
+**Zwei Platzhalter** tragen noch die sichtbare Markierung (1125 px): die
+Kategoriekacheln Dopamin und Rosen. Alles andere ist seit dem 14.08.2026 durch
+Aufnahmen aus Galas Laufwerk ersetzt. Bei Produkten hängt die Markierung am
+Feld `imagePlaceholder`, für „noch gar kein Foto“ gibt es `imagePending`.
 
 > **Endungen prüfen.** Die Fotoskripte schreiben `.webp`; frühere Zwischenstufen
 > waren `.png`. Zeigt eine Referenz auf die falsche Endung, verschwindet das
@@ -479,28 +474,25 @@ Beträge über ihren eigenen Angaben hinausgehen:
 - Sitzplatzzahlen der Workshops (acht ist geschätzt)
 - Ihre eigene Geschichte für die Atelier-Seite
 
-**Fotos** — Stand 13.08.2026, nach dem Durchgang durch Galas Laufwerk:
+**Fotos** — Stand 14.08.2026, nach dem Durchgang durch Galas Laufwerk:
 
 Neu eingesetzt sind Pfingstrosen (Produkt und Kategoriekachel), der
-Hochzeits-Hero mit der Trauung am See, der Workshop-Teaser und ein Foto der
-Hutschachtel im Konfigurator. Alles Übrige trägt jetzt die Marke **„Bild
+Hochzeits-Hero mit der Trauung am See, Blumenbogen und Tischgestaltung als
+zweite Bildflächen auf der Veranstaltungsseite, der Workshop-Teaser sowie Korb
+und Hutschachtel im Konfigurator. Alles Übrige trägt jetzt die Marke **„Bild
 folgt“** statt eines Verweises ins Leere:
 
-- Produktfotos für Rosen pur, Mono-Hortensie, Trockenblumen. Im Laufwerk liegt
-  nichts Passendes — die einzige Hortensienaufnahme ist blau und mit Callas
-  gemischt, das Produkt verlangt eine reine in Weiß, Salbei oder Altrosa.
-- Vier Workshop-Fotos, je eines pro Format. Die vorhandenen Aufnahmen stammen
-  alle aus derselben Session; sie auf vier Formate zu verteilen hieße, vier
-  verschiedene Kurse mit demselben Tisch zu bebildern.
+- Drei Workshop-Fotos für Blumenabend, Einzelunterricht und mobilen Workshop.
+  Der Grundkurs hat ein Video. Die vorhandenen Aufnahmen stammen alle aus
+  derselben Session; sie auf alle Formate zu verteilen hieße, verschiedene
+  Kurse mit demselben Tisch zu bebildern.
 - Atelierporträt. Es gibt nur ein Video, in dem eine Person zu sehen ist — ob
   ihr Gesicht auf die Website kommt, entscheidet Gala.
 - Instagram-Auswahl, sechs Bilder.
-- Höher aufgelöste Kategoriekacheln für Dopamin, Rosen und Hortensien; diese
-  drei tragen weiterhin die Platzhalter-Marke.
-- Bilder für Strauß, Designerverpackung, Korb und Vase im Konfigurator.
-- Ein zweites Hochzeitsmotiv sowie Tischgestaltung im Saal. Material dafür
-  liegt bereit (`hochzeit-bogen-seitlich-2022`, `tisch-saal-1941`), es fehlt
-  aber der Platz im Markup — beide Seiten haben je nur eine Bildfläche.
+- Höher aufgelöste Kategoriekacheln für Dopamin und Rosen; diese beiden tragen
+  weiterhin die Platzhalter-Marke.
+- Bilder für Strauß, Designerverpackung und Vase im Konfigurator. Korb und
+  Hutschachtel sind belegt.
 
 > **Zwei Marken, zwei Bedeutungen.** „Platzhalter“ in Gold heißt: Ein Foto ist
 > da, aber zu klein. „Bild folgt“ in Grau heißt: Es gibt noch keins. Wer beides
