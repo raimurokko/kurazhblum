@@ -40,7 +40,7 @@ const image = bouquet.images[0] ? asset(bouquet.images[0]) : undefined;
         </p>
       )
     }
-    {bouquet.discountPercent && <span class="tag tag--gold product-flag">{_('ways.c.badge')}</span>}
+    {bouquet.surprise && <span class="tag tag--gold product-flag">{_('ways.c.badge')}</span>}
     {bouquet.priceOnRequest && <span class="tag product-flag">{_('product.seasonal.badge')}</span>}
   </div>
 </article>

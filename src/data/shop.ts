@@ -64,8 +64,13 @@ export interface Bouquet {
   length?: string;
   /** Blendet den Hinweis „andere Größen und Längen auf Anfrage“ ein. */
   variantsOnRequest?: boolean;
-  /** Prozentualer Nachlass, z. B. 10 beim Überraschungsstrauß. */
-  discountPercent?: number;
+  /**
+   * Markiert den Überraschungsstrauß. Hieß früher `discountPercent` und trug
+   * die Zahl 10 — der Nachlass wird seit dem 14.08.2026 nicht mehr beworben:
+   * Er steckt bereits in der Preisstaffel, und „zehn Prozent günstiger“ ohne
+   * genannten Vergleichspreis warf mehr Fragen auf, als es beantwortete.
+   */
+  surprise?: boolean;
 
   /**
    * Beispiel für Saisonware: Zusammensetzung UND Preis richten sich nach der
@@ -399,7 +404,7 @@ export const BOUQUETS: Bouquet[] = [
     category: 'dopamin',
     featured: true,
     prices: { m: 8500, l: 13500, xl: 19800 },
-    discountPercent: 10,
+    surprise: true,
     variantsOnRequest: true,
     presentations: ['bouquet', 'premium', 'basket', 'box', 'vase'],
     images: ['/images/products/ueberraschung.webp'],

@@ -54,7 +54,7 @@ export const ui = {
 
     // — Vertrauensleiste —
     'trust.delivery.title': 'Lieferung in Berlin',
-    'trust.delivery.text': 'Innerhalb von 24 Stunden nach Ihrer Bestellung.',
+    'trust.delivery.text': 'Zu Ihrem Wunschtermin — immer tagesfrisch.',
     'trust.photo.title': 'Foto vor der Lieferung',
     'trust.photo.text': 'Auf Anfrage — sagen Sie bei der Bestellung Bescheid.',
     'trust.card.title': 'Grußkarte gratis',
@@ -308,9 +308,9 @@ export const ui = {
     'ways.b.cta': 'Zum Katalog',
     'ways.c.title': 'Überraschungsstrauß',
     'ways.c.text':
-      'Ich binde aus den frischesten Blumen des Tages. Dafür ist er zehn Prozent günstiger.',
+      'Ich binde aus den frischesten Blumen des Tages. Eine Überraschung für gute Laune.',
     'ways.c.cta': 'Überraschen lassen',
-    'ways.c.badge': '10 % günstiger',
+    'ways.c.badge': 'Für gute Laune',
 
     // — Verfügbarkeit (Wortlaut von Gala) —
     'shop.seasonal':
@@ -319,7 +319,7 @@ export const ui = {
     'product.gallery': 'Weitere Ansichten',
     'product.length': 'Länge',
     'product.onesize': 'Nur in einer Ausführung',
-    'product.discount': 'Zehn Prozent günstiger, weil ich die Blumen wähle.',
+    'product.discount': 'Eine Überraschung für gute Laune — die Blumen wähle ich.',
     // — Saisonware ohne festen Preis —
     'product.seasonal.badge': 'Saisonware',
     'product.seasonal.price': 'Preis je nach Saison',
@@ -415,7 +415,7 @@ export const ui = {
     'home.instagram.cta': 'Підписатися в Instagram',
 
     'trust.delivery.title': 'Доставка в Берліні',
-    'trust.delivery.text': 'Протягом 24 годин після оформлення замовлення.',
+    'trust.delivery.text': 'На бажану вами дату — завжди свіжі того ж дня.',
     'trust.photo.title': 'Фото перед доставкою',
     'trust.photo.text': 'Надається на запит — просто зазначте при замовленні.',
     'trust.card.title': 'Листівка безкоштовно',
@@ -658,9 +658,9 @@ export const ui = {
     'ways.b.text': 'Вибрати з каталогу, задати розмір і оформлення, замовити. Найшвидший шлях.',
     'ways.b.cta': 'До каталогу',
     'ways.c.title': 'Букет-сюрприз',
-    'ways.c.text': 'Збираю з найсвіжіших квітів дня. Тому він на десять відсотків дешевший.',
+    'ways.c.text': 'Збираю з найсвіжіших квітів дня. Сюрприз для гарного настрою.',
     'ways.c.cta': 'Хай буде сюрприз',
-    'ways.c.badge': 'на 10 % дешевше',
+    'ways.c.badge': 'Для гарного настрою',
 
     'shop.seasonal':
       'Сезонні квіти: у разі їх відсутності ми запропонуємо максимально схожу альтернативу. Деталі уточнюйте у менеджера.',
@@ -668,7 +668,7 @@ export const ui = {
     'product.gallery': 'Інші ракурси',
     'product.length': 'Довжина',
     'product.onesize': 'Лише в одному виконанні',
-    'product.discount': 'На десять відсотків дешевше, бо квіти обираю я.',
+    'product.discount': 'Сюрприз для гарного настрою — квіти обираю я.',
     'product.seasonal.badge': 'Сезонний товар',
     'product.seasonal.price': 'Ціна залежить від сезону',
     'product.seasonal.title': 'Це приклад, а не каталожна позиція',
@@ -761,7 +761,7 @@ export const ui = {
     'home.instagram.cta': 'Follow on Instagram',
 
     'trust.delivery.title': 'Delivery in Berlin',
-    'trust.delivery.text': 'Within 24 hours of placing your order.',
+    'trust.delivery.text': 'On the date you choose — always same-day fresh.',
     'trust.photo.title': 'A photo before delivery',
     'trust.photo.text': 'On request — just say so when you order.',
     'trust.card.title': 'Free greeting card',
@@ -1004,9 +1004,9 @@ export const ui = {
     'ways.b.text': 'Pick from the catalogue, set size and wrapping, order. The fastest route.',
     'ways.b.cta': 'To the catalogue',
     'ways.c.title': 'Surprise bouquet',
-    'ways.c.text': 'I tie it from the freshest flowers of the day. That is why it costs ten per cent less.',
+    'ways.c.text': 'I tie it from the freshest flowers of the day. A surprise to lift the mood.',
     'ways.c.cta': 'Let me surprise you',
-    'ways.c.badge': '10 % less',
+    'ways.c.badge': 'To lift the mood',
 
     'shop.seasonal':
       'Seasonal flowers: if unavailable, we will offer the closest possible alternative. Please contact our manager for more information.',
@@ -1014,7 +1014,7 @@ export const ui = {
     'product.gallery': 'More views',
     'product.length': 'Length',
     'product.onesize': 'One version only',
-    'product.discount': 'Ten per cent less, because I choose the flowers.',
+    'product.discount': 'A surprise to lift the mood — I choose the flowers.',
     'product.seasonal.badge': 'Seasonal item',
     'product.seasonal.price': 'Price depends on the season',
     'product.seasonal.title': 'An example, not a catalogue item',
@@ -1107,7 +1107,7 @@ export const ui = {
     'home.instagram.cta': 'Подписаться в Instagram',
 
     'trust.delivery.title': 'Доставка по Берлину',
-    'trust.delivery.text': 'В течение 24 часов после оформления заказа.',
+    'trust.delivery.text': 'На желаемую вами дату — всегда свежие в тот же день.',
     'trust.photo.title': 'Фото перед доставкой',
     'trust.photo.text': 'Предоставляется по запросу — укажите при оформлении заказа.',
     'trust.card.title': 'Открытка бесплатно',
@@ -1350,9 +1350,9 @@ export const ui = {
     'ways.b.text': 'Выбрать из каталога, задать размер и оформление, заказать. Самый быстрый путь.',
     'ways.b.cta': 'В каталог',
     'ways.c.title': 'Букет-сюрприз',
-    'ways.c.text': 'Собираю из самых свежих цветов дня. Поэтому он на десять процентов дешевле.',
+    'ways.c.text': 'Собираю из самых свежих цветов дня. Сюрприз для хорошего настроения.',
     'ways.c.cta': 'Пусть будет сюрприз',
-    'ways.c.badge': 'на 10 % дешевле',
+    'ways.c.badge': 'Для хорошего настроения',
 
     'shop.seasonal':
       'Сезонные цветы: при их отсутствии мы предложим максимально похожую альтернативу. Подробности уточняйте у менеджера.',
@@ -1360,7 +1360,7 @@ export const ui = {
     'product.gallery': 'Другие ракурсы',
     'product.length': 'Длина',
     'product.onesize': 'Только в одном исполнении',
-    'product.discount': 'На десять процентов дешевле, потому что цветы выбираю я.',
+    'product.discount': 'Сюрприз для хорошего настроения — цветы выбираю я.',
     'product.seasonal.badge': 'Сезонный товар',
     'product.seasonal.price': 'Цена зависит от сезона',
     'product.seasonal.title': 'Это пример, а не каталожная позиция',

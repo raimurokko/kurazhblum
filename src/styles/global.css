@@ -419,6 +419,23 @@ hr {
   overflow: hidden;
 }
 
+/*
+  Sobald wirklich ein Bild im Kasten liegt, hat die Ersatzbeschriftung nichts
+  mehr zu suchen — sie schien sonst durch das Foto hindurch. `:has()` ist hier
+  genau richtig: Entfernt `onerror` das Bild, weil die Datei fehlt, greift die
+  Beschriftung von selbst wieder. Die Klasse `cat-ph--frei` machte dasselbe von
+  Hand und ist damit nur noch für den Verlauf zuständig.
+*/
+.ph:has(img)::after,
+.ph:has(video)::after {
+  content: none;
+}
+
+.ph:has(img),
+.ph:has(video) {
+  background: none;
+}
+
 .ph::after {
   content: attr(data-label);
   font-family: var(--font-display), serif;

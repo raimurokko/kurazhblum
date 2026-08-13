@@ -156,7 +156,7 @@ ließe sich der Preis im Formular manipulieren.
 | :--- | :--- | :--- |
 | **A** Strauß zusammenstellen | Blumen, Farbstimmung, Größe, Budget, Termin, Adresse | vorbereiteter Nachricht — *nicht* in der Kasse |
 | **B** Fertigen Strauß wählen | Katalog, Konfigurator | Stripe-Kasse |
-| **C** Überraschungsstrauß | Floristin wählt, 10 % günstiger | Stripe-Kasse |
+| **C** Überraschungsstrauß | Floristin wählt, für gute Laune | Stripe-Kasse |
 
 **Warum Weg A keine Kasse hat:** Gala hat kein Lager. Was heute frisch ist,
 entscheidet der Markt am Morgen — ein Warenkorb würde Blumen zusagen, die sie
@@ -169,10 +169,15 @@ was dazugehört — Name, Telefon, Wunschtermin mit Zeitfenster, Lieferadresse,
 Kartentext. Vorher folgten darauf drei Rückfragen.
 
 > **Nicht rückgängig machen.** Aus Weg A einen Warenkorb zu machen wäre
-> technisch leicht und geschäftlich falsch. Ebenso der Rabatt bei Weg C: Er
-> steht bewusst als Begründung da, nicht als durchgestrichener Preis. Ein
-> dauerhafter Nachlass *ist* der Preis, und ein nie verlangter Streichpreis ist
-> in Deutschland abmahnbar.
+> technisch leicht und geschäftlich falsch.
+>
+> Bei Weg C ist der Nachlass seit dem 14.08.2026 **gar kein Thema mehr**. Er
+> steckt in der Preisstaffel — 135 statt 150 €, 198 statt 220 € — und wird
+> nirgends beworben. „Zehn Prozent günstiger“ warf die Frage auf, günstiger als
+> was, und beantwortete sie nicht; jetzt steht dort, worum es geht: eine
+> Überraschung für gute Laune. Keinen Streichpreis daraus machen — ein nie
+> verlangter Vergleichspreis ist in Deutschland abmahnbar, und ein dauerhafter
+> Nachlass *ist* schlicht der Preis.
 
 ### Anfragen ohne Server
 
