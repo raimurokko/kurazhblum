@@ -16,6 +16,7 @@ import {
   type SizeKey,
 } from '../../data/shop';
 import { DELIVERY_SLOTS, SUNDAY_LAST_START, site } from '../../data/site';
+import { istBerlinerPlz } from '../../data/berlin-plz';
 import { WORKSHOP_DATES, formatBySlug } from '../../data/workshops';
 
 // Zahlungen brauchen einen Server — diese Route wird nicht vorgerendert.
@@ -217,12 +218,20 @@ export const POST: APIRoute = async ({ request, url }) => {
     metadata.extras = extras.map((extra) => extra.id).join(',');
     metadata.date = datum;
     metadata.slot = slot.id;
+    // Die Adresse muss in Berlin liegen. Gala liefert nur dort; alles
+    // darüber hinaus läuft nach Absprache und darf nicht durch die Kasse
+    // laufen, wo ein fester Betrag berechnet wird.
+    const plz = clean(payload.zip, 10);
+    if (zone.id !== 'pickup' && !istBerlinerPlz(plz)) {
+      return json({ error: 'zip_outside_berlin' }, 422);
+    }
+
     // Die Lieferadresse steht jetzt im Formular und nicht mehr nur bei
     // Stripe — sonst ließe sich Zone „Lichtenberg“ wählen und an der Kasse
     // eine Adresse in Spandau eintragen.
     metadata.address = [
       `${clean(payload.street, 120)} ${clean(payload.houseNumber, 20)}`.trim(),
-      `${clean(payload.zip, 10)} ${site.address.city}`.trim(),
+      `${plz} ${site.address.city}`.trim(),
       clean(payload.addressNote, 120),
     ]
       .filter(Boolean)

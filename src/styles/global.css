@@ -580,6 +580,12 @@ label {
   pointer-events: none;
 }
 
+/* Feld mit unpassender Eingabe. Nur die Kante färben — rote Schrift auf
+   dunklem Grund fällt unter den Kontrastwert. */
+.input--fehler {
+  border-color: var(--mauve-deep);
+}
+
 /* — Hilfsklassen ———————————————————————————————————————————————————— */
 
 .visually-hidden {

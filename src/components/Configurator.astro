@@ -17,6 +17,7 @@ import {
   type SizeKey,
 } from '../data/shop';
 import { DELIVERY_SLOTS, SUNDAY_LAST_START, site } from '../data/site';
+import { BERLIN_PLZ } from '../data/berlin-plz';
 
 interface Props {
   lang: Locale;
@@ -49,6 +50,8 @@ const pricing = {
   /** Aufschlag je Lieferfenster — vor 14 Uhr kostet extra. */
   slots: Object.fromEntries(DELIVERY_SLOTS.map((s) => [s.id, s.fee])),
   sundayLastStart: SUNDAY_LAST_START,
+  /** Gültige Postleitzahlen — alles andere liegt nicht in Berlin. */
+  berlinPlz: BERLIN_PLZ,
   minOrderDelivery: MIN_ORDER_DELIVERY,
   /** Formen mit Ab-Preis — das Gefäß wird vor der Lieferung abgestimmt. */
   from: PRESENTATION_FROM,
@@ -95,6 +98,7 @@ const minDate = tomorrow.toISOString().slice(0, 10);
   data-slug={bouquet.slug}
   data-lang={lang}
   data-min-warning={_('cfg.minorder.short')}
+  data-plz-warning={_('cfg.delivery.zip.outside')}
   data-busy-label={_('cfg.loading')}
   data-endpoint={asset('/api/checkout')}
   data-images={JSON.stringify(bildJeGroesse)}
@@ -487,6 +491,7 @@ const minDate = tomorrow.toISOString().slice(0, 10);
     zones: Record<string, number>;
     slots: Record<string, number>;
     sundayLastStart: number;
+    berlinPlz: string[];
     minOrderDelivery: number;
     from: string[];
     fromLabel: string;
@@ -700,6 +705,29 @@ const minDate = tomorrow.toISOString().slice(0, 10);
       }
       if (slotFeld.selectedOptions[0]?.disabled && ersteGueltige) ersteGueltige.selected = true;
     }
+
+    /*
+      Die Postleitzahl muss zu Berlin gehören. Sie zu prüfen ist die einzige
+      Aussage über die Adresse, die sich sicher treffen lässt: Ob eine Berliner
+      Adresse in Tarifbereich A oder B liegt, entscheidet der S-Bahn-Ring, und
+      der schneidet quer durch Postleitzahlgebiete — dort schweigt die Prüfung
+      lieber, als etwas zu behaupten.
+
+      Die Kasse weist eine fremde Postleitzahl zusätzlich mit 422 ab; hier
+      steht sie nur früher und freundlicher.
+    */
+    const plzFeld = form.querySelector<HTMLInputElement>('[name="zip"]');
+
+    function plzPruefen(): void {
+      if (!plzFeld) return;
+      const wert = plzFeld.value.trim();
+      const fremd = wert.length === 5 && !pricing.berlinPlz.includes(wert);
+      plzFeld.setCustomValidity(fremd ? (form.dataset.plzWarning ?? '') : '');
+      plzFeld.classList.toggle('input--fehler', fremd);
+    }
+
+    plzFeld?.addEventListener('input', plzPruefen);
+    plzFeld?.addEventListener('blur', plzPruefen);
 
     datumFeld?.addEventListener('change', () => {
       datumPruefen();

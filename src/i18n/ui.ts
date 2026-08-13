@@ -120,6 +120,7 @@ export const ui = {
     'cfg.delivery.number': 'Hausnummer',
     'cfg.delivery.zip': 'Postleitzahl',
     'cfg.delivery.zip.hint': 'Berliner Postleitzahl, fünfstellig.',
+    'cfg.delivery.zip.outside': 'Diese Postleitzahl liegt nicht in Berlin. Außerhalb liefere ich nur nach Absprache — schreiben Sie mir kurz.',
     'cfg.delivery.extra': 'Etage, Firma, Klingel (optional)',
     'cfg.delivery.zone': 'Liefergebiet',
     'cfg.delivery.beyond':
@@ -467,6 +468,7 @@ export const ui = {
     'cfg.delivery.number': 'Номер будинку',
     'cfg.delivery.zip': 'Поштовий індекс',
     'cfg.delivery.zip.hint': 'Берлінський індекс, пʼять цифр.',
+    'cfg.delivery.zip.outside': 'Цей індекс не належить Берліну. За межі міста доставляю лише за домовленістю — напишіть мені.',
     'cfg.delivery.extra': 'Поверх, компанія, дзвінок (необовʼязково)',
     'cfg.delivery.zone': 'Зона доставки',
     'cfg.delivery.beyond':
@@ -801,6 +803,7 @@ export const ui = {
     'cfg.delivery.number': 'House number',
     'cfg.delivery.zip': 'Postcode',
     'cfg.delivery.zip.hint': 'Berlin postcode, five digits.',
+    'cfg.delivery.zip.outside': 'This postcode is not in Berlin. Outside the city I deliver by arrangement only — just write to me.',
     'cfg.delivery.extra': 'Floor, company, doorbell (optional)',
     'cfg.delivery.zone': 'Delivery area',
     'cfg.delivery.beyond':
@@ -1135,6 +1138,7 @@ export const ui = {
     'cfg.delivery.number': 'Номер дома',
     'cfg.delivery.zip': 'Почтовый индекс',
     'cfg.delivery.zip.hint': 'Берлинский индекс, пять цифр.',
+    'cfg.delivery.zip.outside': 'Этот индекс не относится к Берлину. За пределы города доставляю только по договорённости — напишите мне.',
     'cfg.delivery.extra': 'Этаж, компания, звонок (необязательно)',
     'cfg.delivery.zone': 'Зона доставки',
     'cfg.delivery.beyond':
