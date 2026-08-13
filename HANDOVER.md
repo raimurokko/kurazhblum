@@ -386,6 +386,16 @@ Bewusste Entscheidungen, die beim Ändern nicht verloren gehen sollten:
   Google Fonts — in Deutschland ein realer Abmahngrund. Seit August 2026 auch
   nicht mehr beim Bauen: Der frühere Abruf von fonts.gstatic.com brach den
   Build, als Google eine Datei-URL drehte.
+
+  Am 14.08.2026 wurde geprüft, ob eine ukrainische Anzeigeschrift besser zum
+  Satz „mit ukrainischer Handschrift“ passt — Nyght Serif, Zvin, Kyiv Type.
+  Entschieden: **Cormorant Garamond bleibt.** Sie bringt bereits den Schnitt
+  300, echte Kursive und Kyrillisch samt Erweiterung mit, und sie liegt als
+  acht nach Subset getrennte Dateien vor, sodass eine deutsche Besucherin das
+  Kyrillische gar nicht erst lädt. Die ukrainischen Kandidaten kommen als eine
+  Datei mit allem darin; die Subsets müssten wir selbst bauen, bei Nyght Serif
+  zusätzlich in Version 0.5. Wer die Frage neu stellt, sollte diese drei Punkte
+  zuerst beantworten.
 - **Kleinunternehmerin nach § 19 UStG.** Solange das gilt, darf nirgends
   „inkl. MwSt.“ stehen — ausgewiesene Umsatzsteuer, die nicht abgeführt wird,
   schuldet man nach § 14c UStG trotzdem. Der Schalter steht in `site.legal`,
