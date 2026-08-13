@@ -800,7 +800,7 @@ export const ui = {
       'Birthday, hen party, team day, company event: I come to you with flowers, tools and vases — in Berlin and around.',
 
     'atelier.kicker': 'About the atelier',
-    'atelier.title': 'Kurazh — the nerve to make it beautiful.',
+    'atelier.title': 'Kurazh — the courage to make it beautiful.',
 
     'contact.kicker': 'Contact',
     'contact.title': 'Write to me.',
