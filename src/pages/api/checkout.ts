@@ -6,11 +6,12 @@ import {
   DELIVERY_ZONES,
   EXTRAS,
   MIN_ORDER_DELIVERY,
-  PRESENTATION_SURCHARGE,
   bouquetBySlug,
   isOrderable,
+  presentationsFor,
   priceFor,
   sizesOf,
+  surchargeFor,
   type PresentationKey,
   type SizeKey,
 } from '../../data/shop';
@@ -101,9 +102,15 @@ export const POST: APIRoute = async ({ request, url }) => {
       ? (payload.size as SizeKey)
       : verfuegbar[0];
 
-    const presentation = bouquet.presentations.includes(payload.presentation as PresentationKey)
+    // Der Aufpreis hängt an der Größe, und nicht jede Form gibt es in jeder
+    // Größe — eine Vase zum XL-Strauß etwa nicht. Deshalb erst die für diese
+    // Größe erlaubten Formen bilden und nur daraus wählen; sonst ließe sich
+    // über einen nachgebauten Aufruf etwas bestellen, was es nicht gibt.
+    const erlaubteFormen = presentationsFor(bouquet, size ?? 'fixed');
+    const presentation = erlaubteFormen.includes(payload.presentation as PresentationKey)
       ? (payload.presentation as PresentationKey)
-      : bouquet.presentations[0];
+      : erlaubteFormen[0];
+    if (!presentation) return json({ error: 'no_presentation' }, 400);
 
     const zone = DELIVERY_ZONES.find((entry) => entry.id === payload.zone);
     if (!zone) return json({ error: 'unknown_zone' }, 400);
@@ -114,7 +121,7 @@ export const POST: APIRoute = async ({ request, url }) => {
     // Der Browser rechnet nur für die Anzeige. Verbindlich ist ausschließlich
     // diese Berechnung — sonst könnte man den Preis im Formular manipulieren.
     const base = priceFor(bouquet, size);
-    const surcharge = PRESENTATION_SURCHARGE[presentation];
+    const surcharge = surchargeFor(presentation, size ?? 'fixed') ?? 0;
     const extrasTotal = extras.reduce((sum, extra) => sum + extra.price, 0);
     const subtotal = base + surcharge + extrasTotal;
 
@@ -170,6 +177,9 @@ export const POST: APIRoute = async ({ request, url }) => {
     metadata.date = String(payload.date ?? '');
     metadata.slot = slot?.id ?? '';
     metadata.cardMessage = cardMessage;
+    // Nicht alle brauchen eine Rechnung — wer sie ankreuzt, bekommt sie an die
+    // E-Mail-Adresse, die Stripe an der Kasse ohnehin erhebt.
+    metadata.invoice = payload.invoice === true ? 'ja' : 'nein';
   }
 
   // Erst prüfen, dann bezahlen: die Validierung oben läuft auch ohne

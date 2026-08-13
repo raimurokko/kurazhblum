@@ -5,11 +5,13 @@ import {
   DELIVERY_ZONES,
   EXTRAS,
   MIN_ORDER_DELIVERY,
+  PRESENTATION_FROM,
   PRESENTATION_SURCHARGE,
   formatPrice,
   imagesFor,
   priceFor,
   sizesOf,
+  surchargeFor,
   type Bouquet,
   type PresentationKey,
   type SizeKey,
@@ -40,14 +42,34 @@ const pricing = {
   currencyLocale: lang,
   /** Festpreis-Produkte bekommen eine Pseudo-Größe, damit die Rechnung gleich bleibt. */
   sizes: sizes.length ? bouquet.prices : { fixed: priceFor(bouquet) },
+  /** Je Form ein Satz Aufpreise nach Größe; `null` = in dieser Größe nicht im Angebot. */
   presentations: Object.fromEntries(presentations.map((p) => [p, PRESENTATION_SURCHARGE[p]])),
   extras: Object.fromEntries(EXTRAS.map((e) => [e.id, e.price])),
   zones: Object.fromEntries(DELIVERY_ZONES.map((z) => [z.id, z.fee])),
   minOrderDelivery: MIN_ORDER_DELIVERY,
+  /** Formen mit Ab-Preis — das Gefäß wird vor der Lieferung abgestimmt. */
+  from: PRESENTATION_FROM,
+  fromLabel: _('shop.from'),
+  freeLabel: _('common.free'),
 };
 
-/** Preisbeispiele, damit die Kacheln ohne JavaScript schon sinnvoll aussehen. */
-const priceLabel = (cents: number) => (cents === 0 ? _('common.free') : `+ ${formatPrice(cents, lang)}`);
+/** Größe, die beim ersten Rendern ausgewählt ist — ohne Staffel die Pseudo-Größe. */
+const startSize: SizeKey | 'fixed' = sizes[0] ?? 'fixed';
+
+/**
+ * Preisschild einer Form. Ohne JavaScript steht hier bereits der richtige
+ * Betrag für die vorausgewählte Größe; die Skripte rechnen beim Wechsel um.
+ */
+function priceLabel(presentation: PresentationKey, size: SizeKey | 'fixed'): string {
+  const cents = surchargeFor(presentation, size);
+  if (cents === null) return '';
+  if (cents === 0) return _('common.free');
+  const betrag = `+ ${formatPrice(cents, lang)}`;
+  return PRESENTATION_FROM.includes(presentation) ? `${_('shop.from')} ${betrag}` : betrag;
+}
+
+/** Extras haben weiter einen festen Preis, unabhängig von der Größe. */
+const extraLabel = (cents: number) => (cents === 0 ? _('common.free') : `+ ${formatPrice(cents, lang)}`);
 
 // Frühester Liefertermin: morgen. Same-day läuft telefonisch, das ist ehrlicher
 // als ein Formular, das den Redaktionsschluss nicht kennt.
@@ -79,7 +101,9 @@ const minDate = tomorrow.toISOString().slice(0, 10);
               <input type="radio" name="size" value={size} checked={index === 0} />
               <span class="choice-title">{_(`cfg.size.${size}` as UiKey)}</span>
               <span class="choice-desc">{_(`cfg.size.${size}.desc` as UiKey)}</span>
-              <span class="choice-price">{formatPrice(priceFor(bouquet, size), lang)}</span>
+              <span class="choice-price">
+                {_('shop.from')} {formatPrice(priceFor(bouquet, size), lang)}
+              </span>
             </label>
           ))}
         </div>
@@ -100,15 +124,22 @@ const minDate = tomorrow.toISOString().slice(0, 10);
     <div class="choices choices--row">
       {
         presentations.map((presentation: PresentationKey, index: number) => (
-          <label class="choice">
-            <input type="radio" name="presentation" value={presentation} checked={index === 0} />
+          <label class="choice" data-presentation={presentation} hidden={surchargeFor(presentation, startSize) === null}>
+            <input
+              type="radio"
+              name="presentation"
+              value={presentation}
+              checked={index === 0}
+              disabled={surchargeFor(presentation, startSize) === null}
+            />
             <span class="choice-title">{_(`cfg.presentation.${presentation}` as UiKey)}</span>
             <span class="choice-desc">{_(`cfg.presentation.${presentation}.desc` as UiKey)}</span>
-            <span class="choice-price">{priceLabel(PRESENTATION_SURCHARGE[presentation])}</span>
+            <span class="choice-price">{priceLabel(presentation, startSize)}</span>
           </label>
         ))
       }
     </div>
+    <p class="hint">{_('cfg.presentation.hint')}</p>
   </fieldset>
 
   <!-- Grußkarte -->
@@ -133,6 +164,20 @@ const minDate = tomorrow.toISOString().slice(0, 10);
     </div>
   </fieldset>
 
+  <!--
+    Rechnung per E-Mail: Firmen brauchen sie, Privatleute meist nicht. Deshalb
+    zum Ankreuzen statt als Pflichtfeld — wer sie nicht braucht, sieht nur eine
+    Zeile mehr. Die Adresse holt Stripe an der Kasse ohnehin ein.
+  -->
+  <fieldset class="cfg-block">
+    <legend class="field-label">{_('cfg.invoice')}</legend>
+    <label class="switch">
+      <input type="checkbox" name="invoice" data-invoice-toggle />
+      <span>{_('cfg.invoice.yes')}</span>
+    </label>
+    <p class="hint">{_('cfg.invoice.hint')}</p>
+  </fieldset>
+
   <!-- Extras -->
   <fieldset class="cfg-block">
     <legend class="field-label">{_('cfg.extras')}</legend>
@@ -142,7 +187,7 @@ const minDate = tomorrow.toISOString().slice(0, 10);
           <label class="choice choice--inline">
             <input type="checkbox" name="extras" value={extra.id} />
             <span class="choice-title">{t(extra.name, lang)}</span>
-            <span class="choice-price">{priceLabel(extra.price)}</span>
+            <span class="choice-price">{extraLabel(extra.price)}</span>
           </label>
         ))
       }
@@ -166,6 +211,8 @@ const minDate = tomorrow.toISOString().slice(0, 10);
       </select>
       <span class="hint" data-zone-hint></span>
     </label>
+
+    <p class="hint">{_('cfg.delivery.beyond')}</p>
 
     <div class="cfg-row">
       <label class="field">
@@ -346,10 +393,14 @@ const minDate = tomorrow.toISOString().slice(0, 10);
   type Pricing = {
     currencyLocale: string;
     sizes: Record<string, number>;
-    presentations: Record<string, number>;
+    /** Aufpreis je Form **und Größe**; null = in dieser Größe nicht im Angebot. */
+    presentations: Record<string, Record<string, number | null>>;
     extras: Record<string, number>;
     zones: Record<string, number>;
     minOrderDelivery: number;
+    from: string[];
+    fromLabel: string;
+    freeLabel: string;
   };
 
   const INTL_LOCALE: Record<string, string> = { de: 'de-DE', uk: 'uk-UA', en: 'en-IE', ru: 'ru-RU' };
@@ -416,12 +467,63 @@ const minDate = tomorrow.toISOString().slice(0, 10);
       return input?.closest('.choice')?.querySelector('.choice-title')?.textContent?.trim() ?? value;
     }
 
+    /*
+      Ein Korb für einen XL-Strauß kostet mehr als für einen M-Strauß, und zum
+      XL-Strauß gibt es gar keine Vase. Beim Größenwechsel müssen deshalb nicht
+      nur die Beträge nachziehen, sondern auch die Auswahl selbst: Formen ohne
+      Preis für diese Größe verschwinden.
+
+      `hidden` statt `visibility`, weil die Kachel sonst als Lücke im Raster
+      stehen bliebe; `disabled` dazu, damit sie aus Tab-Reihenfolge und
+      FormData fällt. Wer eine Form gewählt hatte, die es in der neuen Größe
+      nicht gibt, landet auf der ersten verbliebenen — stillschweigend eine
+      Vase zu berechnen, die nicht geliefert werden kann, wäre schlimmer.
+    */
+    function formenAktualisieren(size: string): void {
+      let gewaehltesWegGefallen = false;
+
+      for (const label of form.querySelectorAll<HTMLElement>('[data-presentation]')) {
+        const key = label.dataset.presentation ?? '';
+        const cents = pricing.presentations[key]?.[size] ?? null;
+        const input = label.querySelector<HTMLInputElement>('input');
+        const preis = label.querySelector<HTMLElement>('.choice-price');
+
+        const verfuegbar = cents !== null;
+        label.hidden = !verfuegbar;
+        if (input) {
+          if (!verfuegbar && input.checked) gewaehltesWegGefallen = true;
+          input.disabled = !verfuegbar;
+        }
+
+        if (preis && verfuegbar) {
+          if (cents === 0) {
+            preis.textContent = pricing.freeLabel;
+          } else {
+            const betrag = `+ ${fmt(cents)}`;
+            preis.textContent = pricing.from.includes(key) ? `${pricing.fromLabel} ${betrag}` : betrag;
+          }
+        }
+      }
+
+      if (gewaehltesWegGefallen) {
+        const ersatz = form.querySelector<HTMLInputElement>(
+          'input[name="presentation"]:not(:disabled)',
+        );
+        if (ersatz) ersatz.checked = true;
+      }
+    }
+
     function render() {
-      const { size, presentation, zone, extras } = readSelection();
+      const { size } = readSelection();
+      formenAktualisieren(size);
+
+      // Erst nach dem Umschalten lesen: Die Auswahl kann sich gerade
+      // verschoben haben, wenn eine Form für diese Größe entfallen ist.
+      const { presentation, zone, extras } = readSelection();
       bildAktualisieren(size);
 
       const base = pricing.sizes[size] ?? 0;
-      const surcharge = pricing.presentations[presentation] ?? 0;
+      const surcharge = pricing.presentations[presentation]?.[size] ?? 0;
       const extrasTotal = extras.reduce((sum, id) => sum + (pricing.extras[id] ?? 0), 0);
       const delivery = pricing.zones[zone] ?? 0;
       const subtotal = base + surcharge + extrasTotal;
@@ -505,6 +607,7 @@ const minDate = tomorrow.toISOString().slice(0, 10);
             date: data.get('date'),
             slot: data.get('slot'),
             cardMessage: cardToggle?.checked ? String(data.get('cardMessage') ?? '') : '',
+            invoice: data.get('invoice') === 'on',
           }),
         });
 

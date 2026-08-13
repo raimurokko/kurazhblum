@@ -14,20 +14,29 @@ export const site = {
   instagram: 'kurazhblum_berlin',
   instagramUrl: 'https://www.instagram.com/kurazhblum_berlin/',
 
-  email: 'hallo@kurazhblum.de', // TODO
-  phone: '+49 000 0000000', // TODO
-  phoneHref: '+490000000000', // TODO
+  email: 'hallo@kurazhblum.de', // TODO: Gala legt noch eine eigene Adresse an
+
+  /*
+    Galas aktuelle Nummer. Sie schafft sich demnächst eine eigene Geschäfts-
+    nummer an — dann hier, in `phoneHref` und in `whatsapp` gemeinsam ändern.
+    Angerufen werden möchte sie nicht: Die Schaltfläche „Anrufen“ ist deshalb
+    entfernt, die Nummer steht nur noch als Angabe auf der Kontaktseite und
+    im Impressum, wo sie rechtlich hingehört.
+  */
+  phone: '+49 1515 7803330',
+  phoneHref: '+4915157803330',
 
   /**
    * WhatsApp-Nummer im internationalen Format ohne Plus und ohne Leerzeichen,
    * z. B. '4915112345678'. Leer lassen, wenn kein WhatsApp genutzt wird —
    * dann verschwindet die Schaltfläche überall von selbst.
    */
-  whatsapp: '490000000000', // TODO
+  whatsapp: '4915157803330',
 
+  /** Atelier in Lichtenberg. */
   address: {
-    street: 'Straße Hausnummer', // TODO
-    zip: '10999', // TODO
+    street: 'Storkower Straße 175',
+    zip: '10369',
     city: 'Berlin',
     country: 'DE',
   },
@@ -41,11 +50,10 @@ export const site = {
 
   /** Öffnungszeiten — Atelierbesuch nach Vereinbarung. */
   hours: [
-    { days: { de: 'Mo – Fr', uk: 'Пн – Пт', en: 'Mon – Fri', ru: 'Пн – Пт' }, time: '10:00 – 19:00' },
-    { days: { de: 'Samstag', uk: 'Субота', en: 'Saturday', ru: 'Суббота' }, time: '10:00 – 16:00' },
+    { days: { de: 'Mo – Sa', uk: 'Пн – Сб', en: 'Mon – Sat', ru: 'Пн – Сб' }, time: '10:00 – 20:00' },
     {
       days: { de: 'Sonntag', uk: 'Неділя', en: 'Sunday', ru: 'Воскресенье' },
-      time: '', // leer = geschlossen
+      time: '10:00 – 16:00',
     },
   ] satisfies { days: I18nText; time: string }[],
 

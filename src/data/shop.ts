@@ -78,16 +78,47 @@ export interface Bouquet {
 }
 
 /**
- * Aufpreis je Präsentationsform. Die Standardverpackung — von Hand gebunden,
- * in Papier — steckt im Produktpreis; alles Edlere kostet extra.
+ * Aufpreis je Präsentationsform **und Größe**. Ein Korb für einen XL-Strauß
+ * ist ein anderer Korb als für einen M-Strauß — ein Einheitsaufpreis war
+ * darum falsch.
+ *
+ * `null` bedeutet: für diese Größe nicht im Angebot. Eine Vase zum XL-Strauß
+ * ergibt keinen Sinn, und ein Gefäß zu versprechen, das es nicht gibt, ist
+ * schlimmer als eine Option weniger.
+ *
+ * `fixed` gilt für Sträuße ohne Größenstaffel (101 Rosen, 35 Päonienrosen);
+ * dort zählt die M-Staffel, weil es die einzige Ausführung ist.
  */
-export const PRESENTATION_SURCHARGE: Record<PresentationKey, Cents> = {
-  bouquet: 0,
-  premium: 1800,
-  box: 1800,
-  basket: 2500,
-  vase: 3500,
+export const PRESENTATION_SURCHARGE: Record<
+  PresentationKey,
+  Record<SizeKey | 'fixed', Cents | null>
+> = {
+  bouquet: { m: 0, l: 1500, xl: 2000, fixed: 0 },
+  premium: { m: 1500, l: 2500, xl: 3500, fixed: 1500 },
+  basket: { m: 1500, l: 2000, xl: 3000, fixed: 1500 },
+  box: { m: 1500, l: 2000, xl: 3000, fixed: 1500 },
+  vase: { m: 2000, l: 4000, xl: null, fixed: 2000 },
 };
+
+/**
+ * Formen, deren Aufpreis ein **Ab-Preis** ist: Korb, Schachtel und Vase gibt
+ * es in mehreren Ausführungen, das Gefäß wird vor der Lieferung abgestimmt.
+ * Strauß und Designerverpackung haben dagegen einen festen Aufpreis.
+ */
+export const PRESENTATION_FROM: PresentationKey[] = ['basket', 'box', 'vase'];
+
+/** Aufpreis für eine Form in einer Größe — `null`, wenn nicht angeboten. */
+export function surchargeFor(
+  presentation: PresentationKey,
+  size: SizeKey | 'fixed',
+): Cents | null {
+  return PRESENTATION_SURCHARGE[presentation][size];
+}
+
+/** Nur die Formen, die es in dieser Größe wirklich gibt. */
+export function presentationsFor(bouquet: Bouquet, size: SizeKey | 'fixed'): PresentationKey[] {
+  return bouquet.presentations.filter((p) => surchargeFor(p, size) !== null);
+}
 
 /** Mindestbestellwert für Lieferung — steht so auch im Instagram-Profil. */
 export const MIN_ORDER_DELIVERY: Cents = 8500;
@@ -100,6 +131,17 @@ export interface DeliveryZone {
   hint: I18nText;
 }
 
+/**
+ * Galas Zonen. Das Atelier steht in Lichtenberg — deshalb ist Lichtenberg
+ * eine eigene, günstigste Zone und nicht Teil von A. Brandenburg und Potsdam
+ * fallen weg: Sie liefert nur in Berlin, alles darüber hinaus nach Absprache.
+ *
+ * ⚠️ TODO: Die Preise sind von Gala bestätigt (15/20/25/35 €), **welche
+ * Bezirke zu A, B und C gehören, aber nicht**. Die Listen in `hint` sind ein
+ * plausibler Vorschlag nach Entfernung vom Atelier und müssen vor dem
+ * Livegang bestätigt werden — sonst verkauft die Seite eine Lieferung nach
+ * Spandau zum Preis von Zone C, die Gala vielleicht ganz anders rechnet.
+ */
 export const DELIVERY_ZONES: DeliveryZone[] = [
   {
     id: 'pickup',
@@ -111,58 +153,74 @@ export const DELIVERY_ZONES: DeliveryZone[] = [
       ru: 'Самовывоз из ателье',
     },
     hint: {
-      de: 'Nach Absprache, kein Mindestbestellwert',
-      uk: 'За домовленістю, без мінімальної суми',
-      en: 'By arrangement, no minimum order',
-      ru: 'По договорённости, без минимальной суммы',
+      de: 'Nur mit Termin, kein Mindestbestellwert',
+      uk: 'Лише за попередньою домовленістю, без мінімальної суми',
+      en: 'By appointment only, no minimum order',
+      ru: 'Только по записи, без минимальной суммы',
     },
   },
   {
-    id: 'inner',
-    fee: 900,
-    name: {
-      de: 'Berlin — innerhalb des Rings',
-      uk: 'Берлін — у межах кільця',
-      en: 'Berlin — inside the Ring',
-      ru: 'Берлин — внутри кольца',
-    },
-    hint: {
-      de: 'Mitte, Kreuzberg, Prenzlauer Berg, Friedrichshain, Charlottenburg',
-      uk: 'Мітте, Кройцберг, Пренцлауер-Берг, Фрідріхсхайн, Шарлоттенбург',
-      en: 'Mitte, Kreuzberg, Prenzlauer Berg, Friedrichshain, Charlottenburg',
-      ru: 'Митте, Кройцберг, Пренцлауэр-Берг, Фридрихсхайн, Шарлоттенбург',
-    },
-  },
-  {
-    id: 'outer',
+    id: 'lichtenberg',
     fee: 1500,
     name: {
-      de: 'Berlin — Außenbezirke',
-      uk: 'Берлін — зовнішні райони',
-      en: 'Berlin — outer districts',
-      ru: 'Берлин — внешние районы',
+      de: 'Lichtenberg',
+      uk: 'Ліхтенберг',
+      en: 'Lichtenberg',
+      ru: 'Лихтенберг',
     },
     hint: {
-      de: 'Spandau, Köpenick, Pankow-Nord, Marzahn, Zehlendorf',
-      uk: 'Шпандау, Кьопенік, Панков-Північ, Марцан, Целендорф',
-      en: 'Spandau, Köpenick, north Pankow, Marzahn, Zehlendorf',
-      ru: 'Шпандау, Кёпеник, Панков-Север, Марцан, Целендорф',
+      de: 'Der Bezirk rund ums Atelier',
+      uk: 'Район навколо ательє',
+      en: 'The district around the atelier',
+      ru: 'Район вокруг ателье',
     },
   },
   {
-    id: 'brandenburg',
-    fee: 2900,
+    id: 'a',
+    fee: 2000,
     name: {
-      de: 'Potsdam & Umland',
-      uk: 'Потсдам та околиці',
-      en: 'Potsdam & surroundings',
-      ru: 'Потсдам и окрестности',
+      de: 'Berlin — Zone A',
+      uk: 'Берлін — зона A',
+      en: 'Berlin — zone A',
+      ru: 'Берлин — зона A',
     },
     hint: {
-      de: 'Nach Absprache, bis 40 km ab Atelier',
-      uk: 'За домовленістю, до 40 км від ательє',
-      en: 'By arrangement, up to 40 km from the atelier',
-      ru: 'По договорённости, до 40 км от ателье',
+      de: 'Friedrichshain, Prenzlauer Berg, Mitte, Kreuzberg',
+      uk: 'Фрідріхсхайн, Пренцлауер-Берг, Мітте, Кройцберг',
+      en: 'Friedrichshain, Prenzlauer Berg, Mitte, Kreuzberg',
+      ru: 'Фридрихсхайн, Пренцлауэр-Берг, Митте, Кройцберг',
+    },
+  },
+  {
+    id: 'b',
+    fee: 2500,
+    name: {
+      de: 'Berlin — Zone B',
+      uk: 'Берлін — зона B',
+      en: 'Berlin — zone B',
+      ru: 'Берлин — зона B',
+    },
+    hint: {
+      de: 'Pankow, Treptow, Neukölln, Charlottenburg, Wedding',
+      uk: 'Панков, Трептов, Нойкельн, Шарлоттенбург, Веддінг',
+      en: 'Pankow, Treptow, Neukölln, Charlottenburg, Wedding',
+      ru: 'Панков, Трептов, Нойкёльн, Шарлоттенбург, Веддинг',
+    },
+  },
+  {
+    id: 'c',
+    fee: 3500,
+    name: {
+      de: 'Berlin — Zone C',
+      uk: 'Берлін — зона C',
+      en: 'Berlin — zone C',
+      ru: 'Берлин — зона C',
+    },
+    hint: {
+      de: 'Marzahn, Köpenick, Spandau, Reinickendorf, Zehlendorf',
+      uk: 'Марцан, Кьопенік, Шпандау, Райнікендорф, Целендорф',
+      en: 'Marzahn, Köpenick, Spandau, Reinickendorf, Zehlendorf',
+      ru: 'Марцан, Кёпеник, Шпандау, Райниккендорф, Целендорф',
     },
   },
 ];
@@ -186,12 +244,12 @@ export const EXTRAS: Extra[] = [
   },
   {
     id: 'chocolate',
-    price: 1200,
+    price: 2000,
     name: {
-      de: 'Belgische Pralinen',
-      uk: 'Бельгійські праліне',
-      en: 'Belgian chocolates',
-      ru: 'Бельгийские конфеты',
+      de: 'Ferrero Rocher 200 g oder Raffaello 150 g',
+      uk: 'Ferrero Rocher 200 г або Raffaello 150 г',
+      en: 'Ferrero Rocher 200 g or Raffaello 150 g',
+      ru: 'Ferrero Rocher 200 г или Raffaello 150 г',
     },
   },
   {
@@ -240,20 +298,20 @@ export const CATEGORIES: Category[] = [
     imagePlaceholder: true,
     name: { de: 'Rosen', uk: 'Троянди', en: 'Roses', ru: 'Розы' },
     blurb: {
-      de: 'Klassisch, monochrom, in jeder Stückzahl. Auch als reine Rosenwand im Karton.',
-      uk: 'Класика, монохром, у будь-якій кількості. Також суцільна троянда в коробці.',
-      en: 'Classic, monochrome, in any count. Also as a solid rose box.',
-      ru: 'Классика, монохром, в любом количестве. Также сплошная роза в коробке.',
+      de: 'Klassisch oder kreativ, Mono-Rosen oder ein Mix aus Sorten und Farben.',
+      uk: 'Класика або креатив, моно-троянди чи мікс сортів і кольорів.',
+      en: 'Classic or creative, mono roses or a mix of varieties and colours.',
+      ru: 'Классика или креатив, моно-розы или микс сортов и цвета.',
     },
   },
   {
     slug: 'pfingstrosen',
     name: { de: 'Pfingstrosen', uk: 'Півонії', en: 'Peonies', ru: 'Пионы' },
     blurb: {
-      de: 'Nur zur Saison, dafür in voller Blüte. Von Mai bis Anfang Juli.',
-      uk: 'Тільки в сезон, зате в повному цвіті. З травня до початку липня.',
-      en: 'Only in season, but in full bloom. May to early July.',
-      ru: 'Только в сезон, зато в полном цвету. С мая до начала июля.',
+      de: 'Nur zur Saison — von Mai bis Anfang Juni.',
+      uk: 'Тільки в сезон — з травня до початку червня.',
+      en: 'Only in season — from May to early June.',
+      ru: 'Только в сезон – с мая до начала июня.',
     },
   },
   {
@@ -262,10 +320,10 @@ export const CATEGORIES: Category[] = [
     imagePlaceholder: true,
     name: { de: 'Hortensien', uk: 'Гортензії', en: 'Hydrangeas', ru: 'Гортензии' },
     blurb: {
-      de: 'Große, weiche Köpfe — allein oder mit Rosen kombiniert.',
-      uk: 'Великі мʼякі голівки — самі або в поєднанні з трояндами.',
-      en: 'Big soft heads — on their own or combined with roses.',
-      ru: 'Большие мягкие головки — сами по себе или с розами.',
+      de: 'Große Hortensienköpfe im Mono-Strauß oder im Mix. Saisonblume — Verfügbarkeit klären wir vorher.',
+      uk: 'Великі голівки гортензії в моно-букеті або в міксі. Сезонна квітка — наявність уточнюємо заздалегідь.',
+      en: 'Big hydrangea heads in a mono bouquet or in a mix. A seasonal flower — we check availability in advance.',
+      ru: 'Большие шапочки гортензии в моно-букете или в микс букетах. Сезонный цветок, наличие уточняется заранее.',
     },
   },
   {
@@ -277,10 +335,10 @@ export const CATEGORIES: Category[] = [
       ru: 'Сухоцветы',
     },
     blurb: {
-      de: 'Halten Monate statt Tage. Gut fürs Büro und für Geschenke per Post.',
-      uk: 'Тримаються місяцями, а не днями. Добре для офісу та подарунків поштою.',
-      en: 'Last months, not days. Good for the office and for gifts by post.',
-      ru: 'Держатся месяцами, а не днями. Хороши для офиса и подарков почтой.',
+      de: 'Halten Monate statt Tage. Gut für die Einrichtung und für Geschenke per Post.',
+      uk: 'Тримаються місяцями, а не днями. Добре для оздоблення інтерʼєру та подарунків поштою.',
+      en: 'Last months, not days. Good for interiors and for gifts by post.',
+      ru: 'Стоят месяцами, а не днями. Хороши для украшения интерьеров и подарков по почте.',
     },
   },
 ];
@@ -312,10 +370,10 @@ export const BOUQUETS: Bouquet[] = [
       ru: 'Букет, который заказывают повторно чаще всего.',
     },
     description: {
-      de: 'Kein Schema, keine Symmetrie — nur Farben, die sich gegenseitig hochziehen. Ich stelle ihn jeden Morgen neu aus dem zusammen, was frisch hereinkommt. Zwei Dopamin-Sträuße sehen deshalb nie gleich aus, und genau das ist die Idee. Die Fotos zeigen jede Größe an einem echten Beispiel.',
-      uk: 'Жодної схеми, жодної симетрії — лише кольори, що підсилюють одне одного. Збираю його щоранку заново з того, що приходить свіжим. Тому два дофамінові букети ніколи не однакові — і в цьому вся суть. На фото кожен розмір показано на справжньому прикладі.',
-      en: 'No scheme, no symmetry — only colours that lift each other. I compose it fresh each morning from whatever comes in. No two dopamine bouquets look alike, and that is exactly the point. The photos show each size on a real example.',
-      ru: 'Никакой схемы, никакой симметрии — только цвета, которые вытягивают друг друга. Собираю его каждое утро заново из того, что приходит свежим. Два дофаминовых букета никогда не выглядят одинаково — в этом и смысл. На фото каждый размер показан на настоящем примере.',
+      de: 'Kein Schema, keine strenge Symmetrie — nur Farben, die einander ergänzen und den Wow-Effekt machen. Ich binde ihn jeden Morgen aus der frischen Lieferung. Zwei Dopamin-Sträuße sehen nie gleich aus — darin liegen ihr Reiz und ihr Sinn. Die Fotos zeigen jede Größe an einem echten Beispiel.',
+      uk: 'Жодної схеми й суворої симетрії — лише кольори, що доповнюють одне одного і створюють вау-ефект. Збираю щоранку зі свіжої поставки. Два дофамінові букети ніколи не виглядають однаково — у цьому їхня чарівність і сенс. На фото кожен розмір букета показано на справжньому прикладі.',
+      en: 'No scheme, no strict symmetry — only colours that complement each other and create the wow effect. I compose it every morning from the fresh delivery. No two dopamine bouquets ever look alike — that is their charm and their point. The photos show each size on a real example.',
+      ru: 'Никакой схемы и строгой симметрии — только цвета, которые дополняют друг друга и создают вау-эффект. Собираю каждое утро из свежей поставки. Два дофаминовых букета никогда не выглядят одинаково — в этом их очарование и смысл. На фото каждый размер букета показан на настоящем примере.',
     },
     composition: {
       de: 'Wechselnd: Hortensien, Ranunkeln, Rittersporn, Nelken, Eustoma, Beiwerk der Saison',
@@ -407,10 +465,10 @@ export const BOUQUETS: Bouquet[] = [
       ru: 'Букет из 35 пионовидных роз',
     },
     blurb: {
-      de: 'Gefüllte Gartenrosen, die aussehen wie Pfingstrosen — aber das ganze Jahr.',
-      uk: 'Густомахрові садові троянди, схожі на півонії — але цілий рік.',
-      en: 'Full garden roses that look like peonies — but all year round.',
-      ru: 'Густомахровые садовые розы, похожие на пионы — но круглый год.',
+      de: 'Gefüllte Gartenrosen, die aussehen wie Pfingstrosen — aber das ganze Jahr verfügbar.',
+      uk: 'Густомахрові садові троянди, схожі на півонії — але доступні цілий рік.',
+      en: 'Full garden roses that look like peonies — but available all year round.',
+      ru: 'Густомахровые садовые розы, похожие на пионы — но доступные круглый год.',
     },
     description: {
       de: 'Päonienrosen sind keine Pfingstrosen: Es sind stark gefüllte Gartenrosen, die deren Form nachbilden — mit dem Vorteil, dass es sie außerhalb der sieben Pfingstrosen-Wochen gibt und dass sie deutlich länger halten. Standardlänge 60 cm; jede andere Länge binde ich auf Wunsch.',
@@ -433,10 +491,10 @@ export const BOUQUETS: Bouquet[] = [
     images: ['/images/products/rosen-pur.jpg'],
     name: { de: 'Rosen pur', uk: 'Тільки троянди', en: 'Roses only', ru: 'Только розы' },
     blurb: {
-      de: 'Eine Sorte, eine Farbe, nichts dazwischen.',
-      uk: 'Один сорт, один колір, нічого зайвого.',
-      en: 'One variety, one colour, nothing in between.',
-      ru: 'Один сорт, один цвет, ничего между.',
+      de: 'Eine Sorte, eine Farbe — zeitlose Klassik, nichts Überflüssiges.',
+      uk: 'Один сорт, один колір — вічна класика і нічого зайвого.',
+      en: 'One variety, one colour — timeless classic, nothing superfluous.',
+      ru: 'Один сорт, один цвет – вечная классика и ничего лишнего.',
     },
     description: {
       de: 'Wenn es keine Erklärung braucht. Ich arbeite mit ecuadorianischen und kenianischen Rosen mit langem Stiel und fester Knospe — M sind 25 Stiele, L sind 51, XL sind 101. Farbe sagen Sie mir im Bestellhinweis, sonst wähle ich nach Tagesqualität.',
@@ -454,22 +512,22 @@ export const BOUQUETS: Bouquet[] = [
   {
     slug: 'pfingstrosen-wolke',
     category: 'pfingstrosen',
-    season: [5, 6, 7],
+    season: [5, 6],
     priceOnRequest: true,
     presentations: ['bouquet', 'premium', 'box', 'vase'],
     images: ['/images/products/pfingstrosen-wolke.webp'],
     imagePlaceholder: true,
     name: {
-      de: 'Pfingstrosen-Wolke',
-      uk: 'Півонієва хмарка',
-      en: 'Peony cloud',
-      ru: 'Пионовое облако',
+      de: 'Pfingstrosen',
+      uk: 'Півонії',
+      en: 'Peonies',
+      ru: 'Пионы',
     },
     blurb: {
-      de: 'Sieben Wochen im Jahr, dann ist Schluss.',
-      uk: 'Сім тижнів на рік — і все.',
-      en: 'Seven weeks a year, then it is over.',
-      ru: 'Семь недель в году, потом всё.',
+      de: 'Von Mai bis Juni verfügbar, Bestand klären wir vor der Bestellung.',
+      uk: 'Доступні з травня до червня, наявність уточнюємо перед замовленням.',
+      en: 'Available from May to June; we check availability before you order.',
+      ru: 'Доступны с мая по июнь, наличие уточнять перед заказом.',
     },
     description: {
       de: 'Echte Pfingstrosen, keine Päonienrosen. Sie kommen halb geschlossen ins Haus und öffnen sich bei Ihnen über zwei bis drei Tage — das ist der schönste Teil. Ich binde sie fast pur, nur mit etwas Grün, damit die Köpfe Platz haben.',
@@ -491,16 +549,16 @@ export const BOUQUETS: Bouquet[] = [
     presentations: ['bouquet', 'premium', 'basket', 'vase'],
     images: ['/images/products/hortensie-solo.jpg'],
     name: {
-      de: 'Hortensie solo',
-      uk: 'Гортензія соло',
-      en: 'Hydrangea solo',
-      ru: 'Гортензия соло',
+      de: 'Mono-Hortensie',
+      uk: 'Моно-гортензія',
+      en: 'Mono hydrangea',
+      ru: 'Моно гортензия',
     },
     blurb: {
-      de: 'Wenige Köpfe, viel Wirkung.',
-      uk: 'Кілька голівок — багато враження.',
-      en: 'Few heads, a lot of presence.',
-      ru: 'Немного головок — много впечатления.',
+      de: 'Dichte Köpfe, die unglaublich viel hermachen.',
+      uk: 'Густі голівки, що справляють неймовірне враження.',
+      en: 'Dense heads that make an incredible impression.',
+      ru: 'Густые шапочки, производящие невероятное впечатление.',
     },
     description: {
       de: 'Hortensien füllen einen Raum wie kaum eine andere Blume. Wichtig ist nur, dass sie sofort ins Wasser kommen — die Pflegekarte liegt bei, und im Korb bringe ich sie mit eigener Wasserquelle.',
@@ -522,16 +580,16 @@ export const BOUQUETS: Bouquet[] = [
     presentations: ['bouquet', 'premium', 'box', 'vase'],
     images: ['/images/products/trocken-atelier.jpg'],
     name: {
-      de: 'Trocken, Atelier',
-      uk: 'Сухоцвіт, ательє',
-      en: 'Dried, atelier',
-      ru: 'Сухоцвет, ателье',
+      de: 'Trockenblumen',
+      uk: 'Сухоцвіти',
+      en: 'Dried flowers',
+      ru: 'Сухоцветы',
     },
     blurb: {
-      de: 'Steht ein halbes Jahr und braucht kein Wasser.',
-      uk: 'Стоїть пів року й не потребує води.',
-      en: 'Stands for half a year and needs no water.',
-      ru: 'Стоит полгода и не требует воды.',
+      de: 'Stehen mindestens ein halbes Jahr und brauchen kein Wasser.',
+      uk: 'Стоять щонайменше пів року й не потребують води.',
+      en: 'Last at least half a year and need no water.',
+      ru: 'Стоят минимум полгода и не требуют воды.',
     },
     description: {
       de: 'Gebleichte Gräser, Pampas, Lagurus und getrocknete Hortensie in gedeckten Tönen. Versandfähig — wenn der Strauß nach Hamburg oder München soll, ist das hier die richtige Wahl.',
@@ -626,7 +684,7 @@ export function calculateTotal(input: {
   zoneId: string;
 }): { subtotal: Cents; deliveryFee: Cents; total: Cents } {
   const base = priceFor(input.bouquet, input.size);
-  const presentation = PRESENTATION_SURCHARGE[input.presentation] ?? 0;
+  const presentation = surchargeFor(input.presentation, input.size ?? 'fixed') ?? 0;
   const extras = input.extras.reduce((sum, id) => sum + (EXTRAS.find((e) => e.id === id)?.price ?? 0), 0);
   const subtotal = base + presentation + extras;
   const deliveryFee = DELIVERY_ZONES.find((z) => z.id === input.zoneId)?.fee ?? 0;
