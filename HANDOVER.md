@@ -10,10 +10,10 @@ fürs Weiterarbeiten in `AGENTS.md`.
 
 | | |
 | :--- | :--- |
-| Stand | Commit `64720bf` |
+| Stand | Commit `53c1623`, 13.08.2026 |
 | Repository | <https://github.com/raimurokko/kurazhblum> |
 | Vorschau | <https://raimurokko.github.io/kurazhblum/> |
-| Umfang | 113 Seiten, 4 Sprachen, 8 Sträuße, 956 Textschlüssel, 50 Quelldateien |
+| Umfang | 113 Seiten, 4 Sprachen, 8 Sträuße, 283 Textschlüssel je Sprache, 47 Quelldateien |
 
 ---
 
@@ -25,55 +25,65 @@ Entwicklungsarbeit.
 
 | Bereich | Stand | Anmerkung |
 | :--- | :--- | :--- |
-| Gerüst, Design, vier Sprachen | fertig | 956 Textschlüssel, Rückfall auf Deutsch bei Lücken |
+| Gerüst, Design, vier Sprachen | fertig | Rückfall auf Deutsch bei Lücken, `UiKey` erzwingt Vollständigkeit |
 | Shop, Konfigurator, drei Bestellwege | fertig | Preis wird serverseitig verbindlich nachgerechnet |
+| Lieferzonen, -fenster und Adressprüfung | fertig | VBB-Tarifbereiche, Stundenfenster, Postleitzahl gegen Berlin geprüft |
+| Anfrage- und Bestellstrecken | fertig | Ohne Server: WhatsApp, Instagram, E-Mail tragen die Angaben mit |
+| Stammdaten, WhatsApp, Impressum | fertig | Halyna Zharuk, Storkower Straße, § 19 UStG |
 | Barrierefreiheit | fertig | Panel, Erklärung, geprüft bei 320 px und 150 % |
 | Veröffentlichung auf GitHub Pages | fertig | Baut bei jedem Push automatisch |
-| Produktfotos | teilweise | 4 Sträuße bebildert, 3 Fotos vorläufig, Rest Platzhalter |
-| Preise | teilweise | 4 bestätigt, 4 bewusst ohne Preis als Saisonbeispiele |
-| Stammdaten & WhatsApp-Nummer | **offen** | Platzhalter in `src/data/site.ts` |
-| Stripe- und Resend-Zugang | **offen** | Ohne Schlüssel keine Kasse, kein Formularversand |
+| Produktfotos | teilweise | 4 Sträuße und 3 Kategorien bebildert, 4 Fotos vorläufig markiert |
+| Preise | teilweise | Größen, Verpackung, Zonen und Fenster bestätigt; drei Lücken siehe § 12 |
+| Stripe-Zugang | **offen** | Ohne Schlüssel keine Kasse — der Rest der Website läuft |
 | Rechtstexte | **ungeprüft** | Entwürfe mit sichtbaren Lücken, anwaltlich prüfen lassen |
+| Domain und E-Mail | **offen** | Gala legt beides noch an |
 
 ---
 
 ## 2. Vor dem Livegang
 
-In dieser Reihenfolge. Die ersten drei blockieren den Verkauf.
+In dieser Reihenfolge. Nur die ersten beiden blockieren den Verkauf.
 
-1. **Stammdaten eintragen** — blockierend.
-   `src/data/site.ts` enthält vierzehn `TODO`-Stellen: vollständiger Name der
-   Inhaberin, Adresse, Telefon, E-Mail, Umsatzsteuerstatus und die
-   WhatsApp-Nummer. Letztere ist der wichtigste Knopf auf mehreren Seiten — ohne
-   sie läuft der Weg „Strauß zusammenstellen“ ins Leere.
+1. **Stripe-Konto anlegen** — blockierend für die Kasse.
+   Ohne `STRIPE_SECRET_KEY` antwortet `/api/checkout` mit `503`, und der Knopf
+   „Zur Kasse“ zeigt eine Fehlermeldung mit Kontaktwegen. Alles andere — die
+   drei Bestellwege über WhatsApp, Instagram und E-Mail — läuft ohne.
 
 2. **Rechtstexte prüfen lassen** — blockierend.
-   Impressum, Datenschutz, AGB und Widerrufsbelehrung sind durchdachte
-   Entwürfe, aber ungeprüft. Besonders die Widerrufsbelehrung: frei gebundene
-   Sträuße, Standardware, Trockenblumen und Workshops fallen unter vier
-   verschiedene gesetzliche Regeln.
+   Impressum, Datenschutz, AGB und Widerrufsbelehrung tragen noch sechs
+   sichtbare `.todo`-Markierungen. Besonders zwei Punkte:
 
-3. **Hosting mit Serverfunktionen wählen** — blockierend.
-   GitHub Pages liefert nur statische Dateien. Kasse und Anfrageformulare
-   brauchen Netlify oder Vercel. Dazu Stripe- und Resend-Konten anlegen.
+   - Die **Widerrufsbelehrung**: frei gebundene Sträuße, Standardware,
+     Trockenblumen und Workshops fallen unter vier verschiedene Regeln.
+   - Die **Datenschutzerklärung** beschreibt noch einen Formularversand über
+     einen eigenen Server mit Resend. Den gibt es seit dem 13.08.2026 nicht
+     mehr — die Anfragen gehen über WhatsApp, Instagram oder das Mailprogramm
+     der Absenderin. Der Text verspricht damit etwas anderes, als die Seite tut.
 
-4. **Preise freigeben.** Bestätigt sind nur Dopamin-Berlin, die 101 Rosen und
-   die 35 Päonienrosen. Offen sind die Aufpreise für Verpackung und Extras.
+3. **Domain und E-Mail eintragen.** Beides legt Gala noch an. Die Domain steht
+   in `astro.config.mjs` (`site`) und `src/data/site.ts`; davon hängen
+   canonical, hreflang, Sitemap und `robots.txt` ab. Die Telefonnummer ist
+   Galas aktuelle — sie schafft sich eine eigene Geschäftsnummer an, dann sind
+   `phone`, `phoneHref` und `whatsapp` gemeinsam zu ändern.
 
-5. **Fotos ersetzen.** Drei Aufnahmen sind sichtbar als „Platzhalter“ markiert
-   (nur 1125 px breit). Kategoriekacheln, Atelierporträt und Instagram-Feed
-   fehlen ganz.
+4. **Drei Preisangaben bestätigen lassen** — siehe § 12. Sie stehen im Code als
+   TODO markiert, weil sie geraten wären, wenn niemand fragt.
+
+5. **Fotos ersetzen.** Vier Aufnahmen sind sichtbar als „Platzhalter“ markiert
+   (nur 1125 px). Es fehlen ganz: zwei Kategoriekacheln, das Atelierporträt,
+   sechs Instagram-Bilder, vier Workshop-Fotos, drei Saisonbeispiele und ein
+   zweites Hochzeitsmotiv.
 
 6. **Galas Geschichte schreiben.** Die Atelier-Seite beschreibt bewusst nur die
    Arbeitsweise. Der eigene Werdegang wurde nicht erfunden.
 
-7. **Domain eintragen** in `astro.config.mjs` (`site`) und `src/data/site.ts`.
-   Davon hängen canonical, hreflang, Sitemap und `robots.txt` ab.
+7. **Workshop-Termine pflegen** in `src/data/workshops.ts`. Der Grundkurs läuft
+   am letzten Samstag jedes Monats um 17:30; sechs Termine sind eingetragen,
+   vergangene verschwinden automatisch.
 
-8. **Workshop-Termine pflegen** in `src/data/workshops.ts`. Vergangene Daten
-   verschwinden automatisch.
-
----
+8. **Hosting mit Serverfunktionen wählen** — nur noch für die Kasse.
+   GitHub Pages liefert statische Dateien; `/api/checkout` gibt es dort nicht.
+   `npx astro add netlify` oder `… vercel` tauscht den Adapter selbst aus.
 
 ## 3. Schnellstart
 
@@ -85,9 +95,9 @@ cp .env.example .env     # Schlüssel eintragen — optional
 npm run dev              # http://localhost:4321
 ```
 
-Ohne Schlüssel läuft alles außer Kasse und Formularversand. Beide antworten mit
-einem klaren Fehler und zeigen der Kundschaft E-Mail und Telefonnummer, statt
-still zu scheitern.
+Ohne Schlüssel läuft alles außer der Kasse. Sie antwortet mit einem klaren
+Fehler und zeigt E-Mail und WhatsApp, statt still zu scheitern. Die
+Anfragestrecken brauchen ohnehin keinen Server mehr.
 
 | Befehl | Wirkung |
 | :--- | :--- |
@@ -112,6 +122,7 @@ src/
 │   ├── site.ts        Stammdaten, Öffnungszeiten, Lieferzeitfenster
 │   ├── shop.ts        Kategorien, Sträuße, Preise, Liefergebiete
 │   ├── flowers.ts     Auswahlliste für Weg A — keine Bestandsliste
+│   ├── berlin-plz.ts  190 Berliner Postleitzahlen (OSM), Adressprüfung
 │   ├── workshops.ts   Kursformate und Termine
 │   └── instagram.ts   Verweise auf lokal liegende Instagram-Bilder
 ├── layouts/           BaseLayout (Meta, hreflang, JSON-LD), LegalLayout
@@ -142,15 +153,19 @@ ließe sich der Preis im Formular manipulieren.
 
 | Weg | Was passiert | Endet in |
 | :--- | :--- | :--- |
-| **A** Strauß zusammenstellen | Blumen, Farbstimmung, Größe, Budget wählen | vorbereiteter Nachricht — *nicht* in der Kasse |
+| **A** Strauß zusammenstellen | Blumen, Farbstimmung, Größe, Budget, Termin, Adresse | vorbereiteter Nachricht — *nicht* in der Kasse |
 | **B** Fertigen Strauß wählen | Katalog, Konfigurator | Stripe-Kasse |
 | **C** Überraschungsstrauß | Floristin wählt, 10 % günstiger | Stripe-Kasse |
 
 **Warum Weg A keine Kasse hat:** Gala hat kein Lager. Was heute frisch ist,
 entscheidet der Markt am Morgen — ein Warenkorb würde Blumen zusagen, die sie
 nicht halten kann. Die Seite baut aus der Auswahl eine fertige Nachricht, die
-die Kundin selbst per WhatsApp oder E-Mail abschickt: ohne Server, ohne
-Einwilligungskästchen, und sie funktioniert auch auf GitHub Pages.
+die Kundin selbst per WhatsApp, Instagram oder E-Mail abschickt: ohne Server
+und ohne Zustellrisiko.
+
+Weg A ist trotzdem eine **Bestellung** und sammelt seit dem 13.08.2026 alles,
+was dazugehört — Name, Telefon, Wunschtermin mit Zeitfenster, Lieferadresse,
+Kartentext. Vorher folgten darauf drei Rückfragen.
 
 > **Nicht rückgängig machen.** Aus Weg A einen Warenkorb zu machen wäre
 > technisch leicht und geschäftlich falsch. Ebenso der Rabatt bei Weg C: Er
@@ -158,23 +173,44 @@ Einwilligungskästchen, und sie funktioniert auch auf GitHub Pages.
 > dauerhafter Nachlass *ist* der Preis, und ein nie verlangter Streichpreis ist
 > in Deutschland abmahnbar.
 
+### Anfragen ohne Server
+
+Die Formulare für Veranstaltungen, Workshops und Kontakt haben **keinen
+Absenden-Knopf** mehr. Sie bauen dieselbe Nachricht und öffnen WhatsApp,
+Instagram oder das Mailprogramm — die Angaben gehen mit, niemand tippt zweimal.
+
+Zwei getrennte Haken geben die Wege frei: einer für die Datenschutzerklärung,
+einer für die Weitergabe an Dritte samt Übermittlung in die USA. Beides in ein
+Kästchen zu packen wäre gebündelte Einwilligung und damit keine.
+
+Instagram kann eine Direktnachricht nicht vorausfüllen — es gibt kein
+Adressschema dafür. Der Text geht deshalb in die Zwischenablage, ein Dialog
+nennt das Tastenkürzel je nach Gerät, und erst nach dem Bestätigen öffnet
+`ig.me/m/…`.
+
+> `src/pages/api/inquiry.ts` wird dadurch von nichts mehr aufgerufen. Die Datei
+> steht noch da, damit der Serverweg jederzeit zurückkann — als toter Pfad
+> gehört sie aber auf die Liste.
+
 ---
 
 ## 6. Sortiment & Preise
 
 Galas Staffel heißt **M/L/XL** — kein S. Ihr M ist mit 85 € der Einstieg und
-liegt genau auf dem Mindestbestellwert für Lieferung.
+liegt genau auf dem Mindestbestellwert für Lieferung. Die Einstiegspreise
+stehen als `SIZE_ENTRY_PRICES` in `shop.ts`; Weg A liest sie von dort, damit
+dieselbe Zahl nicht an zwei Orten gepflegt wird.
 
 | Strauß | Kategorie | Preis | Stand |
 | :--- | :--- | :--- | :--- |
-| Dopamin-Berlin | Dopamin-Sträuße | 85 / 150 / 220 € | bestätigt |
-| Überraschungsstrauß | Dopamin-Sträuße | 85 / 135 / 198 € | abgeleitet |
+| Dopamin-Berlin | Dopamin-Sträuße | ab 85 / 150 / 220 € | bestätigt |
+| Überraschungsstrauß | Dopamin-Sträuße | ab 85 / 135 / 198 € | abgeleitet |
 | 101 Rosen mit Herz | Rosen | 400 € | bestätigt |
 | 35 Päonienrosen, 60 cm | Rosen | 180 € | bestätigt |
-| Rosen pur | Rosen | je nach Saison | Saisonbeispiel |
-| Pfingstrosen-Wolke | Pfingstrosen | je nach Saison | Saisonbeispiel |
-| Hortensie solo | Hortensien | je nach Saison | Saisonbeispiel |
-| Trocken, Atelier | Trockenblumen | je nach Saison | Saisonbeispiel |
+| Rosen pur | Rosen | je nach Saison | Saisonware |
+| Pfingstrosen | Pfingstrosen | je nach Saison | Saisonware |
+| Mono-Hortensie | Hortensien | je nach Saison | Saisonware |
+| Trockenblumen | Trockenblumen | je nach Saison | Saisonware |
 
 Drei Modelle im Datentyp, genau eines der ersten beiden setzen:
 
@@ -182,11 +218,65 @@ Drei Modelle im Datentyp, genau eines der ersten beiden setzen:
   Größenwahl.
 - **`price`** — Festpreis, keine Größenwahl. Die 101 Rosen und die Päonienrosen
   gibt es nur in einer Ausführung.
-- **`priceOnRequest`** — Saisonbeispiel. Kein Betrag, kein Konfigurator, keine
+- **`priceOnRequest`** — Saisonware. Kein Betrag, kein Konfigurator, keine
   Kasse; die API weist solche Produkte auch bei nachgebautem Aufruf mit `422`
   ab. Der Weg führt zum Kundenservice.
 
 Gekapselt in `hasSizes()`, `sizesOf()`, `priceFor()` und `isOrderable()`.
+
+### Aufpreise hängen an der Größe
+
+Ein Korb für einen XL-Strauß ist ein anderer Korb als für M. `null` heißt: in
+dieser Größe nicht im Angebot — die Vase zum XL-Strauß entfällt darum ganz, im
+Browser wie serverseitig.
+
+| | M | L | XL |
+| :--- | ---: | ---: | ---: |
+| Strauß | gratis | + 15 € | + 20 € |
+| Designerverpackung | + 15 € | + 25 € | + 35 € |
+| Korb | ab 15 € | ab 20 € | ab 30 € |
+| Hutschachtel | ab 15 € | ab 20 € | ab 30 € |
+| Vase | ab 20 € | ab 40 € | — |
+
+Korb, Schachtel und Vase sind **Ab-Preise** (`PRESENTATION_FROM`): Das Gefäß
+wird vor der Lieferung abgestimmt. Deshalb zeigen auch die Größen „ab“ — mit
+Verpackung, Extras und Lieferung liegt der Endpreis darüber.
+
+### Lieferung
+
+Die Zonen sind die **VBB-Tarifbereiche** vom BVG-Ticket, nicht selbstgebaute
+Gebiete: In Berlin weiß fast jede Kundin, ob sie in A oder B wohnt.
+
+| Zone | Preis |
+| :--- | ---: |
+| Abholung im Atelier | nur nach Absprache, separat gebucht |
+| Lichtenberg | 15 € |
+| Berlin — Tarifbereich A | 20 € |
+| Berlin — Tarifbereich B | 25 € |
+
+**Die Grenze ist der S-Bahn-Ring, nicht die Bezirksgrenze.** Neukölln,
+Prenzlauer Berg, Schöneberg, Wedding und Alt-Treptow liegen teils in A, teils
+in B; die Ringbahnhöfe zählen noch zu A. Wer nach Bezirken sortiert, rechnet
+systematisch falsch — die Hinweise nennen darum Grenzbahnhöfe.
+
+**Tarifbereich C fehlt mit Absicht.** C ist kein Berliner Gebiet, sondern das
+Brandenburger Umland samt Potsdam und BER; Gala liefert dort nicht. Ganz
+Berlin ist AB, die Auswahl deckt ihr Gebiet also vollständig ab.
+
+Lieferfenster im **Stundentakt**, 10 bis 20 Uhr. Vor 14 Uhr kostet es 15 €
+Aufschlag — Gala kauft morgens am Großmarkt ein und bindet danach, eine
+Vormittagslieferung ist eine Extrafahrt. Sonntags schließt das Atelier um
+16 Uhr; spätere Fenster verschwinden aus der Auswahl und die Kasse weist sie
+mit `422` ab.
+
+Die **Postleitzahl** wird gegen die 190 Berliner Postleitzahlen geprüft
+(`src/data/berlin-plz.ts`). Vorher ließ sich Zone „Lichtenberg“ für 15 € wählen
+und an der Kasse eine Adresse in Hamburg eintragen.
+
+> **Keine Tabelle Postleitzahl → Tarifbereich.** Der Ring schneidet quer durch
+> Postleitzahlgebiete; eine solche Zuordnung wäre geraten und würde
+> Bestellungen abweisen, die in Ordnung sind. Wo sich nichts Sicheres sagen
+> lässt, sagt die Prüfung nichts.
 
 > **Fachlicher Hinweis.** Päonienrosen sind *keine* Pfingstrosen. Es sind stark
 > gefüllte Gartenrosen, die deren Form nachbilden. Sie stehen deshalb unter
@@ -215,8 +305,9 @@ python3 tools/fotos/aufbereiten.py arbeit/frei.png \
 Domains und die Adressen laufen ab. Exportieren, lokal ablegen, Eintrag in
 `src/data/instagram.ts`.
 
-**Drei Platzhalter** tragen eine sichtbare Markierung (1125 px): Brautstrauß,
-Pfingstrosen-Wolke, Workshop-Teaser. Der Brautstrauß steht an zwei Stellen —
+**Vier Platzhalter** tragen eine sichtbare Markierung (1125 px): Brautstrauß,
+Pfingstrosen, Workshop-Teaser und die drei Kategoriekacheln Dopamin, Rosen und
+Hortensien. Der Brautstrauß steht an zwei Stellen —
 auf der Veranstaltungsseite und als Teaser auf der Startseite —, weil es
 bislang nur diese eine Hochzeitsaufnahme gibt. Bei Produkten hängt die
 Markierung am Feld `imagePlaceholder`.
@@ -253,6 +344,12 @@ hinter dem Rollstuhl-Knopf am rechten Bildschirmrand:
 > **Ungeprüft.** Impressum, Datenschutz, AGB und Widerrufsbelehrung sind
 > Entwürfe mit sichtbaren Markierungen an den Stellen, wo Angaben fehlen. Diese
 > Markierungen nicht ohne Rücksprache entfernen.
+>
+> **Die Datenschutzerklärung ist zusätzlich überholt.** Sie beschreibt einen
+> Formularversand über einen eigenen Server mit Resend; den gibt es seit dem
+> 13.08.2026 nicht mehr. Anfragen gehen über WhatsApp, Instagram oder das
+> Mailprogramm der Absenderin — der Text verspricht damit etwas anderes, als
+> die Seite tut.
 
 Die Rechtstexte stehen nur auf Deutsch. Verbindlich ist ohnehin die deutsche
 Fassung; eine ungeprüfte Übersetzung würde mehr Risiko schaffen als Nutzen. In
@@ -264,6 +361,15 @@ Bewusste Entscheidungen, die beim Ändern nicht verloren gehen sollten:
   Google Fonts — in Deutschland ein realer Abmahngrund. Seit August 2026 auch
   nicht mehr beim Bauen: Der frühere Abruf von fonts.gstatic.com brach den
   Build, als Google eine Datei-URL drehte.
+- **Kleinunternehmerin nach § 19 UStG.** Solange das gilt, darf nirgends
+  „inkl. MwSt.“ stehen — ausgewiesene Umsatzsteuer, die nicht abgeführt wird,
+  schuldet man nach § 14c UStG trotzdem. Der Schalter steht in `site.legal`,
+  betroffen sind zusätzlich `cfg.incl_vat` in vier Sprachen und der
+  Preisabsatz der AGB.
+- **Adressvorschläge kommen aus dem eigenen Repository.** 9.074 Berliner
+  Straßen, im Browser durchsucht. Ein Geocoder-Aufruf würde bei jedem
+  Tastendruck IP-Adresse und Eingabe an einen Dritten schicken — die ODbL
+  verlangt dafür die Nennung „© OpenStreetMap-Mitwirkende“, die am Feld steht.
 - **Kein Tracking, keine Analyse-Cookies, keine Pixel.** Deshalb braucht die
   Website auch kein Cookie-Banner.
 - **Instagram-Bilder liegen lokal.** Keine Verbindung zu Meta, solange niemand
@@ -336,10 +442,42 @@ wenn niemand sie kennt.
 
 ## 12. Offene Fragen an Gala
 
-- WhatsApp-Nummer im internationalen Format
-- Vollständiger Name, Anschrift, Telefon, E-Mail, Umsatzsteuerstatus
-- Aufpreise für Verpackung und Extras: gelten die eingesetzten Werte?
+**Diese drei kosten Geld, wenn sie falsch stehen.** Sie sind im Code als TODO
+markiert, damit sie niemand für bestätigt hält:
+
+- **Einzelunterricht: 249 € gelten jetzt pro Person.** Bisher war das der Preis
+  für bis zu zwei Personen; Gala schreibt „цена указана за человека“. Der
+  Betrag ist unverändert, seine Bedeutung nicht — zu zweit kostet dieselbe
+  Stunde damit das Doppelte. Einen neuen Betrag hat sie nicht genannt.
+- **Einzelpreise für Bogen, Tischgestaltung und Fotozone.** Das Anfrageformular
+  koppelt das Budget an die gewählten Leistungen und rechnet dafür mit dem
+  **Höchstwert** der Untergrenzen, nicht mit ihrer Summe — was ein Bogen
+  zusätzlich zur Tischgestaltung kostet, hat sie nie gesagt, und es zu addieren
+  wäre eine erfundene Zahl.
+- **Hutschachtel bei L und XL.** Auf Ansage wie der Korb gesetzt (20 / 30 €),
+  von Gala nicht bestätigt.
+
+**Angaben, die noch fehlen:**
+
+- E-Mail-Adresse und die neue Geschäftsnummer — beide legt sie noch an
+- Domain
+- Handelsregistereintrag: falls keiner besteht, kann die Zeile im Impressum raus
+- Sitzplatzzahlen der Workshops (acht ist geschätzt)
 - Ihre eigene Geschichte für die Atelier-Seite
-- Höher aufgelöste Fotos für die drei markierten Platzhalter
-- Kategoriekacheln, Atelierporträt, Instagram-Auswahl
-- Echte Workshop-Termine und Preise
+
+**Fotos:**
+
+- Höher aufgelöste Aufnahmen für die vier markierten Platzhalter
+- Kategoriekacheln für Pfingstrosen und Trockenblumen
+- Atelierporträt, Instagram-Auswahl, vier Workshop-Fotos
+- Produktfotos für Rosen pur, Mono-Hortensie, Trockenblumen
+- Ein zweites Hochzeitsmotiv — derzeit läuft dasselbe Foto auf Startseite und
+  Veranstaltungsseite
+
+**Eine offene Baustelle im Code:**
+
+Die feinere Zonenprüfung — Zone „Lichtenberg“ gegen eine Adresse in Spandau —
+braucht die Zuordnung Postleitzahl → Bezirk. Das Skript dafür ist fertig
+(`tools/orte/plz.py`), aber Overpass hat am 13.08.2026 über zehn Minuten lang
+nur `504` geliefert. Es wiederholt inzwischen mit Pausen über drei Spiegel und
+muss nur noch einmal durchlaufen.
