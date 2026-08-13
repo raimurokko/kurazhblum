@@ -191,7 +191,7 @@ export const ui = {
     'form.submit': 'Anfrage senden',
     'form.direct': 'Oder direkt schicken',
     'form.direct.hint':
-      'Ihre Angaben von oben werden mitgenommen — Sie müssen nichts zweimal tippen. Bei Instagram lege ich den Text in die Zwischenablage, dort lässt sich eine Nachricht nicht vorausfüllen.',
+      'Ihre Angaben von oben werden mitgenommen — Sie müssen nichts zweimal tippen. Bei Instagram liegt der Text in der Zwischenablage, dort lässt sich eine Nachricht nicht vorausfüllen.',
     'form.direct.copied': 'Text kopiert — im Instagram-Chat einfügen.',
     'form.direct.shortcut': 'Strg + V',
     'form.direct.paste.title': 'Ihre Angaben sind kopiert',
@@ -517,7 +517,7 @@ export const ui = {
     'form.submit': 'Надіслати запит',
     'form.direct': 'Або надіслати напряму',
     'form.direct.hint':
-      'Ваші дані згори переносяться — двічі друкувати не доведеться. Для Instagram я кладу текст у буфер обміну: там повідомлення не можна заповнити заздалегідь.',
+      'Ваші дані згори переносяться — двічі друкувати не доведеться. Для Instagram текст лежить у буфері обміну: там повідомлення не можна заповнити заздалегідь.',
     'form.direct.copied': 'Текст скопійовано — вставте його в чат Instagram.',
     'form.direct.shortcut': 'Ctrl + V',
     'form.direct.paste.title': 'Ваші дані скопійовано',
@@ -834,7 +834,7 @@ export const ui = {
     'form.submit': 'Send enquiry',
     'form.direct': 'Or send it directly',
     'form.direct.hint':
-      'Everything you filled in above comes along — no need to type it twice. For Instagram I put the text on your clipboard; a message there cannot be pre-filled.',
+      'Everything you filled in above comes along — no need to type it twice. For Instagram the text is on your clipboard; a message there cannot be pre-filled.',
     'form.direct.copied': 'Text copied — paste it into the Instagram chat.',
     'form.direct.shortcut': 'Ctrl + V',
     'form.direct.paste.title': 'Your details are copied',
@@ -1151,7 +1151,7 @@ export const ui = {
     'form.submit': 'Отправить запрос',
     'form.direct': 'Или отправить напрямую',
     'form.direct.hint':
-      'Ваши данные сверху переносятся — печатать дважды не нужно. Для Instagram я кладу текст в буфер обмена: там сообщение нельзя заполнить заранее.',
+      'Ваши данные сверху переносятся — печатать дважды не нужно. Для Instagram текст лежит в буфере обмена: там сообщение нельзя заполнить заранее.',
     'form.direct.copied': 'Текст скопирован — вставьте его в чат Instagram.',
     'form.direct.shortcut': 'Ctrl + V',
     'form.direct.paste.title': 'Ваши данные скопированы',
