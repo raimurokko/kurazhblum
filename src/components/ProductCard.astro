@@ -21,7 +21,6 @@ const image = bouquet.images[0] ? asset(bouquet.images[0]) : undefined;
   <a class="product-media" href={href} tabindex="-1" aria-hidden="true">
     <div class="ph product-ph" data-label={name}>
       {image && <img src={image} alt="" loading="lazy" decoding="async" onerror="this.remove()" />}
-      {bouquet.imagePlaceholder && <span class="platzhalter-marke">{_('common.placeholder')}</span>}
       {bouquet.imagePending && (
         <span class="platzhalter-marke platzhalter-marke--folgt">{_('common.imagepending')}</span>
       )}
@@ -52,7 +51,7 @@ const image = bouquet.images[0] ? asset(bouquet.images[0]) : undefined;
     flex-direction: column;
     background: var(--ink-2);
     border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-bild);
     overflow: hidden;
     transition: border-color 0.3s var(--ease);
   }

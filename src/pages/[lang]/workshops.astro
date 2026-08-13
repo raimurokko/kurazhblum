@@ -102,6 +102,7 @@ const dates = upcomingDates().map((entry) => ({
               <div class="ph format-ph" data-label={t(format.name, lang)}>
                 {format.video && (
                   <LoopVideo
+                    lang={lang}
                     src={format.video.src}
                     poster={format.video.poster}
                     name={_('video.grundkurs.name')}
@@ -258,7 +259,7 @@ const dates = upcomingDates().map((entry) => ({
 
   .format-ph {
     aspect-ratio: 16 / 10;
-    border-radius: var(--radius);
+    border-radius: var(--radius-bild);
     margin-bottom: var(--space-4);
   }
 

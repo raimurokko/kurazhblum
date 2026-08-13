@@ -13,7 +13,7 @@ fürs Weiterarbeiten in `AGENTS.md`.
 | Stand | Commit `55820c2`, 13.08.2026 |
 | Repository | <https://github.com/raimurokko/kurazhblum> |
 | Vorschau | <https://raimurokko.github.io/kurazhblum/> |
-| Umfang | 94 Seiten, 4 Sprachen, 5 Sträuße, 292 Textschlüssel je Sprache, 48 Quelldateien |
+| Umfang | 118 Seiten, 4 Sprachen, 10 Sträuße, 293 Textschlüssel je Sprache, 48 Quelldateien |
 
 ---
 
@@ -32,7 +32,7 @@ Entwicklungsarbeit.
 | Stammdaten, WhatsApp, Impressum | fertig | Halyna Zharuk, Storkower Straße, § 19 UStG |
 | Barrierefreiheit | fertig | Panel, Erklärung, geprüft bei 320 px und 150 % |
 | Veröffentlichung auf GitHub Pages | fertig | Baut bei jedem Push automatisch |
-| Produktfotos | **fertig** | Alle 5 Sträuße und 3 Kategorien bebildert; zwei Kacheln noch als Platzhalter markiert |
+| Produktfotos | teilweise | 8 von 10 Sträußen und alle 4 Kategorien bebildert; die zwei ohne Foto tragen „Bild folgt“ |
 | Preise | teilweise | Größen, Verpackung, Zonen und Fenster bestätigt; eine Lücke siehe § 12 |
 | Stripe-Zugang | **offen** | Ohne Schlüssel keine Kasse — der Rest der Website läuft |
 | Rechtstexte | **ungeprüft** | Entwürfe mit sichtbaren Lücken, anwaltlich prüfen lassen |
@@ -208,7 +208,19 @@ dieselbe Zahl nicht an zwei Orten gepflegt wird.
 | Überraschungsstrauß | Dopamin-Sträuße | ab 85 / 135 / 198 € | abgeleitet |
 | 101 Rosen mit Herz | Rosen | 400 € | bestätigt |
 | 35 Päonienrosen, 60 cm | Rosen | 180 € | bestätigt |
+| Rosen pur | Rosen | je nach Saison | Saisonware |
 | Pfingstrosen | Pfingstrosen | je nach Saison | Saisonware |
+| Mono-Hortensie | Hortensien | je nach Saison | Saisonware |
+| Hortensie & Calla | Hortensien | je nach Saison | **Entwurf** |
+| Blumen in der Hutschachtel | Dopamin-Sträuße | je nach Saison | **Entwurf** |
+| Dunkle Callas mit Anthurium | Dopamin-Sträuße | je nach Saison | **Entwurf** |
+
+> **Drei Einträge sind Entwürfe.** Name, Beschreibung und Zusammensetzung von
+> „Hortensie & Calla“, „Blumen in der Hutschachtel“ und „Dunkle Callas mit
+> Anthurium“ beschreiben, was auf dem jeweiligen Foto zu sehen ist — sie
+> stammen nicht von Gala. Im Code stehen sie als TODO markiert. Alle drei sind
+> bewusst ohne Preis: Als Saisonbeispiel führt der Weg zum Kundenservice, damit
+> nichts zugesagt wird, was nicht abgestimmt ist.
 
 Drei Modelle im Datentyp, genau eines der ersten beiden setzen:
 
@@ -310,10 +322,15 @@ python3 tools/fotos/aufbereiten.py arbeit/frei.png \
 Domains und die Adressen laufen ab. Exportieren, lokal ablegen, Eintrag in
 `src/data/instagram.ts`.
 
-**Zwei Platzhalter** tragen noch die sichtbare Markierung (1125 px): die
-Kategoriekacheln Dopamin und Rosen. Alles andere ist seit dem 14.08.2026 durch
-Aufnahmen aus Galas Laufwerk ersetzt. Bei Produkten hängt die Markierung am
-Feld `imagePlaceholder`, für „noch gar kein Foto“ gibt es `imagePending`.
+**Die goldene Platzhalter-Marke gibt es nicht mehr.** Sie wies auf Fotos hin,
+die zu klein aufgelöst waren; diese Aufnahmen sind ersetzt. Geblieben ist die
+graue Marke **„Bild folgt“** (`imagePending`) für Stellen, an denen noch gar
+keine Aufnahme existiert — dort wird bewusst auch kein `<img>` erzeugt, damit
+der Browser keine 404 holt.
+
+Die Kategoriekacheln Dopamin und Rosen stammen weiterhin aus Bildschirmfotos
+mit 1125 px. Sie tragen keine Marke mehr; wer sie ersetzen will, findet den
+Hinweis nur noch hier.
 
 > **Endungen prüfen.** Die Fotoskripte schreiben `.webp`; frühere Zwischenstufen
 > waren `.png`. Zeigt eine Referenz auf die falsche Endung, verschwindet das
@@ -489,8 +506,10 @@ folgt“** statt eines Verweises ins Leere:
 - Atelierporträt. Es gibt nur ein Video, in dem eine Person zu sehen ist — ob
   ihr Gesicht auf die Website kommt, entscheidet Gala.
 - Instagram-Auswahl, sechs Bilder.
-- Höher aufgelöste Kategoriekacheln für Dopamin und Rosen; diese beiden tragen
-  weiterhin die Platzhalter-Marke.
+- Höher aufgelöste Kategoriekacheln für Dopamin und Rosen (bislang 1125 px,
+  ohne sichtbare Marke).
+- Fotos für Rosen pur und Mono-Hortensie. Beide tragen „Bild folgt“; im
+  Laufwerk liegt für keinen von beiden etwas Passendes.
 - Bilder für Strauß, Designerverpackung und Vase im Konfigurator. Korb und
   Hutschachtel sind belegt.
 

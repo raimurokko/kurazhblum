@@ -73,9 +73,6 @@ const featured = BOUQUETS.filter((b) => b.featured).slice(0, 4);
                       onerror="this.remove()"
                     />
                   )}
-                  {category.imagePlaceholder && (
-                    <span class="platzhalter-marke">{_('common.placeholder')}</span>
-                  )}
                   {category.imagePending && (
                     <span class="platzhalter-marke platzhalter-marke--folgt">
                       {_('common.imagepending')}
@@ -114,7 +111,10 @@ const featured = BOUQUETS.filter((b) => b.featured).slice(0, 4);
   <section class="section split">
     <div class="wrap split-inner">
       <div class="ph split-media" data-label={_('home.weddings.kicker')}>
-        <img src={asset('/images/weddings/hero.webp')} alt="" loading="lazy" decoding="async" onerror="this.remove()" />
+        {/* Bewusst nicht `hero.webp`: Das steht schon auf der
+            Veranstaltungsseite, und dasselbe Foto an zwei Stellen sieht nach
+            Mangel aus. Hier der Bogen am Wasser, dort die Trauung. */}
+        <img src={asset('/images/weddings/teaser.webp')} alt="" loading="lazy" decoding="async" onerror="this.remove()" />
       </div>
       <div>
         <span class="kicker">{_('home.weddings.kicker')}</span>
@@ -197,7 +197,7 @@ const featured = BOUQUETS.filter((b) => b.featured).slice(0, 4);
 
   .cat-ph {
     aspect-ratio: 1;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-bild);
     margin-bottom: var(--space-4);
   }
 
@@ -247,7 +247,7 @@ const featured = BOUQUETS.filter((b) => b.featured).slice(0, 4);
 
   .split-media {
     aspect-ratio: 4 / 3;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-bild);
   }
 
   .split-media img {

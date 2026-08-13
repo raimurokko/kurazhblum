@@ -105,5 +105,12 @@ def aufbereiten(pfad_ein: str, pfad_aus: str, breite: int, verhaeltnis=(4, 5)) -
 
 
 if __name__ == '__main__':
-    aufbereiten(sys.argv[1], sys.argv[2], int(sys.argv[3]))
+    # Viertes Argument: Seitenverhältnis, z. B. `1:1` für Kategoriekacheln.
+    # Ohne Angabe bleibt es bei 4:5 wie bei den Produktbildern.
+    verhaeltnis = (4, 5)
+    if len(sys.argv) > 4:
+        b, _, h = sys.argv[4].partition(':')
+        verhaeltnis = (int(b), int(h))
+
+    aufbereiten(sys.argv[1], sys.argv[2], int(sys.argv[3]), verhaeltnis)
     print('ok', sys.argv[2])

@@ -106,6 +106,7 @@ const facts: { label: I18nText; value: I18nText }[] = [
         */}
         <div class="ph about-ph" data-label={site.nameFull}>
           <LoopVideo
+            lang={lang}
             src="/videos/atelier.mp4"
             poster="/videos/atelier.jpg"
             name={_('video.atelier.name')}
@@ -174,7 +175,7 @@ const facts: { label: I18nText; value: I18nText }[] = [
 
   .about-ph {
     aspect-ratio: 4 / 5;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-bild);
   }
 
   .about-ph img {

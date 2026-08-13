@@ -38,8 +38,6 @@ export interface Category {
    * eine falsche lässt das Bild stillschweigend verschwinden.
    */
   image?: string;
-  /** Vorläufige Aufnahme: blendet die sichtbare Platzhalter-Marke ein. */
-  imagePlaceholder?: boolean;
   /** Es gibt noch gar kein Foto — siehe `imagePending` beim Strauß. */
   imagePending?: boolean;
 }
@@ -83,15 +81,9 @@ export interface Bouquet {
   /** Fotos je Größe — beim Wechsel im Konfigurator tauscht das Bild mit. */
   imagesBySize?: Partial<Record<SizeKey, string[]>>;
   /**
-   * Vorläufiges Foto in zu niedriger Auflösung. Wird auf der Website sichtbar
-   * markiert, damit niemand vergisst, es zu ersetzen.
-   */
-  imagePlaceholder?: boolean;
-  /**
-   * Es gibt noch **gar kein** Foto — nicht zu verwechseln mit
-   * `imagePlaceholder`, wo eines da ist, nur zu klein. Dann bleibt `images`
-   * leer, es wird kein `<img>` erzeugt (sonst holte der Browser bei jedem
-   * Aufruf eine 404), und auf der Kachel steht sichtbar „Bild folgt“.
+   * Es gibt noch **gar kein** Foto. Dann bleibt `images` leer, es wird kein
+   * `<img>` erzeugt (sonst holte der Browser bei jedem Aufruf eine 404), und
+   * auf der Kachel steht sichtbar „Bild folgt“.
    *
    * Absichtlich sichtbar statt still: Ein leerer Kasten sieht nach Fehler aus,
    * eine Marke nach Zusage. Und niemand vergisst, das Foto nachzuliefern.
@@ -315,7 +307,6 @@ export const CATEGORIES: Category[] = [
   {
     slug: 'dopamin',
     image: '/images/categories/dopamin.webp',
-    imagePlaceholder: true,
     name: {
       de: 'Dopamin-Sträuße',
       uk: 'Дофамінові букети',
@@ -332,7 +323,6 @@ export const CATEGORIES: Category[] = [
   {
     slug: 'rosen',
     image: '/images/categories/rosen.webp',
-    imagePlaceholder: true,
     name: { de: 'Rosen', uk: 'Троянди', en: 'Roses', ru: 'Розы' },
     blurb: {
       de: 'Klassisch oder kreativ, Mono-Rosen oder ein Mix aus Sorten und Farben.',
@@ -350,6 +340,17 @@ export const CATEGORIES: Category[] = [
       uk: 'Тільки в сезон — з травня до початку червня.',
       en: 'Only in season — from May to early June.',
       ru: 'Только в сезон – с мая до начала июня.',
+    },
+  },
+  {
+    slug: 'hortensien',
+    image: '/images/categories/hortensien.webp',
+    name: { de: 'Hortensien', uk: 'Гортензії', en: 'Hydrangeas', ru: 'Гортензии' },
+    blurb: {
+      de: 'Große Hortensienköpfe im Mono-Strauß oder im Mix. Saisonblume — Verfügbarkeit klären wir vorher.',
+      uk: 'Великі голівки гортензії в моно-букеті або в міксі. Сезонна квітка — наявність уточнюємо заздалегідь.',
+      en: 'Big hydrangea heads in a mono bouquet or in a mix. A seasonal flower — we check availability in advance.',
+      ru: 'Большие шапочки гортензии в моно-букете или в микс букетах. Сезонный цветок, наличие уточняется заранее.',
     },
   },
 ];
@@ -428,6 +429,85 @@ export const BOUQUETS: Bouquet[] = [
     },
   },
   {
+    /*
+      ⚠️ TODO: Entwurf vom 14.08.2026. Name, Beschreibung und Zusammensetzung
+      beschreiben, was auf dem Foto zu sehen ist — sie stammen nicht von Gala.
+      Vor dem Livegang bestätigen oder ersetzen lassen. Bewusst ohne Preis:
+      Als Saisonbeispiel führt der Weg zum Kundenservice, damit hier nichts
+      zugesagt wird, was nicht abgestimmt ist.
+    */
+    slug: 'hutschachtel-blumen',
+    category: 'dopamin',
+    priceOnRequest: true,
+    presentations: ['box'],
+    images: ['/images/products/hutschachtel-blumen.webp'],
+    name: {
+      de: 'Blumen in der Hutschachtel',
+      uk: 'Квіти у капелюшній коробці',
+      en: 'Flowers in a hat box',
+      ru: 'Цветы в шляпной коробке',
+    },
+    blurb: {
+      de: 'Gemischt gesteckt, mit eigener Wasserquelle.',
+      uk: 'Змішана композиція з власним джерелом води.',
+      en: 'A mixed arrangement with its own water source.',
+      ru: 'Смешанная композиция с собственным источником воды.',
+    },
+    description: {
+      de: 'Die Schachtel bringt ihr Wasser mit: Die Blumen stecken in einer Quelle, es muss nichts umgestellt und nichts angeschnitten werden. Welche Sorten hineinkommen, entscheidet der Markt am Morgen — sagen Sie mir die Farbstimmung, den Rest stelle ich zusammen.',
+      uk: 'Коробка приносить воду із собою: квіти стоять у джерелі, нічого не треба перекладати чи підрізати. Які саме сорти туди потраплять, вирішує ранковий ринок — скажіть мені колірний настрій, решту я складу.',
+      en: 'The box brings its own water: the flowers sit in a source, nothing needs to be moved or trimmed. Which varieties go in is decided by the morning market — tell me the colour mood and I will put the rest together.',
+      ru: 'Коробка приносит воду с собой: цветы стоят в источнике, ничего не нужно перекладывать или подрезать. Какие именно сорта туда попадут, решает утренний рынок — скажите мне цветовое настроение, остальное я соберу.',
+    },
+    composition: {
+      de: 'Gemischt nach Saison, gesteckt mit Wasserquelle',
+      uk: 'Змішано за сезоном, з джерелом води',
+      en: 'Mixed by season, arranged with a water source',
+      ru: 'Смешанный состав по сезону, с источником воды',
+    },
+  },
+  {
+    /*
+      ⚠️ TODO: Entwurf vom 14.08.2026. Name, Beschreibung und Zusammensetzung
+      beschreiben, was auf dem Foto zu sehen ist — sie stammen nicht von Gala.
+      Vor dem Livegang bestätigen oder ersetzen lassen. Bewusst ohne Preis:
+      Als Saisonbeispiel führt der Weg zum Kundenservice, damit hier nichts
+      zugesagt wird, was nicht abgestimmt ist.
+      Auch die Kategorie ist zu prüfen: „Dopamin“ heißt „bunt, frei
+      komponiert“ — dieses Gesteck ist frei komponiert, aber alles andere als
+      bunt.
+    */
+    slug: 'callas-anthurium',
+    category: 'dopamin',
+    priceOnRequest: true,
+    presentations: ['basket'],
+    images: ['/images/products/callas-anthurium.webp'],
+    name: {
+      de: 'Dunkle Callas mit Anthurium',
+      uk: 'Темні кали з антуріумом',
+      en: 'Dark callas with anthurium',
+      ru: 'Тёмные каллы с антуриумом',
+    },
+    blurb: {
+      de: 'Grafisch und ruhig — wenn bunt zu laut ist.',
+      uk: 'Графічно і спокійно — коли строкате занадто гучне.',
+      en: 'Graphic and quiet — for when colourful is too loud.',
+      ru: 'Графично и спокойно — когда пёстрое слишком громкое.',
+    },
+    description: {
+      de: 'Dunkle Callas, grünes Anthurium und weiße Freesien in einem flachen Gefäß. Kein Strauß zum Mitnehmen, sondern ein Gesteck, das stehen bleibt, wo es hingestellt wird. Die Sorten wechseln mit dem Angebot.',
+      uk: 'Темні кали, зелений антуріум і білі фрезії у пласкій посудині. Це не букет із собою, а композиція, яка залишається там, куди її поставили. Сорти змінюються залежно від пропозиції.',
+      en: 'Dark callas, green anthurium and white freesias in a shallow vessel. Not a bouquet to carry home but an arrangement that stays where it is put. The varieties change with what is available.',
+      ru: 'Тёмные каллы, зелёный антуриум и белые фрезии в плоской ёмкости. Это не букет с собой, а композиция, которая остаётся там, куда её поставили. Сорта меняются в зависимости от предложения.',
+    },
+    composition: {
+      de: 'Callas, Anthurium, Freesien, Wasserquelle im Gefäß',
+      uk: 'Кали, антуріум, фрезії, джерело води в посудині',
+      en: 'Callas, anthurium, freesias, water source in the vessel',
+      ru: 'Каллы, антуриум, фрезии, источник воды в ёмкости',
+    },
+  },
+  {
     slug: '101-rosen-herz',
     category: 'rosen',
     featured: true,
@@ -495,6 +575,33 @@ export const BOUQUETS: Bouquet[] = [
     },
   },
   {
+    slug: 'rosen-pur',
+    category: 'rosen',
+    priceOnRequest: true,
+    presentations: ['bouquet', 'premium', 'box', 'vase'],
+    images: [],
+    imagePending: true,
+    name: { de: 'Rosen pur', uk: 'Тільки троянди', en: 'Roses only', ru: 'Только розы' },
+    blurb: {
+      de: 'Eine Sorte, eine Farbe — zeitlose Klassik, nichts Überflüssiges.',
+      uk: 'Один сорт, один колір — вічна класика і нічого зайвого.',
+      en: 'One variety, one colour — timeless classic, nothing superfluous.',
+      ru: 'Один сорт, один цвет – вечная классика и ничего лишнего.',
+    },
+    description: {
+      de: 'Wenn es keine Erklärung braucht. Ich arbeite mit ecuadorianischen und kenianischen Rosen mit langem Stiel und fester Knospe — M sind 25 Stiele, L sind 51, XL sind 101. Farbe sagen Sie mir im Bestellhinweis, sonst wähle ich nach Tagesqualität.',
+      uk: 'Коли пояснення не потрібні. Працюю з еквадорськими та кенійськими трояндами з довгим стеблом і щільним бутоном — M це 25 стебел, L — 51, XL — 101. Колір вкажіть у примітці до замовлення, інакше обираю за якістю дня.',
+      en: 'When it needs no explanation. I work with Ecuadorian and Kenyan roses, long stems and firm buds — M is 25 stems, L is 51, XL is 101. Tell me the colour in the order note, otherwise I pick by the day’s quality.',
+      ru: 'Когда объяснения не нужны. Работаю с эквадорскими и кенийскими розами с длинным стеблем и плотным бутоном — M это 25 стеблей, L — 51, XL — 101. Цвет укажите в примечании, иначе выберу по качеству дня.',
+    },
+    composition: {
+      de: 'Rosen, 50–70 cm Stiel, Farbe nach Wunsch',
+      uk: 'Троянди, стебло 50–70 см, колір на вибір',
+      en: 'Roses, 50–70 cm stems, colour of your choice',
+      ru: 'Розы, стебель 50–70 см, цвет на выбор',
+    },
+  },
+  {
     slug: 'pfingstrosen-wolke',
     category: 'pfingstrosen',
     season: [5, 6],
@@ -524,6 +631,82 @@ export const BOUQUETS: Bouquet[] = [
       uk: 'Півонії білі, блідо-рожеві або коралові, трохи фісташки',
       en: 'Peonies in white, pale pink or coral, a little pistache',
       ru: 'Пионы белые, бледно-розовые или коралловые, немного фисташки',
+    },
+  },
+  {
+    slug: 'hortensie-solo',
+    category: 'hortensien',
+    priceOnRequest: true,
+    presentations: ['bouquet', 'premium', 'basket', 'vase'],
+    /*
+      ⚠️ TODO: Foto fehlt. Aus dem Laufwerk passt keine Aufnahme — die einzige
+      Hortensie dort ist blau und mit Callas gemischt; sie steht deshalb als
+      eigener Eintrag „Hortensie & Calla“ daneben. Hier gebraucht wird eine
+      reine Hortensie in Weiß, Salbei oder Altrosa.
+    */
+    images: [],
+    imagePending: true,
+    name: {
+      de: 'Mono-Hortensie',
+      uk: 'Моно-гортензія',
+      en: 'Mono hydrangea',
+      ru: 'Моно гортензия',
+    },
+    blurb: {
+      de: 'Dichte Köpfe, die unglaublich viel hermachen.',
+      uk: 'Густі голівки, що справляють неймовірне враження.',
+      en: 'Dense heads that make an incredible impression.',
+      ru: 'Густые шапочки, производящие невероятное впечатление.',
+    },
+    description: {
+      de: 'Hortensien füllen einen Raum wie kaum eine andere Blume. Wichtig ist nur, dass sie sofort ins Wasser kommen — die Pflegekarte liegt bei, und im Korb bringe ich sie mit eigener Wasserquelle.',
+      uk: 'Гортензії заповнюють простір, як мало яка інша квітка. Головне — одразу поставити у воду; картка догляду додається, а в кошику привожу з власним джерелом води.',
+      en: 'Hydrangeas fill a room like almost no other flower. The one rule is water, straight away — a care card is included, and in a basket they come with their own water source.',
+      ru: 'Гортензии заполняют пространство, как мало какой цветок. Главное — сразу в воду; карточка ухода прилагается, а в корзине привожу с собственным источником воды.',
+    },
+    composition: {
+      de: 'Hortensien in Weiß, Salbei oder Altrosa, Eukalyptus',
+      uk: 'Гортензії білі, шавлієві або пудрові, евкаліпт',
+      en: 'Hydrangeas in white, sage or dusty pink, eucalyptus',
+      ru: 'Гортензии белые, шалфейные или пудровые, эвкалипт',
+    },
+  },
+  {
+    /*
+      ⚠️ TODO: Entwurf vom 14.08.2026. Name, Beschreibung und Zusammensetzung
+      beschreiben, was auf dem Foto zu sehen ist — sie stammen nicht von Gala.
+      Vor dem Livegang bestätigen oder ersetzen lassen. Bewusst ohne Preis:
+      Als Saisonbeispiel führt der Weg zum Kundenservice, damit hier nichts
+      zugesagt wird, was nicht abgestimmt ist.
+    */
+    slug: 'hortensie-calla',
+    category: 'hortensien',
+    priceOnRequest: true,
+    presentations: ['bouquet', 'premium', 'basket', 'vase'],
+    images: ['/images/products/hortensie-calla.webp'],
+    name: {
+      de: 'Hortensie & Calla',
+      uk: 'Гортензія та кала',
+      en: 'Hydrangea & calla',
+      ru: 'Гортензия и калла',
+    },
+    blurb: {
+      de: 'Blaue Hortensie, weiße Callas, etwas Rittersporn.',
+      uk: 'Блакитна гортензія, білі кали, трохи дельфінію.',
+      en: 'Blue hydrangea, white callas, a little delphinium.',
+      ru: 'Голубая гортензия, белые каллы, немного дельфиниума.',
+    },
+    description: {
+      de: 'Die Hortensie gibt das Volumen, die Callas die Linie. Hortensien wollen sofort ins Wasser — die Pflegekarte liegt bei. Farben und Sorten richten sich nach der Saison.',
+      uk: 'Гортензія дає обʼєм, кали — лінію. Гортензії потрібно одразу поставити у воду; картка догляду додається. Кольори й сорти залежать від сезону.',
+      en: 'The hydrangea gives the volume, the callas the line. Hydrangeas need water straight away — a care card is included. Colours and varieties depend on the season.',
+      ru: 'Гортензия даёт объём, каллы — линию. Гортензии нужно сразу поставить в воду; карточка ухода прилагается. Цвета и сорта зависят от сезона.',
+    },
+    composition: {
+      de: 'Hortensien, Callas, Rittersporn, Eukalyptus',
+      uk: 'Гортензії, кали, дельфіній, евкаліпт',
+      en: 'Hydrangeas, callas, delphinium, eucalyptus',
+      ru: 'Гортензии, каллы, дельфиниум, эвкалипт',
     },
   },
 ];

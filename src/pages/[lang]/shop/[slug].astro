@@ -108,7 +108,6 @@ const productJsonLd = {
                 onerror="this.remove()"
               />
             )}
-            {bouquet.imagePlaceholder && <span class="platzhalter-marke">{_('common.placeholder')}</span>}
             {bouquet.imagePending && (
               <span class="platzhalter-marke platzhalter-marke--folgt">{_('common.imagepending')}</span>
             )}
@@ -241,7 +240,7 @@ const productJsonLd = {
 
   .detail-ph {
     aspect-ratio: 4 / 5;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-bild);
   }
 
   /* Miniaturen. px statt rem, weil sie sonst mit der eingestellten Textgröße
@@ -260,7 +259,7 @@ const productJsonLd = {
     flex: 0 0 auto;
     padding: 0;
     border: 1px solid var(--line);
-    border-radius: var(--radius);
+    border-radius: var(--radius-bild);
     background: var(--ink-3);
     overflow: hidden;
     cursor: pointer;

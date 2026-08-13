@@ -27,9 +27,11 @@
  * nicht das Bild. Deshalb gehört dort ein Satz hin, der eine echte Frage
  * beantwortet, kein Schlagwort.
  */
-import { asset } from '../i18n/config';
+import { asset, type Locale } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
 
 interface Props {
+  lang: Locale;
   src: string;
   poster: string;
   /** Kurzname des Videos für die strukturierten Daten. */
@@ -43,7 +45,8 @@ interface Props {
   class?: string;
 }
 
-const { src, poster, name, description, uploadDate, duration, class: klasse } = Astro.props;
+const { lang, src, poster, name, description, uploadDate, duration, class: klasse } = Astro.props;
+const _ = useTranslations(lang);
 
 const videoUrl = new URL(asset(src), Astro.site).href;
 const posterUrl = new URL(asset(poster), Astro.site).href;
@@ -71,6 +74,27 @@ const videoJsonLd = {
   aria-label={description}
 ></video>
 
+{/*
+  Ohne diesen Knopf ist eine stumme Schleife, die noch nicht angelaufen ist,
+  von einem Foto nicht zu unterscheiden — es gab keinen Hinweis darauf, dass
+  hier überhaupt etwas zu sehen wäre. Er ist zugleich die Bedienung für alle,
+  bei denen nichts von selbst startet: „Animationen reduzieren“, Datensparmodus
+  oder eine Browserregel, die Autoplay verweigert. Steuerung statt Zufall.
+*/}
+<button
+  class="loopvideo-schalter"
+  type="button"
+  data-zustand="an"
+  data-an={_('video.play')}
+  data-aus={_('video.pause')}
+  aria-label={_('video.play')}
+>
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path class="loopvideo-an" d="M8 5.5v13l11-6.5z" />
+    <path class="loopvideo-aus" d="M7.5 5.5h3.5v13H7.5zm5.5 0h3.5v13H13z" />
+  </svg>
+</button>
+
 <script type="application/ld+json" is:inline set:html={JSON.stringify(videoJsonLd)} />
 
 <script>
@@ -89,20 +113,57 @@ const videoJsonLd = {
 
   const videos = [...document.querySelectorAll<HTMLVideoElement>('.loopvideo')];
 
+  /** Der Knopf, der zu diesem Video gehört — er steht direkt dahinter. */
+  function schalterVon(video: HTMLVideoElement): HTMLButtonElement | null {
+    return video.parentElement?.querySelector<HTMLButtonElement>('.loopvideo-schalter') ?? null;
+  }
+
+  /** Knopfbeschriftung und Symbol an den tatsächlichen Zustand angleichen. */
+  function schalterZeigen(video: HTMLVideoElement): void {
+    const schalter = schalterVon(video);
+    if (!schalter) return;
+    const laeuft = !video.paused && !video.ended;
+    schalter.dataset.zustand = laeuft ? 'aus' : 'an';
+    schalter.setAttribute(
+      'aria-label',
+      (laeuft ? schalter.dataset.aus : schalter.dataset.an) ?? '',
+    );
+  }
+
   function anwenden(): void {
     for (const video of videos) {
       if (ruhe()) {
         video.pause();
         video.removeAttribute('autoplay');
+        schalterZeigen(video);
         continue;
       }
       // Erst laden, wenn das Video auch zu sehen ist — sonst holt jede Seite
       // anderthalb Megabyte für etwas, das unter dem Falz liegt.
       if (!video.dataset.sichtbar) continue;
+      // Von Hand angehalten heißt angehalten: Ein Video, das beim Scrollen von
+      // selbst wieder anspringt, nimmt der Besucherin die Entscheidung ab.
+      if (video.dataset.gestoppt) continue;
       video.play().catch(() => {
         /* Der Browser darf ablehnen (Datensparmodus, Akku). Poster bleibt. */
       });
     }
+  }
+
+  for (const video of videos) {
+    const schalter = schalterVon(video);
+    schalter?.addEventListener('click', () => {
+      if (video.paused) {
+        delete video.dataset.gestoppt;
+        video.play().catch(() => {});
+      } else {
+        video.dataset.gestoppt = 'ja';
+        video.pause();
+      }
+    });
+    video.addEventListener('play', () => schalterZeigen(video));
+    video.addEventListener('pause', () => schalterZeigen(video));
+    schalterZeigen(video);
   }
 
   const beobachter = new IntersectionObserver(
@@ -146,5 +207,57 @@ const videoJsonLd = {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  /* Klein und in der Ecke, nicht mittig über dem Motiv: Der Knopf soll sagen
+     „hier bewegt sich etwas“, nicht das Bild zerschneiden. Maße in px, damit
+     er bei 150 % Textgröße nicht mitwächst und die Kachel sprengt. */
+  .loopvideo-schalter {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--ink) 72%, transparent);
+    color: var(--cream);
+    cursor: pointer;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    transition:
+      background-color 0.25s var(--ease),
+      border-color 0.25s var(--ease),
+      opacity 0.25s var(--ease);
+  }
+
+  .loopvideo-schalter:hover {
+    border-color: var(--gold-lit);
+    color: var(--gold-lit);
+  }
+
+  .loopvideo-schalter svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+  }
+
+  /* Läuft das Video, tritt der Knopf zurück — bis jemand ihn ansteuert. */
+  .loopvideo-schalter[data-zustand='aus'] {
+    opacity: 0.45;
+  }
+
+  .loopvideo-schalter[data-zustand='aus']:hover,
+  .loopvideo-schalter[data-zustand='aus']:focus-visible {
+    opacity: 1;
+  }
+
+  .loopvideo-schalter[data-zustand='an'] .loopvideo-aus,
+  .loopvideo-schalter[data-zustand='aus'] .loopvideo-an {
+    display: none;
   }
 </style>

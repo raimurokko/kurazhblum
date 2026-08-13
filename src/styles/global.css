@@ -44,6 +44,9 @@
 
   --radius: 2px;
   --radius-lg: 3px;
+  /* Nur für Bildflächen. Knöpfe, Karten und Felder bleiben bei den kantigen
+     2–3 px des Designsystems; Fotos vertragen mehr, ohne weich zu wirken. */
+  --radius-bild: 12px;
 
   --measure: 62ch;
   --page: 78rem;
@@ -391,6 +394,7 @@ hr {
 /* Bildplatzhalter, solange die echten Fotos aus Instagram fehlen. */
 .ph {
   position: relative;
+  border-radius: var(--radius-bild);
   display: grid;
   place-items: center;
   background:
@@ -557,10 +561,12 @@ label {
 }
 
 /*
-  Markierung für vorläufige Fotos. Absichtlich auffällig: Diese Aufnahmen haben
-  zu wenig Auflösung und müssen vor dem Livegang ersetzt werden — ein dezenter
-  Hinweis würde übersehen. Sitzt in einem `.ph`-Container, der `position:
-  relative` hat.
+  Markierung „Bild folgt“ für Stellen, an denen noch keine Aufnahme existiert.
+  Sitzt in einem `.ph`-Container, der `position: relative` hat.
+
+  Die frühere goldene Variante für zu klein aufgelöste Fotos ist am 14.08.2026
+  entfallen — die betroffenen Aufnahmen sind ersetzt, und wo noch Auflösung
+  fehlt, steht es im HANDOVER statt auf der Seite.
 */
 .platzhalter-marke {
   position: absolute;
