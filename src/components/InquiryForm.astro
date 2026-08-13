@@ -146,8 +146,6 @@ const berlinDistricts: { value: string; label: string }[] = [
   class="inq panel"
   data-inquiry
   data-topic={topic}
-  data-busy-label={_('form.sending')}
-  data-endpoint={asset('/api/inquiry')}
 >
   <input type="hidden" name="topic" value={topic} />
   <input type="hidden" name="lang" value={lang} />
@@ -291,32 +289,32 @@ const berlinDistricts: { value: string; label: string }[] = [
     </span>
   </label>
 
-  <button class="btn btn--primary" type="submit" data-submit>{_('form.submit')}</button>
-
-  <p class="inq-note inq-note--ok" hidden data-success>{_('form.success')}</p>
-  <p class="inq-note inq-note--error" hidden data-error>
-    {_('form.error')}<br />
-    <a href={`mailto:${site.email}`}>{site.email}</a>
-    {site.whatsapp && (
-      <>
-        {' · '}
-        <a href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener">
-          {_('channels.whatsapp')}
-        </a>
-      </>
-    )}
-  </p>
+  <!--
+    Zweiter Haken, getrennt vom ersten. Die Angaben verlassen hier nicht den
+    eigenen Server — sie gehen über WhatsApp, Instagram oder das Mailprogramm
+    der Absenderin, also über Dritte und je nach Anbieter in die USA. Das ist
+    eine andere Aussage als „Datenschutzerklärung gelesen“, und zwei getrennte
+    Aussagen brauchen zwei Haken; gebündelte Einwilligung ist keine.
+  -->
+  <label class="consent">
+    <input type="checkbox" name="consentThirdParty" data-drittland />
+    <span class="small">
+      <Fragment set:html={_('form.thirdparty', {
+        link: `<a href="${path(lang, 'datenschutz')}">${_('form.privacy.link')}</a>`,
+      })} />
+    </span>
+  </label>
 
   <!--
-    Selbst abschicken. Das Formular oben braucht einen Server; auf GitHub Pages
-    gibt es den nicht, und selbst mit Server wollen viele lieber im Messenger
-    schreiben, den sie ohnehin offen haben. Diese drei Wege tragen die
-    ausgefüllten Angaben mit — niemand muss zweimal tippen, und Gala bekommt
-    dieselben Felder wie per E-Mail.
+    Die einzige Art, die Anfrage abzuschicken. Der frühere Knopf „Anfrage
+    senden“ ging über einen eigenen Server; er tat dasselbe wie diese drei
+    Wege, brauchte aber einen Mailversand, den es noch nicht gibt, und stand
+    doppelt da. Hier gehen die ausgefüllten Angaben mit — niemand tippt
+    zweimal, und Gala bekommt dieselben Felder.
   -->
   <div class="inq-direkt">
-    <h3 class="field-label">{_('form.direct')}</h3>
     <p class="hint">{_('form.direct.hint')}</p>
+    <p class="inq-note" data-gesperrt>{_('form.direct.locked')}</p>
 
     <div class="inq-direkt-row">
       {
@@ -482,6 +480,13 @@ const berlinDistricts: { value: string; label: string }[] = [
     margin-top: var(--space-5);
   }
 
+  /* Gesperrt statt versteckt: Wer die Knöpfe sieht, versteht, wofür die
+     Haken sind. Kein `display:none` — die Zeile darüber sagt, was fehlt. */
+  .btn--aus {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
   .inq-direkt {
     border-top: 1px solid var(--line);
     margin-top: var(--space-6);
@@ -503,9 +508,6 @@ const berlinDistricts: { value: string; label: string }[] = [
 
 <script>
   for (const form of document.querySelectorAll<HTMLFormElement>('[data-inquiry]')) {
-    const submitEl = form.querySelector<HTMLButtonElement>('[data-submit]');
-    const successEl = form.querySelector<HTMLElement>('[data-success]');
-    const errorEl = form.querySelector<HTMLElement>('[data-error]');
 
     /*
       Budget und Leistungen hängen zusammen. Wer einen Blumenbogen und
@@ -764,41 +766,54 @@ const berlinDistricts: { value: string; label: string }[] = [
     form.addEventListener('change', direktAktualisieren);
     direktAktualisieren();
 
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      if (!form.reportValidity()) return;
+    /*
+      Freigabe der drei Wege. Zwei Haken, zwei Aussagen: Der erste bestätigt,
+      dass die Datenschutzerklärung gelesen wurde, der zweite die Weitergabe
+      an Dritte samt Übermittlung in die USA. Beides in einen Haken zu packen
+      wäre gebündelte Einwilligung — und damit keine.
 
-      const label = submitEl?.textContent ?? '';
-      if (submitEl) {
-        submitEl.disabled = true;
-        submitEl.textContent = form.dataset.busyLabel ?? label;
+      Geprüft wird zusätzlich, ob die Pflichtfelder gefüllt sind: Eine
+      Nachricht ohne Namen und Telefon nützt Gala nichts, und ein Messenger
+      kennt kein `required`.
+    */
+    const zustimmung = form.querySelector<HTMLInputElement>('[name="consent"]');
+    const drittland = form.querySelector<HTMLInputElement>('[data-drittland]');
+    const wege = [...form.querySelectorAll<HTMLElement>('[data-direkt]')];
+    const sperreEl = form.querySelector<HTMLElement>('[data-gesperrt]');
+
+    function freigeben(): void {
+      const haken = Boolean(zustimmung?.checked) && Boolean(drittland?.checked);
+      const felder = [...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[required]')]
+        .filter((feld) => feld.type !== 'checkbox')
+        .every((feld) => feld.value.trim().length > 0);
+      const frei = haken && felder;
+
+      for (const weg of wege) {
+        weg.classList.toggle('btn--aus', !frei);
+        weg.setAttribute('aria-disabled', frei ? 'false' : 'true');
+        if (weg instanceof HTMLButtonElement) weg.disabled = !frei;
       }
-      if (errorEl) errorEl.hidden = true;
+      if (sperreEl) sperreEl.hidden = frei;
+    }
 
-      const payload = Object.fromEntries(new FormData(form).entries());
-      // Mehrfachauswahl geht bei Object.fromEntries verloren — separat nachtragen.
-      const services = new FormData(form).getAll('services').map(String);
+    // Links lassen sich nicht `disabled` setzen — der Klick muss abgefangen
+    // werden, sonst öffnet WhatsApp trotz fehlender Einwilligung.
+    for (const weg of wege) {
+      weg.addEventListener(
+        'click',
+        (event) => {
+          if (weg.getAttribute('aria-disabled') === 'true') {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            sperreEl?.scrollIntoView({ block: 'nearest' });
+          }
+        },
+        true,
+      );
+    }
 
-      try {
-        const response = await fetch(form.dataset.endpoint ?? '/api/inquiry', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...payload, services }),
-        });
-        if (!response.ok) throw new Error(`inquiry failed: ${response.status}`);
-
-        form.reset();
-        if (successEl) successEl.hidden = false;
-        if (submitEl) submitEl.hidden = true;
-        successEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      } catch (error) {
-        console.error(error);
-        if (errorEl) errorEl.hidden = false;
-        if (submitEl) {
-          submitEl.disabled = false;
-          submitEl.textContent = label;
-        }
-      }
-    });
+    form.addEventListener('input', freigeben);
+    form.addEventListener('change', freigeben);
+    freigeben();
   }
 </script>

@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import InquiryForm from '../../components/InquiryForm.astro';
-import ContactChannels from '../../components/ContactChannels.astro';
 import { asset, localePaths, t, type I18nText, type Locale } from '../../i18n/config';
 import { useTranslations } from '../../i18n/ui';
 
@@ -176,8 +175,8 @@ const steps: { title: I18nText; text: I18nText }[] = [
       <div class="section-head">
         <h2>{_('weddings.inquire')}</h2>
       </div>
-      <ContactChannels lang={lang} subject={_('weddings.inquire')} />
-      <hr class="rule anfrage-trenner" />
+      {/* Kein ContactChannels davor: Das Formular trägt WhatsApp, E-Mail und
+          Instagram inzwischen selbst — und dort gehen die Angaben mit. */}
       <InquiryForm lang={lang} topic="wedding" />
     </div>
   </section>

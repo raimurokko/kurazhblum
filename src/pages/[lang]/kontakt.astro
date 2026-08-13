@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import InquiryForm from '../../components/InquiryForm.astro';
-import ContactChannels from '../../components/ContactChannels.astro';
 import { localePaths, t, type Locale } from '../../i18n/config';
 import { useTranslations } from '../../i18n/ui';
 import { site } from '../../data/site';
@@ -60,8 +59,8 @@ const _ = useTranslations(lang);
       </div>
 
       <div>
-        <ContactChannels lang={lang} />
-        <hr class="rule kanal-trenner" />
+        {/* Kein ContactChannels davor: Das Formular trägt WhatsApp, E-Mail und
+            Instagram inzwischen selbst — und dort gehen die Angaben mit. */}
         <InquiryForm lang={lang} topic="general" />
       </div>
     </div>

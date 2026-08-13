@@ -206,6 +206,9 @@ export const ui = {
     'form.optional': 'optional',
     'form.privacy': 'Ich habe die {link} gelesen und bin mit der Verarbeitung meiner Daten einverstanden.',
     'form.privacy.link': 'Datenschutzerklärung',
+    'form.thirdparty':
+      'Mir ist bewusst, dass meine Angaben beim Senden über WhatsApp, Instagram oder mein Mailprogramm an diese Anbieter gelangen und dabei auch außerhalb der EU verarbeitet werden können — bei WhatsApp und Instagram durch Meta in den USA. Näheres in der {link}.',
+    'form.direct.locked': 'Bitte füllen Sie die Pflichtfelder aus und setzen Sie beide Haken — danach sind die drei Wege frei.',
 
     // — Kasse —
     'checkout.success.title': 'Danke für Ihre Bestellung.',
@@ -527,6 +530,9 @@ export const ui = {
     'form.optional': 'необовʼязково',
     'form.privacy': 'Я прочитав(ла) {link} і погоджуюся на обробку моїх даних.',
     'form.privacy.link': 'політику конфіденційності',
+    'form.thirdparty':
+      'Я усвідомлюю, що під час надсилання через WhatsApp, Instagram або мою поштову програму мої дані потрапляють до цих постачальників і можуть оброблятися також за межами ЄС — у WhatsApp та Instagram компанією Meta у США. Докладніше в {link}.',
+    'form.direct.locked': 'Заповніть обовʼязкові поля та позначте обидві галочки — після цього три способи стануть доступні.',
 
     'checkout.success.title': 'Дякую за замовлення.',
     'checkout.success.text':
@@ -839,6 +845,9 @@ export const ui = {
     'form.optional': 'optional',
     'form.privacy': 'I have read the {link} and agree to my data being processed.',
     'form.privacy.link': 'privacy policy',
+    'form.thirdparty':
+      'I understand that sending via WhatsApp, Instagram or my mail program passes my details to those providers and that they may be processed outside the EU — for WhatsApp and Instagram by Meta in the USA. Details in the {link}.',
+    'form.direct.locked': 'Please fill in the required fields and tick both boxes — the three routes open up after that.',
 
     'checkout.success.title': 'Thank you for your order.',
     'checkout.success.text':
@@ -1151,6 +1160,9 @@ export const ui = {
     'form.optional': 'необязательно',
     'form.privacy': 'Я прочитал(а) {link} и согласен(на) на обработку моих данных.',
     'form.privacy.link': 'политику конфиденциальности',
+    'form.thirdparty':
+      'Я понимаю, что при отправке через WhatsApp, Instagram или мою почтовую программу мои данные попадают к этим поставщикам и могут обрабатываться также за пределами ЕС — в WhatsApp и Instagram компанией Meta в США. Подробнее в {link}.',
+    'form.direct.locked': 'Заполните обязательные поля и поставьте обе галочки — после этого три способа станут доступны.',
 
     'checkout.success.title': 'Спасибо за заказ.',
     'checkout.success.text':
