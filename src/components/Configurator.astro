@@ -200,10 +200,12 @@ const minDate = tomorrow.toISOString().slice(0, 10);
 
     <label class="field">
       <span class="field-label">{_('cfg.delivery.zone')}</span>
+      <!-- Zone A ist die häufigste. „Abholung“ als Vorauswahl würde
+           Lieferkosten und Mindestbestellwert stillschweigend ausblenden. -->
       <select class="select" name="zone" required>
         {
           DELIVERY_ZONES.map((zone) => (
-            <option value={zone.id} selected={zone.id === 'inner'} data-hint={t(zone.hint, lang)} data-name={t(zone.name, lang)}>
+            <option value={zone.id} selected={zone.id === 'a'} data-hint={t(zone.hint, lang)} data-name={t(zone.name, lang)}>
               {t(zone.name, lang)} — {zone.fee === 0 ? _('common.free') : formatPrice(zone.fee, lang)}
             </option>
           ))
@@ -246,7 +248,15 @@ const minDate = tomorrow.toISOString().slice(0, 10);
     <p class="hint">{_('cfg.minorder')}</p>
     <p class="cfg-error" hidden data-error>
       {_('form.error')}<br />
-      <a href={`mailto:${site.email}`}>{site.email}</a> · <a href={`tel:${site.phoneHref}`}>{site.phone}</a>
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+      {site.whatsapp && (
+        <>
+          {' · '}
+          <a href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener">
+            {_('channels.whatsapp')}
+          </a>
+        </>
+      )}
     </p>
   </div>
 

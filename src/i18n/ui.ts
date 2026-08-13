@@ -125,21 +125,21 @@ export const ui = {
 
     // — Hochzeiten —
     'weddings.kicker': 'Veranstaltungen & Hochzeiten',
-    'weddings.title': 'Floristik, die den Raum trägt.',
+    'weddings.title': 'Florale Gestaltung für Veranstaltungen und Räume.',
     'weddings.intro':
-      'Von der ersten Farbskizze bis zum Abbau am nächsten Morgen. Wir gestalten Hochzeiten, Firmenfeiern, Ladeneröffnungen, Jubiläen und private Anlässe in Berlin und Brandenburg — vollständig oder in einzelnen Bausteinen. Hochzeiten sind der größte Teil unserer Arbeit, aber längst nicht der einzige.',
+      'Wir begleiten das Projekt über alle Etappen: vom ersten Konzept bis zu Aufbau und Abbau. Wir gestalten Hochzeiten, Firmenfeiern, Kindergeburtstage, Jubiläen und private Anlässe in Berlin. Hochzeiten sind unser Schwerpunkt, aber wir gestalten mit derselben Freude auch für andere Anlässe.',
     'weddings.services': 'Leistungen',
     'weddings.process': 'So läuft es ab',
     'weddings.inquire': 'Veranstaltung anfragen',
     'weddings.pricing.title': 'Was kostet das?',
     'weddings.pricing.text':
-      'Veranstaltungsfloristik hat keinen Katalogpreis — sie hängt an Saison, Blumenauswahl, Location und Umfang. Als Orientierung: eine vollständige Hochzeitsgestaltung beginnt in der Regel bei 1.200 €, ein Firmenempfang oder eine Ladeneröffnung ab 450 €, einzelne Bausteine wie Brautstrauß und Anstecker ab 180 €. Nach dem Gespräch bekommen Sie ein festes Angebot.',
+      'Veranstaltungsfloristik hat keinen festen Preis — sie hängt an Saison, Blumenauswahl, Umfang der Bestellung und Umfang der Arbeit. Als Orientierung: eine vollständige florale Hochzeitsgestaltung ab 1.500 €, einschließlich Auf- und Abbau. Einzelne Positionen wie der Brautstrauß 120 €, der Anstecker für den Bräutigam ab 25 €. Nach unserem Gespräch bekommen Sie ein festes Angebot.',
 
     // — Workshops —
     'workshops.kicker': 'Workshops & Kurse',
-    'workshops.title': 'Blumen mit den eigenen Händen.',
+    'workshops.title': 'Florale Gestecke mit den eigenen Händen.',
     'workshops.intro':
-      'Kleine Gruppen, gutes Material, genug Zeit. Sie gehen mit Ihrem eigenen Strauß nach Hause — und mit dem Handwerk dahinter.',
+      'Kleine Gruppen oder Einzelunterricht, frische Blumen, hochwertiges floristisches Material und genug Zeit. Sie gehen mit Ihrem eigenen Strauß nach Hause, mit neuem Wissen und mit guter Laune. Ich sorge dafür, dass Ihnen das Gestalten der eigenen Blumenarbeit in Erinnerung bleibt.',
     'workshops.upcoming': 'Nächste Termine',
     'workshops.formats': 'Formate',
     'workshops.book': 'Platz buchen',
@@ -169,10 +169,14 @@ export const ui = {
     'contact.byappointment': 'Atelierbesuch nach Vereinbarung',
 
     'form.name': 'Name',
+    'form.firstname': 'Vorname',
+    'form.lastname': 'Nachname',
+    'form.district': 'Bezirk in Berlin',
+    'form.required.note': 'Mit * markierte Felder brauche ich, um antworten zu können.',
     'form.email': 'E-Mail',
     'form.phone': 'Telefon',
     'form.date': 'Datum',
-    'form.location': 'Ort / Location',
+    'form.location': 'Adresse des Veranstaltungsortes',
     'form.guests': 'Anzahl Gäste',
     'form.budget': 'Budgetrahmen',
     'form.services': 'Gewünschte Leistungen',
@@ -426,20 +430,20 @@ export const ui = {
     'cfg.loading': 'Хвилинку …',
 
     'weddings.kicker': 'Події та весілля',
-    'weddings.title': 'Флористика, що тримає простір.',
+    'weddings.title': 'Флористичне оформлення подій і просторів.',
     'weddings.intro':
-      'Від першого ескізу кольорів до демонтажу наступного ранку. Оформлюємо весілля, корпоративи, відкриття магазинів, ювілеї та приватні події в Берліні й Бранденбурзі — повністю або окремими частинами. Весілля — найбільша частина нашої роботи, але далеко не єдина.',
+      'Супроводжуємо проєкт на всіх етапах: від першої концепції до монтажу й демонтажу. Оформлюємо весілля, корпоративи, дитячі дні народження, ювілеї та приватні події в Берліні. Весілля — основний напрям нашої роботи, але ми із задоволенням оформлюємо й інші приводи.',
     'weddings.services': 'Послуги',
     'weddings.process': 'Як це відбувається',
     'weddings.inquire': 'Запит на подію',
     'weddings.pricing.title': 'Скільки це коштує?',
     'weddings.pricing.text':
-      'Флористика для подій не має каталожної ціни — вона залежить від сезону, квітів, локації та обсягу. Для орієнтиру: повне весільне оформлення зазвичай починається від 1 200 €, корпоративний прийом або відкриття магазину — від 450 €, окремі позиції на кшталт букета нареченої з бутоньєркою — від 180 €. Після розмови ви отримаєте фіксовану пропозицію.',
+      'У подієвої флористики немає фіксованої ціни — вона залежить від сезону, вибору квітів, обсягу замовлення та обсягу робіт. Для орієнтиру: повне флористичне оформлення весілля від 1 500 €, включно з монтажем і демонтажем. Окремі позиції, як-от букет нареченої — 120 €, бутоньєрка для нареченого — від 25 €. Після нашої розмови ви отримаєте фіксовану пропозицію.',
 
     'workshops.kicker': 'Майстер-класи',
-    'workshops.title': 'Квіти власними руками.',
+    'workshops.title': 'Квіткові композиції власними руками.',
     'workshops.intro':
-      'Малі групи, хороший матеріал, достатньо часу. Ви йдете додому з власним букетом — і з ремеслом за ним.',
+      'Малі групи або індивідуальний формат, свіжі квіти, високоякісні флористичні матеріали, достатньо часу. Ви йдете з власним букетом, новими знаннями і гарним настроєм. Я подбаю, щоб створення власних квіткових композицій запамʼяталося вам надовго.',
     'workshops.upcoming': 'Найближчі дати',
     'workshops.formats': 'Формати',
     'workshops.book': 'Забронювати місце',
@@ -467,10 +471,14 @@ export const ui = {
     'contact.byappointment': 'Візит до ательє за домовленістю',
 
     'form.name': 'Імʼя',
+    'form.firstname': 'Імʼя',
+    'form.lastname': 'Прізвище',
+    'form.district': 'Район Берліна',
+    'form.required.note': 'Поля, позначені *, потрібні мені, щоб відповісти.',
     'form.email': 'Ел. пошта',
     'form.phone': 'Телефон',
     'form.date': 'Дата',
-    'form.location': 'Місце проведення',
+    'form.location': 'Адреса місця проведення',
     'form.guests': 'Кількість гостей',
     'form.budget': 'Орієнтовний бюджет',
     'form.services': 'Потрібні послуги',
@@ -715,20 +723,20 @@ export const ui = {
     'cfg.loading': 'One moment …',
 
     'weddings.kicker': 'Events & Weddings',
-    'weddings.title': 'Florals that carry the room.',
+    'weddings.title': 'Floral design for events and spaces.',
     'weddings.intro':
-      'From the first colour sketch to the take-down the next morning. We design weddings, company celebrations, shop openings, anniversaries and private occasions in Berlin and Brandenburg — in full or piece by piece. Weddings are the largest part of our work, but far from the only one.',
+      'We accompany the project through every stage: from the first concept to set-up and take-down. We design weddings, company parties, children’s birthdays, anniversaries and private occasions in Berlin. Weddings are our main line of work, but we are just as glad to design for other occasions.',
     'weddings.services': 'Services',
     'weddings.process': 'How it works',
     'weddings.inquire': 'Enquire about an event',
     'weddings.pricing.title': 'What does it cost?',
     'weddings.pricing.text':
-      'Event florals have no catalogue price — they depend on season, flower choice, venue and scale. For orientation: a full wedding design usually starts at €1,200, a company reception or shop opening from €450, individual pieces such as a bridal bouquet with buttonholes from €180. After our call you receive a fixed quote.',
+      'Event florals have no fixed price — they depend on the season, the choice of flowers, the size of the order and the amount of work. For orientation: a complete floral wedding design from €1,500, including set-up and take-down. Individual pieces such as the bridal bouquet at €120, the groom’s buttonhole from €25. After our conversation you receive a fixed quote.',
 
     'workshops.kicker': 'Workshops & Courses',
-    'workshops.title': 'Flowers with your own hands.',
+    'workshops.title': 'Floral arrangements with your own hands.',
     'workshops.intro':
-      'Small groups, good material, enough time. You go home with your own bouquet — and with the craft behind it.',
+      'Small groups or one-to-one, fresh flowers, high-quality floristry material and enough time. You leave with your own bouquet, with new knowledge and in a good mood. I make sure that creating your own floral work is something you remember.',
     'workshops.upcoming': 'Next dates',
     'workshops.formats': 'Formats',
     'workshops.book': 'Book a seat',
@@ -756,10 +764,14 @@ export const ui = {
     'contact.byappointment': 'Atelier visits by appointment',
 
     'form.name': 'Name',
+    'form.firstname': 'First name',
+    'form.lastname': 'Last name',
+    'form.district': 'Berlin district',
+    'form.required.note': 'Fields marked * are the ones I need in order to reply.',
     'form.email': 'Email',
     'form.phone': 'Phone',
     'form.date': 'Date',
-    'form.location': 'Venue',
+    'form.location': 'Address of the venue',
     'form.guests': 'Number of guests',
     'form.budget': 'Budget range',
     'form.services': 'What you need',
@@ -1004,20 +1016,20 @@ export const ui = {
     'cfg.loading': 'Минутку …',
 
     'weddings.kicker': 'События и свадьбы',
-    'weddings.title': 'Флористика, которая держит пространство.',
+    'weddings.title': 'Флористическое оформление событий и пространств.',
     'weddings.intro':
-      'От первого цветового эскиза до демонтажа на следующее утро. Оформляем свадьбы, корпоративы, открытия магазинов, юбилеи и частные события в Берлине и Бранденбурге — полностью или по частям. Свадьбы — самая большая часть нашей работы, но далеко не единственная.',
+      'Сопровождаем проект на всех этапах: от первой концепции до монтажа и демонтажа. Оформляем свадьбы, корпоративы, детские дни рождения, юбилеи и частные события в Берлине. Основное направление нашей работы – свадьбы, но мы с удовольствием создаём оформление и для других поводов.',
     'weddings.services': 'Услуги',
     'weddings.process': 'Как это происходит',
     'weddings.inquire': 'Запрос на событие',
     'weddings.pricing.title': 'Сколько это стоит?',
     'weddings.pricing.text':
-      'У событийной флористики нет каталожной цены — она зависит от сезона, выбора цветов, площадки и объёма. Для ориентира: полное свадебное оформление обычно начинается от 1 200 €, корпоративный приём или открытие магазина — от 450 €, отдельные позиции вроде букета невесты с бутоньеркой — от 180 €. После разговора вы получите фиксированное предложение.',
+      'У ивент флористики нет фиксированной цены — она зависит от сезона, выбора цветов, объёма заказа и объёма работ. Для ориентира: полное флористическое оформление свадьбы от 1 500 €, включая монтаж и демонтаж. Отдельные позиции вроде букета невесты — 120 €, бутоньерка для жениха от 25 €. После нашего разговора вы получите фиксированное предложение.',
 
     'workshops.kicker': 'Мастер-классы',
-    'workshops.title': 'Цветы своими руками.',
+    'workshops.title': 'Цветочные композиции своими руками.',
     'workshops.intro':
-      'Маленькие группы, хороший материал, достаточно времени. Вы уходите со своим букетом — и с ремеслом за ним.',
+      'Маленькие группы или индивидуальный формат, свежие цветы, высококачественные флористические материалы, достаточное количество времени. Вы уходите со своим букетом, новыми знаниями и настроением. Я сделаю так, чтобы вы получили незабываемые эмоции от создания собственных цветочных композиций!',
     'workshops.upcoming': 'Ближайшие даты',
     'workshops.formats': 'Форматы',
     'workshops.book': 'Забронировать место',
@@ -1045,10 +1057,14 @@ export const ui = {
     'contact.byappointment': 'Визит в ателье по договорённости',
 
     'form.name': 'Имя',
+    'form.firstname': 'Имя',
+    'form.lastname': 'Фамилия',
+    'form.district': 'Район Берлина',
+    'form.required.note': 'Поля, отмеченные *, нужны мне, чтобы ответить.',
     'form.email': 'Эл. почта',
     'form.phone': 'Телефон',
     'form.date': 'Дата',
-    'form.location': 'Место проведения',
+    'form.location': 'Адрес места проведения',
     'form.guests': 'Количество гостей',
     'form.budget': 'Ориентировочный бюджет',
     'form.services': 'Нужные услуги',

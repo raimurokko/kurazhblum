@@ -20,22 +20,23 @@ const _ = useTranslations(lang);
 const showEventFields = topic === 'wedding' || topic === 'event';
 const showGuestFields = showEventFields || topic === 'workshop';
 
+/** Galas Staffel — sie beginnt bei 1.000 € und deckelt bei 10.000 €. */
 const budgets: { value: string; label: I18nText }[] = [
   {
-    value: 'unter-1000',
-    label: { de: 'bis 1.000 €', uk: 'до 1 000 €', en: 'up to €1,000', ru: 'до 1 000 €' },
+    value: '1000-1500',
+    label: { de: '1.000 – 1.500 €', uk: '1 000 – 1 500 €', en: '€1,000 – 1,500', ru: '1 000 – 1 500 €' },
   },
   {
-    value: '1000-2500',
-    label: { de: '1.000 – 2.500 €', uk: '1 000 – 2 500 €', en: '€1,000 – 2,500', ru: '1 000 – 2 500 €' },
+    value: '1500-3000',
+    label: { de: '1.500 – 3.000 €', uk: '1 500 – 3 000 €', en: '€1,500 – 3,000', ru: '1 500 – 3 000 €' },
   },
   {
-    value: '2500-5000',
-    label: { de: '2.500 – 5.000 €', uk: '2 500 – 5 000 €', en: '€2,500 – 5,000', ru: '2 500 – 5 000 €' },
+    value: '3000-5000',
+    label: { de: '3.000 – 5.000 €', uk: '3 000 – 5 000 €', en: '€3,000 – 5,000', ru: '3 000 – 5 000 €' },
   },
   {
-    value: 'ueber-5000',
-    label: { de: 'über 5.000 €', uk: 'понад 5 000 €', en: 'over €5,000', ru: 'свыше 5 000 €' },
+    value: '5000-10000',
+    label: { de: '5.000 – 10.000 €', uk: '5 000 – 10 000 €', en: '€5,000 – 10,000', ru: '5 000 – 10 000 €' },
   },
   {
     value: 'offen',
@@ -46,28 +47,56 @@ const budgets: { value: string; label: I18nText }[] = [
 const weddingServices: { value: string; label: I18nText }[] = [
   {
     value: 'brautstrauss',
-    label: { de: 'Brautstrauß & Anstecker', uk: 'Букет нареченої та бутоньєрки', en: 'Bridal bouquet & buttonholes', ru: 'Букет невесты и бутоньерки' },
+    label: {
+      de: 'Brautstrauß & Anstecker für den Bräutigam',
+      uk: 'Букет нареченої та бутоньєрка для нареченого',
+      en: 'Bridal bouquet & buttonhole for the groom',
+      ru: 'Букет невесты и бутоньерки для жениха',
+    },
   },
   {
-    value: 'zeremonie',
-    label: { de: 'Zeremonie / Bogen', uk: 'Церемонія / арка', en: 'Ceremony / arch', ru: 'Церемония / арка' },
+    value: 'bogen',
+    label: { de: 'Hochzeitsbogen', uk: 'Весільна арка', en: 'Wedding arch', ru: 'Свадебная арка' },
   },
   {
     value: 'tische',
-    label: { de: 'Tischgestaltung', uk: 'Оформлення столів', en: 'Table design', ru: 'Оформление столов' },
+    label: {
+      de: 'Florale Tischgestaltung',
+      uk: 'Флористичне оформлення столів',
+      en: 'Floral table design',
+      ru: 'Флористическое оформление столов',
+    },
   },
   {
-    value: 'raum',
-    label: { de: 'Raum & Eingang', uk: 'Зал та вхід', en: 'Room & entrance', ru: 'Зал и вход' },
-  },
-  {
-    value: 'auto',
-    label: { de: 'Auto & Details', uk: 'Авто та деталі', en: 'Car & details', ru: 'Авто и детали' },
+    value: 'fotozone',
+    label: { de: 'Fotozone', uk: 'Фотозона', en: 'Photo backdrop', ru: 'Фотозона' },
   },
   {
     value: 'abbau',
     label: { de: 'Auf- und Abbau', uk: 'Монтаж і демонтаж', en: 'Set-up & take-down', ru: 'Монтаж и демонтаж' },
   },
+];
+
+/*
+  Berlins zwölf Bezirke. Beim Workshop vor Ort entscheidet der Bezirk über die
+  Zone und damit über die Anfahrt — deshalb fragt das Formular ihn ab, statt
+  eine Adresse zu verlangen, die zum Zeitpunkt der Anfrage oft noch gar nicht
+  feststeht. Die Postleitzahlen stehen dabei, weil viele ihre PLZ sicherer
+  wissen als den amtlichen Bezirksnamen.
+*/
+const berlinDistricts: { value: string; label: string }[] = [
+  { value: 'mitte', label: 'Mitte (10115 – 13359)' },
+  { value: 'friedrichshain-kreuzberg', label: 'Friedrichshain-Kreuzberg (10243 – 10999)' },
+  { value: 'pankow', label: 'Pankow (10405 – 13189)' },
+  { value: 'charlottenburg-wilmersdorf', label: 'Charlottenburg-Wilmersdorf (10585 – 14199)' },
+  { value: 'spandau', label: 'Spandau (13581 – 13629)' },
+  { value: 'steglitz-zehlendorf', label: 'Steglitz-Zehlendorf (12157 – 14169)' },
+  { value: 'tempelhof-schoeneberg', label: 'Tempelhof-Schöneberg (10777 – 12309)' },
+  { value: 'neukoelln', label: 'Neukölln (12043 – 12359)' },
+  { value: 'treptow-koepenick', label: 'Treptow-Köpenick (12435 – 12689)' },
+  { value: 'marzahn-hellersdorf', label: 'Marzahn-Hellersdorf (12619 – 12689)' },
+  { value: 'lichtenberg', label: 'Lichtenberg (10315 – 13059)' },
+  { value: 'reinickendorf', label: 'Reinickendorf (13403 – 13629)' },
 ];
 ---
 
@@ -90,28 +119,46 @@ const weddingServices: { value: string; label: I18nText }[] = [
     </label>
   </div>
 
+  <p class="hint inq-required">{_('form.required.note')}</p>
+
   <div class="inq-row">
     <label class="field">
-      <span class="field-label">{_('form.name')}</span>
-      <input class="input" type="text" name="name" required autocomplete="name" />
+      <span class="field-label">{_('form.firstname')} <span class="req" aria-hidden="true">*</span></span>
+      <input class="input" type="text" name="firstName" required autocomplete="given-name" />
     </label>
 
     <label class="field">
-      <span class="field-label">{_('form.email')}</span>
-      <input class="input" type="email" name="email" required autocomplete="email" />
+      <span class="field-label">{_('form.lastname')} <span class="req" aria-hidden="true">*</span></span>
+      <input class="input" type="text" name="lastName" required autocomplete="family-name" />
     </label>
   </div>
 
   <div class="inq-row">
     <label class="field">
-      <span class="field-label">{_('form.phone')} <span class="muted">({_('form.optional')})</span></span>
-      <input class="input" type="tel" name="phone" autocomplete="tel" />
+      <span class="field-label">{_('form.email')} <span class="req" aria-hidden="true">*</span></span>
+      <input class="input" type="email" name="email" required autocomplete="email" />
     </label>
 
     <label class="field">
-      <span class="field-label">{_('form.date')}</span>
+      <span class="field-label">{_('form.phone')} <span class="muted">({_('form.optional')})</span></span>
+      <input class="input" type="tel" name="phone" autocomplete="tel" />
+    </label>
+  </div>
+
+  <div class="inq-row">
+    <label class="field">
+      <span class="field-label">{_('form.date')} {showEventFields && <span class="req" aria-hidden="true">*</span>}</span>
       <input class="input" type="date" name="date" required={showEventFields} />
     </label>
+
+    {
+      showGuestFields && (
+        <label class="field">
+          <span class="field-label">{_('form.guests')}</span>
+          <input class="input" type="number" name="guests" min="1" max="500" inputmode="numeric" />
+        </label>
+      )
+    }
   </div>
 
   {
@@ -135,10 +182,15 @@ const weddingServices: { value: string; label: I18nText }[] = [
   }
 
   {
-    showGuestFields && (
+    topic === 'workshop' && (
       <label class="field">
-        <span class="field-label">{_('form.guests')}</span>
-        <input class="input" type="number" name="guests" min="1" max="500" inputmode="numeric" />
+        <span class="field-label">{_('form.district')}</span>
+        <select class="select" name="district">
+          <option value="">—</option>
+          {berlinDistricts.map((district) => (
+            <option value={district.value}>{district.label}</option>
+          ))}
+        </select>
       </label>
     )
   }
@@ -160,7 +212,7 @@ const weddingServices: { value: string; label: I18nText }[] = [
   }
 
   <label class="field">
-    <span class="field-label">{_('form.message')}</span>
+    <span class="field-label">{_('form.message')} <span class="req" aria-hidden="true">*</span></span>
     <textarea class="textarea" name="message" required placeholder={_('form.message.placeholder')}></textarea>
   </label>
 
@@ -178,11 +230,29 @@ const weddingServices: { value: string; label: I18nText }[] = [
   <p class="inq-note inq-note--ok" hidden data-success>{_('form.success')}</p>
   <p class="inq-note inq-note--error" hidden data-error>
     {_('form.error')}<br />
-    <a href={`mailto:${site.email}`}>{site.email}</a> · <a href={`tel:${site.phoneHref}`}>{site.phone}</a>
+    <a href={`mailto:${site.email}`}>{site.email}</a>
+    {site.whatsapp && (
+      <>
+        {' · '}
+        <a href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener">
+          {_('channels.whatsapp')}
+        </a>
+      </>
+    )}
   </p>
 </form>
 
 <style>
+  /* Der Stern ist rein visuell — `required` sagt es assistiver Technik
+     ohnehin, ein vorgelesenes „Stern“ wäre nur Lärm. Deshalb aria-hidden. */
+  .req {
+    color: var(--gold-lit);
+  }
+
+  .inq-required {
+    margin-bottom: var(--space-5);
+  }
+
   .inq-row {
     display: grid;
     gap: var(--space-4);
