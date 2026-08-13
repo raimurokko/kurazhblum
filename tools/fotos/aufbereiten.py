@@ -17,7 +17,7 @@ import sys
 from collections import deque
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageOps
 
 
 def groesste_flaeche(alpha: np.ndarray, schwelle: int = 24) -> np.ndarray:
@@ -75,7 +75,10 @@ def motivkasten(im: Image.Image, schwelle: int = 24):
 
 
 def aufbereiten(pfad_ein: str, pfad_aus: str, breite: int, verhaeltnis=(4, 5)) -> None:
-    im = Image.open(pfad_ein).convert('RGBA')
+    # Die Lage zuerst festschreiben. Aus `freistellen.swift` kommt ein PNG ohne
+    # EXIF, da ist das ein Leerlauf — wird dieses Skript aber direkt auf ein
+    # Foto aus der Kamera angesetzt, entscheidet es über hochkant oder quer.
+    im = ImageOps.exif_transpose(Image.open(pfad_ein)).convert('RGBA')
     a = np.array(im)[:, :, 3]
 
     maske = groesste_flaeche(a)

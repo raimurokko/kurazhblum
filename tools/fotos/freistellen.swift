@@ -4,6 +4,7 @@
 import Foundation
 import Vision
 import CoreImage
+import ImageIO
 import AppKit
 
 let args = CommandLine.arguments
@@ -15,7 +16,21 @@ guard args.count == 3 else {
 let inputURL = URL(fileURLWithPath: args[1])
 let outputURL = URL(fileURLWithPath: args[2])
 
-let handler = VNImageRequestHandler(url: inputURL, options: [:])
+/// EXIF-Lage der Datei. Ohne sie nimmt Vision `.up` an — ein iPhone-Foto mit
+/// Orientierung 6 ist im Speicher quer und nur durch das Etikett hochkant.
+/// Das Ergebnis läge dann gedreht auf der Website, und weil die PNG-Zwischen-
+/// stufe keine EXIF-Daten trägt, ließe es sich später nicht mehr zurückholen.
+func lageAusDatei(_ url: URL) -> CGImagePropertyOrientation {
+    guard let quelle = CGImageSourceCreateWithURL(url as CFURL, nil),
+          let eigenschaften = CGImageSourceCopyPropertiesAtIndex(quelle, 0, nil) as? [CFString: Any],
+          let roh = eigenschaften[kCGImagePropertyOrientation] as? UInt32,
+          let lage = CGImagePropertyOrientation(rawValue: roh)
+    else { return .up }
+    return lage
+}
+
+let lage = lageAusDatei(inputURL)
+let handler = VNImageRequestHandler(url: inputURL, orientation: lage, options: [:])
 let request = VNGenerateForegroundInstanceMaskRequest()
 
 do {
