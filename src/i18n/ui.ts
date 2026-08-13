@@ -129,7 +129,7 @@ export const ui = {
     'cfg.total': 'Gesamt',
     'cfg.incl_vat': 'Endpreis, keine Umsatzsteuer nach § 19 UStG, zzgl. Lieferung',
     'cfg.order': 'Zur Kasse',
-    'cfg.minorder': 'Mindestbestellwert für Lieferung: 85 €. Abholung im Atelier ist ab jedem Betrag möglich.',
+    'cfg.minorder': 'Mindestbestellwert für Lieferung: 85 €. Abholung im Atelier nur nach Absprache — sie wird separat gebucht, nicht hier.',
     'cfg.minorder.short': 'Noch {amount} bis zum Mindestbestellwert für Lieferung.',
     'cfg.loading': 'Einen Moment …',
 
@@ -332,7 +332,7 @@ export const ui = {
     'build.mood.mono': 'Einfarbig',
     'build.budget': 'Budget',
     'build.budget.hint':
-      'Das Budget richtet sich nach der Größe — kleinere Stufen blende ich aus, sobald sie für die gewählte Größe nicht mehr reichen.',
+      'Das Budget richtet sich nach der Größe — kleinere Stufen werden ausgeblendet, sobald sie für die gewählte Größe nicht mehr reichen.',
     'build.note': 'Anmerkung',
     'build.note.placeholder': 'Anlass, Wunschtermin, Lieferadresse, alles was hilft.',
     'build.summary': 'Ihre Auswahl',
@@ -469,7 +469,7 @@ export const ui = {
     'cfg.total': 'Разом',
     'cfg.incl_vat': 'Кінцева ціна, без ПДВ згідно з § 19 UStG, доставка окремо',
     'cfg.order': 'До оплати',
-    'cfg.minorder': 'Мінімальне замовлення для доставки: 85 €. Самовивіз з ательє — від будь-якої суми.',
+    'cfg.minorder': 'Мінімальне замовлення для доставки: 85 €. Самовивіз з ательє лише за домовленістю — його бронюють окремо, не тут.',
     'cfg.minorder.short': 'Ще {amount} до мінімальної суми доставки.',
     'cfg.loading': 'Хвилинку …',
 
@@ -660,7 +660,7 @@ export const ui = {
     'build.mood.mono': 'Одноколірна',
     'build.budget': 'Бюджет',
     'build.budget.hint':
-      'Бюджет залежить від розміру — менші щаблі зникають, щойно вони перестають покривати обраний розмір.',
+      'Бюджет залежить від розміру — менші щаблі приховуються, щойно вони перестають покривати обраний розмір.',
     'build.note': 'Примітка',
     'build.note.placeholder': 'Привід, бажана дата, адреса доставки — усе, що допоможе.',
     'build.summary': 'Ваш вибір',
@@ -796,7 +796,7 @@ export const ui = {
     'cfg.total': 'Total',
     'cfg.incl_vat': 'Final price, no VAT under § 19 UStG, delivery not included',
     'cfg.order': 'Go to checkout',
-    'cfg.minorder': 'Minimum order for delivery: €85. Pickup at the atelier works at any amount.',
+    'cfg.minorder': 'Minimum order for delivery: €85. Pickup at the atelier by arrangement only — it is booked separately, not here.',
     'cfg.minorder.short': '{amount} to go before delivery is possible.',
     'cfg.loading': 'One moment …',
 
@@ -987,7 +987,7 @@ export const ui = {
     'build.mood.mono': 'Single colour',
     'build.budget': 'Budget',
     'build.budget.hint':
-      'The budget follows the size — smaller steps disappear once they no longer cover the size you picked.',
+      'The budget follows the size — smaller steps are hidden once they no longer cover the size you picked.',
     'build.note': 'Note',
     'build.note.placeholder': 'Occasion, preferred date, delivery address — whatever helps.',
     'build.summary': 'Your selection',
@@ -1123,7 +1123,7 @@ export const ui = {
     'cfg.total': 'Итого',
     'cfg.incl_vat': 'Конечная цена, без НДС согласно § 19 UStG, доставка отдельно',
     'cfg.order': 'К оплате',
-    'cfg.minorder': 'Минимальный заказ для доставки: 85 €. Самовывоз из ателье — от любой суммы.',
+    'cfg.minorder': 'Минимальный заказ для доставки: 85 €. Самовывоз из ателье только по договорённости — его бронируют отдельно, не здесь.',
     'cfg.minorder.short': 'Ещё {amount} до минимальной суммы доставки.',
     'cfg.loading': 'Минутку …',
 
@@ -1314,7 +1314,7 @@ export const ui = {
     'build.mood.mono': 'Одноцветная',
     'build.budget': 'Бюджет',
     'build.budget.hint':
-      'Бюджет зависит от размера — меньшие ступени исчезают, как только их не хватает для выбранного размера.',
+      'Бюджет зависит от размера — меньшие ступени скрываются, как только их не хватает для выбранного размера.',
     'build.note': 'Примечание',
     'build.note.placeholder': 'Повод, желаемая дата, адрес доставки — всё, что поможет.',
     'build.summary': 'Ваш выбор',

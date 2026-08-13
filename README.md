@@ -198,6 +198,22 @@ Die Logodateien in `public/brand/` sind bereits fertig aufbereitet
 
 ---
 
+## Lieferung
+
+Die Zeitfenster erzeugt `src/data/site.ts` im Stundentakt aus `ERSTE_STUNDE`,
+`LETZTE_STUNDE` und `SUNDAY_LAST_START`. Vor 14 Uhr kommt
+`EARLY_DELIVERY_SURCHARGE` dazu — Gala kauft morgens am Großmarkt ein und
+bindet danach, eine Vormittagslieferung ist eine Extrafahrt.
+
+> **Öffnungszeiten stehen an zwei Stellen.** `site.hours` ist die Anzeige auf
+> der Kontaktseite, die drei Konstanten daneben erzeugen die Lieferfenster.
+> Sie wissen nichts voneinander. Aus `site.hours` abzuleiten hieße, Text wie
+> „10:00 – 20:00“ zu parsen; getrennte Zahlen sind robuster, kosten aber die
+> Kopplung. Ändern sich die Zeiten, beide Stellen anfassen — sonst verkauft der
+> Konfigurator ein Fenster, zu dem niemand ausfährt, oder verschweigt eines,
+> das es gäbe. Die Sonntagsregel setzt zusätzlich `src/pages/api/checkout.ts`
+> durch (`slot_closed`, 422), holt ihre Grenze aber ebenfalls von dort.
+
 ## Zahlungen und Formulare
 
 ### Stripe (Kasse)

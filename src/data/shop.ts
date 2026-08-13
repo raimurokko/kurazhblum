@@ -167,10 +167,10 @@ export const DELIVERY_ZONES: DeliveryZone[] = [
       ru: 'Самовывоз из ателье',
     },
     hint: {
-      de: 'Nur mit Termin, kein Mindestbestellwert',
-      uk: 'Лише за попередньою домовленістю, без мінімальної суми',
-      en: 'By appointment only, no minimum order',
-      ru: 'Только по записи, без минимальной суммы',
+      de: 'Nur nach Absprache — die Abholung wird separat gebucht, nicht hier',
+      uk: 'Лише за домовленістю — самовивіз бронюють окремо, не тут',
+      en: 'By arrangement only — pickup is booked separately, not here',
+      ru: 'Только по договорённости — самовывоз бронируют отдельно, не здесь',
     },
   },
   {

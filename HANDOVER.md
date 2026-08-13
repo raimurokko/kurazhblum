@@ -324,6 +324,11 @@ wenn niemand sie kennt.
   `brand/iris.webp` wurde `/kurazhblumbrand/iris.webp`. Der Schrägstrich wird in
   `src/i18n/config.ts` erzwungen — interne Links deshalb immer über `path()`,
   Dateien über `asset()`.
+- **Öffnungszeiten stehen an zwei Stellen** in `src/data/site.ts`: `site.hours`
+  für die Anzeige auf der Kontaktseite und `ERSTE_STUNDE`/`LETZTE_STUNDE`/
+  `SUNDAY_LAST_START` für die Lieferfenster im Konfigurator. Sie wissen nichts
+  voneinander. Wer nur eine ändert, verkauft ein Fenster, zu dem niemand
+  ausfährt — oder verschweigt eines, das es gäbe.
 - **Jekyll frisst `_astro`.** Ohne `.nojekyll` verschluckt GitHub Pages jeden
   Ordner mit führendem Unterstrich — also CSS, JavaScript und Schriften.
 

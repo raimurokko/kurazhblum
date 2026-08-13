@@ -650,8 +650,10 @@ const minDate = tomorrow.toISOString().slice(0, 10);
         );
       }
 
-      // Mindestbestellwert gilt nur, wenn geliefert wird.
-      const needsMinimum = zone !== 'pickup' && subtotal < pricing.minOrderDelivery;
+      // Der Mindestbestellwert gilt auch bei Abholung: Sie wird ohnehin
+      // separat abgestimmt, und die frühere Ausnahme stand nirgends mehr
+      // geschrieben — eine stille Ausnahme im Code ist keine Zusage.
+      const needsMinimum = subtotal < pricing.minOrderDelivery;
       if (warnEl) {
         warnEl.hidden = !needsMinimum;
         if (needsMinimum) {

@@ -155,7 +155,8 @@ export const POST: APIRoute = async ({ request, url }) => {
     const extrasTotal = extras.reduce((sum, extra) => sum + extra.price, 0);
     const subtotal = base + surcharge + extrasTotal;
 
-    if (zone.id !== 'pickup' && subtotal < MIN_ORDER_DELIVERY) {
+    // Auch bei Abholung: Die frühere Ausnahme wurde nirgends mehr angezeigt.
+    if (subtotal < MIN_ORDER_DELIVERY) {
       return json({ error: 'below_minimum', minimum: MIN_ORDER_DELIVERY }, 422);
     }
 
