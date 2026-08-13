@@ -32,10 +32,16 @@ const lang = Astro.params.lang as Locale;
   </p>
 
   <h2>Umsatzsteuer</h2>
-  <p class="todo">
-    Zutreffendes eintragen: entweder die Umsatzsteuer-Identifikationsnummer gemäß § 27 a UStG oder den
-    Hinweis „Als Kleinunternehmerin im Sinne von § 19 UStG wird keine Umsatzsteuer berechnet.“
-  </p>
+  {
+    site.legal.kleinunternehmer ? (
+      <p>
+        Als Kleinunternehmerin im Sinne von § 19 UStG wird keine Umsatzsteuer berechnet und daher auch
+        keine in Rechnung ausgewiesen.
+      </p>
+    ) : (
+      <p class="todo">Umsatzsteuer-Identifikationsnummer gemäß § 27 a UStG eintragen.</p>
+    )
+  }
 
   <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
   <address>

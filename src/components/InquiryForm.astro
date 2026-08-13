@@ -186,9 +186,31 @@ const berlinDistricts: { value: string; label: string }[] = [
   </div>
 
   <div class="inq-row">
+    {
+      /*
+        Der Termin der Kundin — Hochzeit, Veranstaltung, Wunschtermin für den
+        Kurs. Bleibt frei wählbar: Eine Hochzeit findet nicht heute statt.
+        Bei einer allgemeinen Anfrage gibt es keinen solchen Termin, dort
+        entfällt das Feld.
+      */
+      topic !== 'general' && (
+        <label class="field">
+          <span class="field-label">{_('form.date')} {showEventFields && <span class="req" aria-hidden="true">*</span>}</span>
+          <input class="input" type="date" name="date" required={showEventFields} />
+        </label>
+      )
+    }
+
+    {/*
+      Zeitstempel der Anfrage. Sichtbar, aber nicht änderbar — er soll sagen,
+      wann geschrieben wurde, und das ist keine Angabe, die zur Auswahl steht.
+      Gefüllt wird er im Browser: Ein serverseitig gesetztes Datum wäre der
+      Build-Zeitpunkt und stünde in wenigen Tagen falsch da.
+    */}
     <label class="field">
-      <span class="field-label">{_('form.date')} {showEventFields && <span class="req" aria-hidden="true">*</span>}</span>
-      <input class="input" type="date" name="date" required={showEventFields} />
+      <span class="field-label">{_('form.sent')}</span>
+      <input class="input input--fest" type="text" name="sent" readonly data-zeitstempel />
+      <span class="hint">{_('form.sent.hint')}</span>
     </label>
 
     {
@@ -482,6 +504,13 @@ const berlinDistricts: { value: string; label: string }[] = [
 
   /* Gesperrt statt versteckt: Wer die Knöpfe sieht, versteht, wofür die
      Haken sind. Kein `display:none` — die Zeile darüber sagt, was fehlt. */
+  /* Nicht änderbar, und das soll man sehen: gedämpft, ohne Textcursor.
+     Fokussierbar bleibt es, damit Screenreader den Wert vorlesen. */
+  .input--fest {
+    color: var(--cream-3);
+    cursor: default;
+  }
+
   .btn--aus {
     opacity: 0.45;
     cursor: not-allowed;
@@ -620,6 +649,40 @@ const berlinDistricts: { value: string; label: string }[] = [
       ortFeld.addEventListener('input', () => void strassenLaden().then(vorschlagen));
     }
 
+    /* ——— Zeitstempel ————————————————————————————————————————————————— */
+
+    const INTL_LOCALE: Record<string, string> = {
+      de: 'de-DE',
+      uk: 'uk-UA',
+      en: 'en-IE',
+      ru: 'ru-RU',
+    };
+    const seitenSprache = form.querySelector<HTMLInputElement>('[name="lang"]')?.value ?? 'de';
+    const ortsformat = INTL_LOCALE[seitenSprache] ?? 'de-DE';
+    const stempelFeld = form.querySelector<HTMLInputElement>('[data-zeitstempel]');
+
+    /** Nur das Datum — das steht sichtbar im Feld. */
+    function heute(): string {
+      return new Date().toLocaleDateString(ortsformat, {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      });
+    }
+
+    /**
+     * Datum **und** Uhrzeit. Kommt erst in die Nachricht, und zwar in dem
+     * Moment, in dem sie gebaut wird — nicht beim Seitenaufbau. Wer das
+     * Formular halb ausfüllt, Kaffee holt und dann sendet, hätte sonst eine
+     * Uhrzeit von vor einer halben Stunde im Text.
+     */
+    function jetzt(): string {
+      const d = new Date();
+      return `${d.toLocaleDateString(ortsformat, { day: '2-digit', month: '2-digit', year: 'numeric' })}, ${d.toLocaleTimeString(ortsformat, { hour: '2-digit', minute: '2-digit' })}`;
+    }
+
+    if (stempelFeld) stempelFeld.value = heute();
+
     /* ——— Anfrage selbst abschicken ——————————————————————————————————— */
 
     /**
@@ -646,8 +709,14 @@ const berlinDistricts: { value: string; label: string }[] = [
         'input:not([type="hidden"]):not([type="checkbox"]), select, textarea',
       )) {
         if (feld.name === 'website' || !feld.value.trim()) continue;
+        // Der Zeitstempel bekommt hier die Uhrzeit dazu — im Feld steht sie
+        // nicht, weil sie dort mit jeder Minute veralten würde.
         const wert =
-          feld instanceof HTMLSelectElement ? feld.selectedOptions[0]?.textContent?.trim() ?? feld.value : feld.value.trim();
+          feld === stempelFeld
+            ? jetzt()
+            : feld instanceof HTMLSelectElement
+            ? feld.selectedOptions[0]?.textContent?.trim() ?? feld.value
+            : feld.value.trim();
         zeilen.push(`${beschriftung(feld)}: ${wert}`);
       }
 
@@ -806,7 +875,12 @@ const berlinDistricts: { value: string; label: string }[] = [
             event.preventDefault();
             event.stopImmediatePropagation();
             sperreEl?.scrollIntoView({ block: 'nearest' });
+            return;
           }
+          // Uhrzeit auf den Klick selbst setzen. WhatsApp und E-Mail sind
+          // Links — ihre Adresse steht schon fest, wenn der Klick kommt, und
+          // trüge sonst die Minute des letzten Tastendrucks.
+          direktAktualisieren();
         },
         true,
       );

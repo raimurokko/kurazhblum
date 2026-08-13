@@ -49,9 +49,22 @@ export const site = {
 
   /** Für Impressum §5 TMG. */
   legal: {
-    owner: 'Galyna N.', // TODO: vollständiger Name der Inhaberin
-    vatId: '', // TODO: USt-IdNr. oder Hinweis auf Kleinunternehmerregelung §19 UStG
-    register: '', // TODO: falls eingetragen
+    owner: 'Halyna Zharuk',
+    /**
+     * Kleinunternehmerin nach § 19 UStG. Das ist keine Formalie fürs
+     * Impressum allein: Solange das gilt, darf **nirgends** „inkl. MwSt.“
+     * stehen — weder am Preis im Konfigurator noch in den AGB. Ausgewiesene
+     * Umsatzsteuer, die nicht abgeführt wird, schuldet man trotzdem (§ 14c
+     * UStG), und der falsche Hinweis ist zusätzlich abmahnfähig.
+     *
+     * Fällt die Regelung später weg, sind drei Stellen zu ändern: dieser
+     * Schalter, `cfg.incl_vat` in allen vier Sprachen und der Preisabsatz in
+     * den AGB.
+     */
+    kleinunternehmer: true,
+    /** Entfällt, solange § 19 UStG gilt. */
+    vatId: '',
+    register: '', // TODO: falls ins Handelsregister eingetragen
   },
 
   /** Öffnungszeiten — Atelierbesuch nach Vereinbarung. */
