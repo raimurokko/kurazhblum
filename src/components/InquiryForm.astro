@@ -20,29 +20,71 @@ const _ = useTranslations(lang);
 const showEventFields = topic === 'wedding' || topic === 'event';
 const showGuestFields = showEventFields || topic === 'workshop';
 
-/** Galas Staffel — sie beginnt bei 1.000 € und deckelt bei 10.000 €. */
-const budgets: { value: string; label: I18nText }[] = [
+/*
+  Budgetstufen mit ihrer Obergrenze in Cent. Die Obergrenze entscheidet, ob
+  eine Stufe zu den gewählten Leistungen überhaupt passen kann: Wer einen
+  Blumenbogen und Tischgestaltung anfragt, kommt mit 1.000 € nicht hin, und
+  eine Anfrage, die von vornherein nicht erfüllbar ist, kostet beide Seiten
+  nur Zeit.
+
+  Die Stufe „unter 1.000 €“ ist neu. Gala hatte ihre Staffel bei 1.000 €
+  beginnen lassen — das passt für Veranstaltungen, aber nicht für den Fall,
+  dass jemand nur den Brautstrauß möchte. Der kostet 120 €; ohne diese Stufe
+  müsste man ein Budget angeben, das um ein Vielfaches darüber liegt.
+*/
+const budgets: { value: string; label: I18nText; obergrenze: number | null }[] = [
+  {
+    value: 'unter-1000',
+    obergrenze: 100000,
+    label: { de: 'bis 1.000 €', uk: 'до 1 000 €', en: 'up to €1,000', ru: 'до 1 000 €' },
+  },
   {
     value: '1000-1500',
+    obergrenze: 150000,
     label: { de: '1.000 – 1.500 €', uk: '1 000 – 1 500 €', en: '€1,000 – 1,500', ru: '1 000 – 1 500 €' },
   },
   {
     value: '1500-3000',
+    obergrenze: 300000,
     label: { de: '1.500 – 3.000 €', uk: '1 500 – 3 000 €', en: '€1,500 – 3,000', ru: '1 500 – 3 000 €' },
   },
   {
     value: '3000-5000',
+    obergrenze: 500000,
     label: { de: '3.000 – 5.000 €', uk: '3 000 – 5 000 €', en: '€3,000 – 5,000', ru: '3 000 – 5 000 €' },
   },
   {
     value: '5000-10000',
+    obergrenze: 1000000,
     label: { de: '5.000 – 10.000 €', uk: '5 000 – 10 000 €', en: '€5,000 – 10,000', ru: '5 000 – 10 000 €' },
   },
   {
+    // Ohne Obergrenze — bleibt immer wählbar.
     value: 'offen',
+    obergrenze: null,
     label: { de: 'noch offen', uk: 'ще не визначено', en: 'not decided yet', ru: 'пока не решено' },
   },
 ];
+
+/*
+  Untergrenze je Leistung, in Cent. Abgeleitet ausschließlich aus dem, was Gala
+  auf der Veranstaltungsseite selbst nennt: Brautstrauß 120 €, Anstecker ab
+  25 € — zusammen 145 €. Für alles, was am Veranstaltungsort entsteht, gilt
+  ihr zweiter Satz: eine vollständige florale Gestaltung beginnt bei 1.500 €,
+  einschließlich Auf- und Abbau.
+
+  ⚠️ TODO: Einzelpreise für Bogen, Tischgestaltung und Fotozone hat sie nicht
+  genannt. Deshalb steht hier für alle drei derselbe Wert — er ist eine
+  Untergrenze, keine Schätzung. Sobald Gala Einzelpreise nennt, gehören sie
+  hierher.
+*/
+const LEISTUNG_MINDESTBUDGET: Record<string, number> = {
+  brautstrauss: 14500,
+  bogen: 150000,
+  tische: 150000,
+  fotozone: 150000,
+  abbau: 150000,
+};
 
 const weddingServices: { value: string; label: I18nText }[] = [
   {
@@ -140,8 +182,8 @@ const berlinDistricts: { value: string; label: string }[] = [
     </label>
 
     <label class="field">
-      <span class="field-label">{_('form.phone')} <span class="muted">({_('form.optional')})</span></span>
-      <input class="input" type="tel" name="phone" autocomplete="tel" />
+      <span class="field-label">{_('form.phone')} <span class="req" aria-hidden="true">*</span></span>
+      <input class="input" type="tel" name="phone" required autocomplete="tel" />
     </label>
   </div>
 
@@ -173,7 +215,9 @@ const berlinDistricts: { value: string; label: string }[] = [
           <span class="field-label">{_('form.budget')}</span>
           <select class="select" name="budget">
             {budgets.map((budget) => (
-              <option value={budget.value}>{t(budget.label, lang)}</option>
+              <option value={budget.value} data-max={budget.obergrenze ?? ''}>
+                {t(budget.label, lang)}
+              </option>
             ))}
           </select>
         </label>
@@ -202,11 +246,17 @@ const berlinDistricts: { value: string; label: string }[] = [
         <div class="choices choices--row">
           {weddingServices.map((service) => (
             <label class="choice choice--inline">
-              <input type="checkbox" name="services" value={service.value} />
+              <input
+                type="checkbox"
+                name="services"
+                value={service.value}
+                data-min={LEISTUNG_MINDESTBUDGET[service.value] ?? 0}
+              />
               <span class="choice-title">{t(service.label, lang)}</span>
             </label>
           ))}
         </div>
+        <p class="hint" data-budget-hint>{_('form.services.hint')}</p>
       </fieldset>
     )
   }
@@ -240,6 +290,34 @@ const berlinDistricts: { value: string; label: string }[] = [
       </>
     )}
   </p>
+
+  <!--
+    Selbst abschicken. Das Formular oben braucht einen Server; auf GitHub Pages
+    gibt es den nicht, und selbst mit Server wollen viele lieber im Messenger
+    schreiben, den sie ohnehin offen haben. Diese drei Wege tragen die
+    ausgefüllten Angaben mit — niemand muss zweimal tippen, und Gala bekommt
+    dieselben Felder wie per E-Mail.
+  -->
+  <div class="inq-direkt">
+    <h3 class="field-label">{_('form.direct')}</h3>
+    <p class="hint">{_('form.direct.hint')}</p>
+
+    <div class="inq-direkt-row">
+      {
+        site.whatsapp && (
+          <a class="btn btn--gold" data-direkt="whatsapp" href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener">
+            {_('channels.whatsapp')}
+          </a>
+        )
+      }
+      <a class="btn btn--ghost" data-direkt="email" href={`mailto:${site.email}`}>{_('channels.email')}</a>
+      <button class="btn btn--ghost" type="button" data-direkt="instagram" data-url={site.instagramUrl}>
+        {_('channels.instagram')}
+      </button>
+    </div>
+
+    <p class="inq-note inq-note--ok" hidden data-kopiert>{_('form.direct.copied')}</p>
+  </div>
 </form>
 
 <style>
@@ -314,6 +392,19 @@ const berlinDistricts: { value: string; label: string }[] = [
     font-size: 0.9rem;
   }
 
+  .inq-direkt {
+    border-top: 1px solid var(--line);
+    margin-top: var(--space-6);
+    padding-top: var(--space-5);
+  }
+
+  .inq-direkt-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+
   .inq-note--error {
     border-left-color: var(--mauve-deep);
     background: rgb(142 112 120 / 0.14);
@@ -325,6 +416,135 @@ const berlinDistricts: { value: string; label: string }[] = [
     const submitEl = form.querySelector<HTMLButtonElement>('[data-submit]');
     const successEl = form.querySelector<HTMLElement>('[data-success]');
     const errorEl = form.querySelector<HTMLElement>('[data-error]');
+
+    /*
+      Budget und Leistungen hängen zusammen. Wer einen Blumenbogen und
+      Tischgestaltung anfragt, kommt mit 1.000 € nicht hin — eine Anfrage, die
+      von vornherein nicht erfüllbar ist, kostet beide Seiten nur Zeit, und
+      Gala müsste sie mit einer Absage beantworten.
+
+      Gerechnet wird mit dem **Höchstwert** der gewählten Untergrenzen, nicht
+      mit ihrer Summe: Was ein Bogen zusätzlich zur Tischgestaltung kostet,
+      hat Gala nie gesagt, und es zu addieren wäre eine erfundene Zahl. Der
+      Höchstwert ist die Aussage, die sich belegen lässt — mindestens so viel.
+    */
+    const budgetSelect = form.querySelector<HTMLSelectElement>('[name="budget"]');
+    const serviceInputs = [...form.querySelectorAll<HTMLInputElement>('[name="services"]')];
+
+    function budgetKoppeln(): void {
+      if (!budgetSelect || !serviceInputs.length) return;
+
+      const untergrenze = serviceInputs
+        .filter((input) => input.checked)
+        .reduce((hoechster, input) => Math.max(hoechster, Number(input.dataset.min ?? 0)), 0);
+
+      let ersteGueltige: HTMLOptionElement | null = null;
+      for (const option of budgetSelect.options) {
+        const max = option.dataset.max ? Number(option.dataset.max) : null;
+        // „noch offen“ hat keine Obergrenze und bleibt immer stehen.
+        const passt = max === null || max > untergrenze;
+        option.hidden = !passt;
+        option.disabled = !passt;
+        if (passt && !ersteGueltige) ersteGueltige = option;
+      }
+
+      if (budgetSelect.selectedOptions[0]?.disabled && ersteGueltige) {
+        ersteGueltige.selected = true;
+      }
+    }
+
+    // Am Formular statt an jedem Kästchen: So greift die Kopplung auch, wenn
+    // die Auswahl anders zustande kommt als durch einen Klick — etwa nach
+    // einem Reset oder wenn der Browser Felder wiederherstellt.
+    form.addEventListener('change', budgetKoppeln);
+    budgetKoppeln();
+
+    /* ——— Anfrage selbst abschicken ——————————————————————————————————— */
+
+    /**
+     * Beschriftung eines Feldes, so wie sie auf der Seite steht — damit die
+     * Nachricht in der Sprache der Seite entsteht und nicht in einer zweiten,
+     * hier nochmal gepflegten Liste.
+     */
+    function beschriftung(feld: Element): string {
+      const traeger = feld.closest('.field, fieldset');
+      const text = traeger?.querySelector('.field-label')?.textContent ?? '';
+      // Den Pflichtstern und Klammerzusätze abschneiden.
+      return text.replace(/[*]/g, '').trim().replace(/\s+/g, ' ');
+    }
+
+    /**
+     * Alles, was ausgefüllt ist — und nur das. Leere Felder wegzulassen ist
+     * kein Informationsverlust: Eine Zeile „Anzahl Gäste:“ ohne Zahl sagt
+     * weniger als gar keine Zeile.
+     */
+    function nachricht(): string {
+      const zeilen: string[] = [];
+
+      for (const feld of form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+        'input:not([type="hidden"]):not([type="checkbox"]), select, textarea',
+      )) {
+        if (feld.name === 'website' || !feld.value.trim()) continue;
+        const wert =
+          feld instanceof HTMLSelectElement ? feld.selectedOptions[0]?.textContent?.trim() ?? feld.value : feld.value.trim();
+        zeilen.push(`${beschriftung(feld)}: ${wert}`);
+      }
+
+      const leistungen = serviceInputs
+        .filter((input) => input.checked)
+        .map((input) => input.closest('.choice')?.querySelector('.choice-title')?.textContent?.trim() ?? input.value);
+      if (leistungen.length) {
+        const legende = form.querySelector('[name="services"]')?.closest('fieldset')?.querySelector('.field-label');
+        zeilen.push(`${legende?.textContent?.trim() ?? 'Leistungen'}: ${leistungen.join(', ')}`);
+      }
+
+      const anlass = form.querySelector<HTMLInputElement>('[name="subject"]')?.value;
+      if (anlass) zeilen.unshift(anlass);
+
+      return zeilen.join('\n');
+    }
+
+    const kopiertEl = form.querySelector<HTMLElement>('[data-kopiert]');
+
+    function direktAktualisieren(): void {
+      const text = nachricht();
+
+      const whatsapp = form.querySelector<HTMLAnchorElement>('[data-direkt="whatsapp"]');
+      if (whatsapp) {
+        whatsapp.href = `${whatsapp.href.split('?')[0]}?text=${encodeURIComponent(text)}`;
+      }
+
+      const mail = form.querySelector<HTMLAnchorElement>('[data-direkt="email"]');
+      if (mail) {
+        // Kein URLSearchParams: Das kodiert Leerzeichen als „+“, und in einer
+        // mailto-Adresse bleibt daraus ein Pluszeichen im Text.
+        const betreff = form.querySelector<HTMLInputElement>('[name="subject"]')?.value || document.title;
+        mail.href =
+          `${mail.href.split('?')[0]}?subject=${encodeURIComponent(betreff)}&body=${encodeURIComponent(text)}`;
+      }
+    }
+
+    /*
+      Instagram kennt keinen Weg, eine Direktnachricht vorauszufüllen — es gibt
+      schlicht kein Adressschema dafür. Deshalb wandert der Text in die
+      Zwischenablage und das Profil geht auf; einfügen muss man selbst. Das ist
+      ehrlicher, als einen Knopf anzubieten, der ein leeres Fenster öffnet.
+    */
+    form.querySelector<HTMLButtonElement>('[data-direkt="instagram"]')?.addEventListener('click', async (event) => {
+      const knopf = event.currentTarget as HTMLButtonElement;
+      try {
+        await navigator.clipboard.writeText(nachricht());
+        if (kopiertEl) kopiertEl.hidden = false;
+      } catch {
+        // Ohne Zwischenablage-Recht (älterer Browser, kein HTTPS) bleibt der
+        // Hinweis aus — das Profil geht trotzdem auf.
+      }
+      window.open(knopf.dataset.url, '_blank', 'noopener');
+    });
+
+    form.addEventListener('input', direktAktualisieren);
+    form.addEventListener('change', direktAktualisieren);
+    direktAktualisieren();
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();

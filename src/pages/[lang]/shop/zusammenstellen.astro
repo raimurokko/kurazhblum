@@ -205,7 +205,11 @@ const budgets = [SIZE_ENTRY_PRICES.m, SIZE_ENTRY_PRICES.l, SIZE_ENTRY_PRICES.xl,
       if (blumen.length) zeilen.push(`${label('flowers')}: ${blumen.join(', ')}`);
       const mood = data.get('mood');
       if (mood) zeilen.push(`${label('mood')}: ${mood}`);
-      zeilen.push(`${label('size')}: ${data.get('size')}`);
+      // Die sichtbare Beschriftung, nicht der Wert: Sie trägt den
+      // Einstiegspreis mit, und der gehört in die Nachricht — Gala sieht damit
+      // sofort, von welcher Staffel die Anfrage ausgeht.
+      const sizeSelect = form!.querySelector<HTMLSelectElement>('[data-size]');
+      zeilen.push(`${label('size')}: ${sizeSelect?.selectedOptions[0]?.textContent?.trim() ?? data.get('size')}`);
       zeilen.push(`${label('budget')}: ${data.get('budget')}`);
 
       const note = String(data.get('note') ?? '').trim();

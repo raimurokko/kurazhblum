@@ -180,9 +180,15 @@ export const ui = {
     'form.guests': 'Anzahl Gäste',
     'form.budget': 'Budgetrahmen',
     'form.services': 'Gewünschte Leistungen',
+    'form.services.hint':
+      'Zur Orientierung: Brautstrauß 120 €, Anstecker ab 25 €. Sobald etwas am Veranstaltungsort dazukommt — Bogen, Tische, Fotozone —, beginnt eine vollständige Gestaltung bei 1.500 € einschließlich Auf- und Abbau. Stufen, die dafür nicht reichen, blende ich aus.',
     'form.message': 'Ihre Nachricht',
     'form.message.placeholder': 'Erzählen Sie kurz, worum es geht — Stil, Farben, was Ihnen wichtig ist.',
     'form.submit': 'Anfrage senden',
+    'form.direct': 'Oder direkt schicken',
+    'form.direct.hint':
+      'Ihre Angaben von oben werden mitgenommen — Sie müssen nichts zweimal tippen. Bei Instagram lege ich den Text in die Zwischenablage, dort lässt sich eine Nachricht nicht vorausfüllen.',
+    'form.direct.copied': 'Text kopiert — im Instagram-Chat einfügen.',
     'form.sending': 'Wird gesendet …',
     'form.success': 'Danke! Ihre Anfrage ist angekommen. Ich melde mich innerhalb von 24 Stunden.',
     'form.error': 'Das hat leider nicht geklappt. Schreiben Sie mir gern direkt per E-Mail.',
@@ -485,9 +491,15 @@ export const ui = {
     'form.guests': 'Кількість гостей',
     'form.budget': 'Орієнтовний бюджет',
     'form.services': 'Потрібні послуги',
+    'form.services.hint':
+      'Для орієнтиру: букет нареченої 120 €, бутоньєрка від 25 €. Щойно додається щось на локації — арка, столи, фотозона, — повне оформлення починається від 1 500 € разом із монтажем і демонтажем. Щаблі, яких для цього не вистачає, я приховую.',
     'form.message': 'Ваше повідомлення',
     'form.message.placeholder': 'Коротко розкажіть, про що йдеться — стиль, кольори, що для вас важливо.',
     'form.submit': 'Надіслати запит',
+    'form.direct': 'Або надіслати напряму',
+    'form.direct.hint':
+      'Ваші дані згори переносяться — двічі друкувати не доведеться. Для Instagram я кладу текст у буфер обміну: там повідомлення не можна заповнити заздалегідь.',
+    'form.direct.copied': 'Текст скопійовано — вставте його в чат Instagram.',
     'form.sending': 'Надсилаємо …',
     'form.success': 'Дякую! Ваш запит отримано. Відповім протягом 24 годин.',
     'form.error': 'На жаль, не вдалося. Напишіть мені, будь ласка, напряму на ел. пошту.',
@@ -781,9 +793,15 @@ export const ui = {
     'form.guests': 'Number of guests',
     'form.budget': 'Budget range',
     'form.services': 'What you need',
+    'form.services.hint':
+      'For orientation: bridal bouquet €120, buttonhole from €25. As soon as anything at the venue is added — arch, tables, photo backdrop — a complete design starts at €1,500 including set-up and take-down. Steps that cannot cover that are hidden.',
     'form.message': 'Your message',
     'form.message.placeholder': 'Tell me briefly what it is about — style, colours, what matters to you.',
     'form.submit': 'Send enquiry',
+    'form.direct': 'Or send it directly',
+    'form.direct.hint':
+      'Everything you filled in above comes along — no need to type it twice. For Instagram I put the text on your clipboard; a message there cannot be pre-filled.',
+    'form.direct.copied': 'Text copied — paste it into the Instagram chat.',
     'form.sending': 'Sending …',
     'form.success': 'Thank you! Your enquiry arrived. I will get back to you within 24 hours.',
     'form.error': 'That did not work, sorry. Please email me directly.',
@@ -1077,9 +1095,15 @@ export const ui = {
     'form.guests': 'Количество гостей',
     'form.budget': 'Ориентировочный бюджет',
     'form.services': 'Нужные услуги',
+    'form.services.hint':
+      'Для ориентира: букет невесты 120 €, бутоньерка от 25 €. Как только добавляется что-то на площадке — арка, столы, фотозона, — полное оформление начинается от 1 500 € вместе с монтажом и демонтажом. Ступени, которых для этого не хватает, я скрываю.',
     'form.message': 'Ваше сообщение',
     'form.message.placeholder': 'Коротко расскажите, о чём речь — стиль, цвета, что для вас важно.',
     'form.submit': 'Отправить запрос',
+    'form.direct': 'Или отправить напрямую',
+    'form.direct.hint':
+      'Ваши данные сверху переносятся — печатать дважды не нужно. Для Instagram я кладу текст в буфер обмена: там сообщение нельзя заполнить заранее.',
+    'form.direct.copied': 'Текст скопирован — вставьте его в чат Instagram.',
     'form.sending': 'Отправляем …',
     'form.success': 'Спасибо! Ваш запрос получен. Отвечу в течение 24 часов.',
     'form.error': 'К сожалению, не получилось. Напишите мне, пожалуйста, напрямую на почту.',
