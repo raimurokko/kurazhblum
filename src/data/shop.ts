@@ -132,15 +132,26 @@ export interface DeliveryZone {
 }
 
 /**
- * Galas Zonen. Das Atelier steht in Lichtenberg — deshalb ist Lichtenberg
- * eine eigene, günstigste Zone und nicht Teil von A. Brandenburg und Potsdam
- * fallen weg: Sie liefert nur in Berlin, alles darüber hinaus nach Absprache.
+ * A und B sind die **VBB-Tarifbereiche**, dieselben, die auf jedem
+ * BVG-Ticket stehen. Das ist keine Auslegung, sondern Galas eigene Sprache —
+ * und ein Glücksfall: In Berlin weiß fast jede Kundin, ob sie in A oder B
+ * wohnt, weil sie es beim Fahrkartenkauf jedes Mal entscheiden muss.
  *
- * ⚠️ TODO: Die Preise sind von Gala bestätigt (15/20/25/35 €), **welche
- * Bezirke zu A, B und C gehören, aber nicht**. Die Listen in `hint` sind ein
- * plausibler Vorschlag nach Entfernung vom Atelier und müssen vor dem
- * Livegang bestätigt werden — sonst verkauft die Seite eine Lieferung nach
- * Spandau zum Preis von Zone C, die Gala vielleicht ganz anders rechnet.
+ * Die entscheidende Eigenheit: **Die Grenze ist der S-Bahn-Ring, nicht die
+ * Bezirksgrenze.** Mehrere Ortsteile werden vom Ring durchschnitten und
+ * liegen teils in A, teils in B — Neukölln, Prenzlauer Berg, Schöneberg,
+ * Wedding, Alt-Treptow. Die Ringbahnhöfe selbst zählen noch zu A. Wer die
+ * Zonen nach Bezirken sortiert, rechnet deshalb systematisch falsch; die
+ * Hinweise nennen darum Grenzbahnhöfe statt Bezirksnamen.
+ *
+ * **Tarifbereich C ist absichtlich nicht dabei.** C ist kein Berliner
+ * Gebiet, sondern das Brandenburger Umland samt Potsdam, Schönefeld und BER —
+ * und Gala hat „kein Potsdam“ gesagt. Ganz Berlin ist AB; damit deckt die
+ * Auswahl ihr Liefergebiet vollständig ab. Alles darüber hinaus läuft über
+ * den Hinweis unter der Auswahl nach Absprache.
+ *
+ * Lichtenberg liegt praktisch vollständig in B, steht hier aber als eigene,
+ * günstigste Zone: Es ist der Bezirk rund ums Atelier.
  */
 export const DELIVERY_ZONES: DeliveryZone[] = [
   {
@@ -169,58 +180,42 @@ export const DELIVERY_ZONES: DeliveryZone[] = [
       ru: 'Лихтенберг',
     },
     hint: {
-      de: 'Der Bezirk rund ums Atelier',
-      uk: 'Район навколо ательє',
-      en: 'The district around the atelier',
-      ru: 'Район вокруг ателье',
+      de: 'Der Bezirk rund ums Atelier — liegt im Tarifbereich B, ist bei mir aber günstiger',
+      uk: 'Район навколо ательє — це тарифна зона B, але в мене дешевше',
+      en: 'The district around the atelier — fare zone B, but cheaper with me',
+      ru: 'Район вокруг ателье — тарифная зона B, но у меня дешевле',
     },
   },
   {
     id: 'a',
     fee: 2000,
     name: {
-      de: 'Berlin — Zone A',
-      uk: 'Берлін — зона A',
-      en: 'Berlin — zone A',
-      ru: 'Берлин — зона A',
+      de: 'Berlin — Tarifbereich A',
+      uk: 'Берлін — тарифна зона A',
+      en: 'Berlin — fare zone A',
+      ru: 'Берлин — тарифная зона A',
     },
     hint: {
-      de: 'Friedrichshain, Prenzlauer Berg, Mitte, Kreuzberg',
-      uk: 'Фрідріхсхайн, Пренцлауер-Берг, Мітте, Кройцберг',
-      en: 'Friedrichshain, Prenzlauer Berg, Mitte, Kreuzberg',
-      ru: 'Фридрихсхайн, Пренцлауэр-Берг, Митте, Кройцберг',
+      de: 'Innerhalb des S-Bahn-Rings: Mitte, Friedrichshain, Kreuzberg, Prenzlauer Berg bis Schönhauser Allee, Schöneberg bis Südkreuz, Nord-Neukölln bis Hermannstraße',
+      uk: 'У межах кільця S-Bahn: Мітте, Фрідріхсхайн, Кройцберг, Пренцлауер-Берг до Шенгаузер-Алеє, Шенеберг до Зюдкройц, північний Нойкельн до Германштрасе',
+      en: 'Inside the S-Bahn Ring: Mitte, Friedrichshain, Kreuzberg, Prenzlauer Berg up to Schönhauser Allee, Schöneberg up to Südkreuz, northern Neukölln up to Hermannstraße',
+      ru: 'Внутри кольца S-Bahn: Митте, Фридрихсхайн, Кройцберг, Пренцлауэр-Берг до Шёнхаузер-Аллее, Шёнеберг до Зюдкройц, северный Нойкёльн до Германштрассе',
     },
   },
   {
     id: 'b',
     fee: 2500,
     name: {
-      de: 'Berlin — Zone B',
-      uk: 'Берлін — зона B',
-      en: 'Berlin — zone B',
-      ru: 'Берлин — зона B',
+      de: 'Berlin — Tarifbereich B',
+      uk: 'Берлін — тарифна зона B',
+      en: 'Berlin — fare zone B',
+      ru: 'Берлин — тарифная зона B',
     },
     hint: {
-      de: 'Pankow, Treptow, Neukölln, Charlottenburg, Wedding',
-      uk: 'Панков, Трептов, Нойкельн, Шарлоттенбург, Веддінг',
-      en: 'Pankow, Treptow, Neukölln, Charlottenburg, Wedding',
-      ru: 'Панков, Трептов, Нойкёльн, Шарлоттенбург, Веддинг',
-    },
-  },
-  {
-    id: 'c',
-    fee: 3500,
-    name: {
-      de: 'Berlin — Zone C',
-      uk: 'Берлін — зона C',
-      en: 'Berlin — zone C',
-      ru: 'Берлин — зона C',
-    },
-    hint: {
-      de: 'Marzahn, Köpenick, Spandau, Reinickendorf, Zehlendorf',
-      uk: 'Марцан, Кьопенік, Шпандау, Райнікендорф, Целендорф',
-      en: 'Marzahn, Köpenick, Spandau, Reinickendorf, Zehlendorf',
-      ru: 'Марцан, Кёпеник, Шпандау, Райниккендорф, Целендорф',
+      de: 'Außerhalb des Rings bis zur Stadtgrenze: Pankow, Spandau, Steglitz-Zehlendorf, Reinickendorf, Marzahn-Hellersdorf, Köpenick, Tempelhof — außer Lichtenberg, das eigene Zeile hat',
+      uk: 'Поза кільцем до межі міста: Панков, Шпандау, Штегліц-Целендорф, Райнікендорф, Марцан-Гелерсдорф, Кьопенік, Темпельгоф — окрім Ліхтенберга, який має власний рядок',
+      en: 'Outside the Ring up to the city boundary: Pankow, Spandau, Steglitz-Zehlendorf, Reinickendorf, Marzahn-Hellersdorf, Köpenick, Tempelhof — except Lichtenberg, which has its own line',
+      ru: 'За кольцом до границы города: Панков, Шпандау, Штеглиц-Целендорф, Райниккендорф, Марцан-Хеллерсдорф, Кёпеник, Темпельхоф — кроме Лихтенберга, у которого своя строка',
     },
   },
 ];
@@ -229,12 +224,19 @@ export interface Extra {
   id: string;
   name: I18nText;
   price: Cents;
+  /**
+   * Der Betrag ist ein Ab-Preis. Bei der Vase hängt er am Gefäß, genau wie
+   * bei der Präsentationsform „Mit Vase“ — ein Festbetrag daneben las sich
+   * widersprüchlich.
+   */
+  from?: boolean;
 }
 
 export const EXTRAS: Extra[] = [
   {
     id: 'vase',
     price: 2200,
+    from: true,
     name: {
       de: 'Schlichte Glasvase',
       uk: 'Проста скляна ваза',

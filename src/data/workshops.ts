@@ -205,10 +205,10 @@ export const WORKSHOP_FORMATS: WorkshopFormat[] = [
       ru: 'День рождения, девичник, корпоратив: приезжаю с цветами, инструментами и материалами в ваше пространство.',
     },
     description: {
-      de: 'Ich bringe Blumen, Werkzeug und alles nötige floristische Material mit — von Ihnen brauche ich nur Tische und Wasser. Ab 4 Personen, innerhalb Berlins in Zone A, B oder C.',
-      uk: 'Привожу квіти, інструмент і всі потрібні флористичні матеріали — від вас потрібні лише столи й вода. Від 4 осіб, у межах Берліна в зоні A, B або C.',
-      en: 'I bring flowers, tools and every floristry material needed — all I need from you is tables and water. From 4 people, within Berlin in zone A, B or C.',
-      ru: 'Привожу цветы, инструменты, все необходимые флористические материалы — от вас нужны только столы и вода. От 4 человек, в пределах Берлина (в зоне А, В или С).',
+      de: 'Ich bringe Blumen, Werkzeug und alles nötige floristische Material mit — von Ihnen brauche ich nur Tische und Wasser. Ab 4 Personen, innerhalb Berlins.',
+      uk: 'Привожу квіти, інструмент і всі потрібні флористичні матеріали — від вас потрібні лише столи й вода. Від 4 осіб, у межах Берліна.',
+      en: 'I bring flowers, tools and every floristry material needed — all I need from you is tables and water. From 4 people, within Berlin.',
+      ru: 'Привожу цветы, инструменты, все необходимые флористические материалы — от вас нужны только столы и вода. От 4 человек, в пределах Берлина.',
     },
     included: [
       {
@@ -237,10 +237,10 @@ export const WORKSHOP_FORMATS: WorkshopFormat[] = [
       ru: '2 – 3 часа, по договорённости',
     },
     location: {
-      de: 'Bei Ihnen, Berlin — Zone A, B oder C',
-      uk: 'У вас, Берлін — зона A, B або C',
-      en: 'At your place, Berlin — zone A, B or C',
-      ru: 'У вас, Берлин — зона A, B или C',
+      de: 'Bei Ihnen, in Berlin',
+      uk: 'У вас, у Берліні',
+      en: 'At your place, in Berlin',
+      ru: 'У вас, в Берлине',
     },
   },
 ];

@@ -113,7 +113,7 @@ export const ui = {
     'cfg.delivery.slot': 'Zeitfenster',
     'cfg.delivery.zone': 'Liefergebiet',
     'cfg.delivery.beyond':
-      'Soll weiter geliefert werden als bis Zone C, geht das nach Absprache — schreiben Sie mir kurz.',
+      'Maßgeblich ist der S-Bahn-Ring, nicht die Bezirksgrenze: Manche Ortsteile liegen teils in A, teils in B. Außerhalb Berlins liefere ich nach Absprache — schreiben Sie mir kurz.',
     'cfg.extras': 'Extras',
     'cfg.summary': 'Ihre Zusammenstellung',
     'cfg.total': 'Gesamt',
@@ -419,7 +419,7 @@ export const ui = {
     'cfg.delivery.slot': 'Часовий проміжок',
     'cfg.delivery.zone': 'Зона доставки',
     'cfg.delivery.beyond':
-      'Якщо доставка потрібна далі, ніж зона C, це можливо за домовленістю — напишіть мені.',
+      'Визначальним є кільце S-Bahn, а не межа району: деякі місцевості лежать частково в A, частково в B. За межі Берліна доставляю за домовленістю — просто напишіть мені.',
     'cfg.extras': 'Додатково',
     'cfg.summary': 'Ваше замовлення',
     'cfg.total': 'Разом',
@@ -712,7 +712,7 @@ export const ui = {
     'cfg.delivery.slot': 'Time slot',
     'cfg.delivery.zone': 'Delivery area',
     'cfg.delivery.beyond':
-      'If delivery has to go further than zone C, that works by arrangement — just write to me.',
+      'What counts is the S-Bahn Ring, not the district boundary: some localities lie partly in A and partly in B. Outside Berlin I deliver by arrangement — just write to me.',
     'cfg.extras': 'Extras',
     'cfg.summary': 'Your build',
     'cfg.total': 'Total',
@@ -1005,7 +1005,7 @@ export const ui = {
     'cfg.delivery.slot': 'Интервал времени',
     'cfg.delivery.zone': 'Зона доставки',
     'cfg.delivery.beyond':
-      'Если доставка нужна дальше зоны C, это возможно по договорённости — просто напишите мне.',
+      'Определяющим является кольцо S-Bahn, а не граница района: некоторые местности лежат частично в A, частично в B. За пределы Берлина доставляю по договорённости — просто напишите мне.',
     'cfg.extras': 'Дополнительно',
     'cfg.summary': 'Ваш заказ',
     'cfg.total': 'Итого',
