@@ -169,7 +169,16 @@ const productJsonLd = {
           </dl>
 
           {bouquet.variantsOnRequest && <p class="small muted detail-note">{_('product.variants')}</p>}
-          <p class="small muted detail-note">{_('shop.seasonal')}</p>
+          {
+            /*
+              Der Hinweis auf eine ähnliche Alternative ist Galas eigener
+              Wortlaut und gilt überall dort, wo jemand bestimmte Blumen
+              bestellt hat. Beim Überraschungsstrauß gibt es nichts zu
+              ersetzen: Dort wählt die Floristin ohnehin, was am Bestelltag am
+              besten ist — das ist die Zusage, nicht der Ausnahmefall.
+            */
+            !bouquet.surprise && <p class="small muted detail-note">{_('shop.seasonal')}</p>
+          }
         </div>
       </div>
 
