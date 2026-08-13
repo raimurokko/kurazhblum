@@ -327,13 +327,48 @@ const berlinDistricts: { value: string; label: string }[] = [
         )
       }
       <a class="btn btn--ghost" data-direkt="email" href={`mailto:${site.email}`}>{_('channels.email')}</a>
-      <button class="btn btn--ghost" type="button" data-direkt="instagram" data-url={site.instagramUrl}>
+      <button class="btn btn--ghost" type="button" data-direkt="instagram" data-url={site.instagramDirectUrl}>
         {_('channels.instagram')}
       </button>
     </div>
 
     <p class="inq-note inq-note--ok" hidden data-kopiert>{_('form.direct.copied')}</p>
   </div>
+
+  <!--
+    Instagram kann eine Direktnachricht nicht vorausfüllen — es gibt kein
+    Adressschema dafür. Der Text geht deshalb in die Zwischenablage, und dieser
+    Dialog sagt, was damit zu tun ist, bevor der Chat aufgeht. Erst nach dem
+    Bestätigen wird das Fenster geöffnet: So ist der Klick auf „Weiter“ die
+    Geste, die den Popup-Blocker passieren lässt.
+
+    <dialog> statt confirm(): Es bringt Fokusfalle, Esc und Vorlesbarkeit von
+    sich aus mit, und es lässt sich wie der Rest der Seite gestalten.
+  -->
+  <dialog class="einfuegen" data-einfuegen data-strg={_('form.direct.shortcut')}>
+    <h3 class="einfuegen-titel">{_('form.direct.paste.title')}</h3>
+    <div data-einfuegen-gelungen>
+      <p class="muted">
+        <Fragment set:html={_('form.direct.paste.text', { shortcut: '<kbd data-kuerzel></kbd>' })} />
+      </p>
+      <p class="hint">{_('form.direct.paste.mobile')}</p>
+    </div>
+
+    {/*
+      Rückfall, wenn die Zwischenablage nicht darf — älterer Browser oder
+      Seite ohne HTTPS. Dann steht der Text zum Selbstmarkieren da, statt dass
+      der Dialog eine Kopie behauptet, die es nicht gibt.
+    */}
+    <div hidden data-einfuegen-manuell>
+      <p class="muted">{_('form.direct.paste.manual')}</p>
+      <textarea class="textarea" rows="6" readonly data-einfuegen-text></textarea>
+    </div>
+
+    <div class="einfuegen-row">
+      <button class="btn btn--primary" type="button" data-einfuegen-ok>{_('form.direct.paste.ok')}</button>
+      <button class="btn btn--ghost" type="button" data-einfuegen-ab>{_('form.direct.paste.cancel')}</button>
+    </div>
+  </dialog>
 </form>
 
 <style>
@@ -406,6 +441,45 @@ const berlinDistricts: { value: string; label: string }[] = [
     border-left: 2px solid var(--gold);
     background: rgb(144 112 64 / 0.12);
     font-size: 0.9rem;
+  }
+
+  /* Der Dialog erbt nichts vom Formular — er hängt im Top-Layer. Deshalb
+     stehen Hintergrund und Rahmen hier noch einmal ausdrücklich. */
+  .einfuegen {
+    max-width: min(30rem, 88vw);
+    padding: var(--space-5);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-lg);
+    background: var(--ink-2);
+    color: var(--cream-2);
+  }
+
+  .einfuegen::backdrop {
+    background: rgb(0 0 0 / 0.6);
+  }
+
+  .einfuegen-titel {
+    font-size: 1.25rem;
+    margin-bottom: var(--space-3);
+    color: var(--cream);
+  }
+
+  .einfuegen kbd {
+    font-family: var(--font-body), monospace;
+    font-size: 0.9em;
+    padding: 0.15em 0.45em;
+    border: 1px solid var(--line-strong);
+    border-radius: 4px;
+    background: var(--ink-3);
+    color: var(--cream);
+    white-space: nowrap;
+  }
+
+  .einfuegen-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
   }
 
   .inq-direkt {
@@ -615,17 +689,76 @@ const berlinDistricts: { value: string; label: string }[] = [
       Zwischenablage und das Profil geht auf; einfügen muss man selbst. Das ist
       ehrlicher, als einen Knopf anzubieten, der ein leeres Fenster öffnet.
     */
+    const dialog = form.querySelector<HTMLDialogElement>('[data-einfuegen]');
+
+    /*
+      ⌘ auf Apple-Geräten, Strg überall sonst. `userAgentData.platform` ist der
+      aktuelle Weg, `platform` der Rückfall für ältere Browser — beide können
+      fehlen, dann entscheidet der User-Agent-Text.
+    */
+    const plattform =
+      (navigator as Navigator & { userAgentData?: { platform?: string } }).userAgentData?.platform ??
+      navigator.platform ??
+      navigator.userAgent;
+    const istApple = /mac|iphone|ipad|ipod/i.test(plattform);
+
+    for (const kbd of form.querySelectorAll<HTMLElement>('[data-kuerzel]')) {
+      kbd.textContent = istApple ? '⌘ + V' : (dialog?.dataset.strg ?? 'Ctrl + V');
+    }
+
+    function instagramOeffnen(url: string): void {
+      window.open(url, '_blank', 'noopener');
+    }
+
     form.querySelector<HTMLButtonElement>('[data-direkt="instagram"]')?.addEventListener('click', async (event) => {
       const knopf = event.currentTarget as HTMLButtonElement;
-      try {
-        await navigator.clipboard.writeText(nachricht());
-        if (kopiertEl) kopiertEl.hidden = false;
-      } catch {
-        // Ohne Zwischenablage-Recht (älterer Browser, kein HTTPS) bleibt der
-        // Hinweis aus — das Profil geht trotzdem auf.
+      const url = knopf.dataset.url ?? '';
+      const text = nachricht();
+
+      // Ohne Eingaben gibt es nichts einzufügen — dann direkt in den Chat,
+      // statt einen Dialog über eine leere Zwischenablage zu zeigen.
+      if (!text.trim()) {
+        instagramOeffnen(url);
+        return;
       }
-      window.open(knopf.dataset.url, '_blank', 'noopener');
+
+      let kopiert = false;
+      try {
+        await navigator.clipboard.writeText(text);
+        kopiert = true;
+      } catch {
+        // Kein Zwischenablage-Recht (älterer Browser, kein HTTPS).
+      }
+
+      // Ohne Dialog (sehr alter Browser) bleibt nur der direkte Weg.
+      if (!dialog) {
+        instagramOeffnen(url);
+        return;
+      }
+
+      // Der Dialog kommt in beiden Fällen — bestätigt wird immer, nur der
+      // Inhalt unterscheidet sich: kopiert oder zum Selbstkopieren.
+      const gelungen = dialog.querySelector<HTMLElement>('[data-einfuegen-gelungen]');
+      const manuell = dialog.querySelector<HTMLElement>('[data-einfuegen-manuell]');
+      const feld = dialog.querySelector<HTMLTextAreaElement>('[data-einfuegen-text]');
+
+      if (gelungen) gelungen.hidden = !kopiert;
+      if (manuell) manuell.hidden = kopiert;
+      if (feld && !kopiert) feld.value = text;
+      if (kopiertEl) kopiertEl.hidden = !kopiert;
+
+      dialog.dataset.ziel = url;
+      dialog.showModal();
+      if (feld && !kopiert) feld.select();
     });
+
+    dialog?.querySelector<HTMLButtonElement>('[data-einfuegen-ok]')?.addEventListener('click', () => {
+      const url = dialog.dataset.ziel ?? '';
+      dialog.close();
+      instagramOeffnen(url);
+    });
+
+    dialog?.querySelector<HTMLButtonElement>('[data-einfuegen-ab]')?.addEventListener('click', () => dialog.close());
 
     form.addEventListener('input', direktAktualisieren);
     form.addEventListener('change', direktAktualisieren);

@@ -13,6 +13,12 @@ export const site = {
   domain: 'kurazhblum.de', // TODO: echte Domain
   instagram: 'kurazhblum_berlin',
   instagramUrl: 'https://www.instagram.com/kurazhblum_berlin/',
+  /**
+   * Direktnachricht statt Profil. `ig.me/m/…` öffnet den Chat mit diesem
+   * Konto — in der App, wenn sie installiert ist, sonst im Browser. Das
+   * Profil zu öffnen hieße, noch zwei Klicks bis zum Nachrichtenfeld.
+   */
+  instagramDirectUrl: 'https://ig.me/m/kurazhblum_berlin',
 
   email: 'hallo@kurazhblum.de', // TODO: Gala legt noch eine eigene Adresse an
 

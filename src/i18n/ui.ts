@@ -191,6 +191,14 @@ export const ui = {
     'form.direct.hint':
       'Ihre Angaben von oben werden mitgenommen — Sie müssen nichts zweimal tippen. Bei Instagram lege ich den Text in die Zwischenablage, dort lässt sich eine Nachricht nicht vorausfüllen.',
     'form.direct.copied': 'Text kopiert — im Instagram-Chat einfügen.',
+    'form.direct.shortcut': 'Strg + V',
+    'form.direct.paste.title': 'Ihre Angaben sind kopiert',
+    'form.direct.paste.text':
+      'Instagram kann eine Nachricht nicht vorausfüllen. Ihre Angaben liegen in der Zwischenablage — öffnen Sie gleich den Chat und fügen Sie den Text mit {shortcut} ein.',
+    'form.direct.paste.mobile': 'Auf dem Handy: lange auf das Eingabefeld tippen und „Einfügen“ wählen.',
+    'form.direct.paste.manual': 'Das Kopieren hat Ihr Browser nicht erlaubt. Markieren Sie den Text unten und kopieren Sie ihn selbst — er ist schon ausgewählt.',
+    'form.direct.paste.ok': 'Weiter zu Instagram',
+    'form.direct.paste.cancel': 'Abbrechen',
     'form.sending': 'Wird gesendet …',
     'form.success': 'Danke! Ihre Anfrage ist angekommen. Ich melde mich innerhalb von 24 Stunden.',
     'form.error': 'Das hat leider nicht geklappt. Schreiben Sie mir gern direkt per E-Mail.',
@@ -504,6 +512,14 @@ export const ui = {
     'form.direct.hint':
       'Ваші дані згори переносяться — двічі друкувати не доведеться. Для Instagram я кладу текст у буфер обміну: там повідомлення не можна заповнити заздалегідь.',
     'form.direct.copied': 'Текст скопійовано — вставте його в чат Instagram.',
+    'form.direct.shortcut': 'Ctrl + V',
+    'form.direct.paste.title': 'Ваші дані скопійовано',
+    'form.direct.paste.text':
+      'Instagram не може заповнити повідомлення заздалегідь. Ваші дані в буфері обміну — зараз відкриється чат, вставте текст за допомогою {shortcut}.',
+    'form.direct.paste.mobile': 'На телефоні: утримуйте поле введення й оберіть «Вставити».',
+    'form.direct.paste.manual': 'Ваш браузер не дозволив копіювання. Виділіть текст нижче й скопіюйте його самі — він уже позначений.',
+    'form.direct.paste.ok': 'Далі до Instagram',
+    'form.direct.paste.cancel': 'Скасувати',
     'form.sending': 'Надсилаємо …',
     'form.success': 'Дякую! Ваш запит отримано. Відповім протягом 24 годин.',
     'form.error': 'На жаль, не вдалося. Напишіть мені, будь ласка, напряму на ел. пошту.',
@@ -808,6 +824,14 @@ export const ui = {
     'form.direct.hint':
       'Everything you filled in above comes along — no need to type it twice. For Instagram I put the text on your clipboard; a message there cannot be pre-filled.',
     'form.direct.copied': 'Text copied — paste it into the Instagram chat.',
+    'form.direct.shortcut': 'Ctrl + V',
+    'form.direct.paste.title': 'Your details are copied',
+    'form.direct.paste.text':
+      'Instagram cannot pre-fill a message. Your details are on the clipboard — the chat opens next, paste the text with {shortcut}.',
+    'form.direct.paste.mobile': 'On a phone: press and hold the input field and choose “Paste”.',
+    'form.direct.paste.manual': 'Your browser did not allow copying. Select the text below and copy it yourself — it is already selected.',
+    'form.direct.paste.ok': 'Continue to Instagram',
+    'form.direct.paste.cancel': 'Cancel',
     'form.sending': 'Sending …',
     'form.success': 'Thank you! Your enquiry arrived. I will get back to you within 24 hours.',
     'form.error': 'That did not work, sorry. Please email me directly.',
@@ -1112,6 +1136,14 @@ export const ui = {
     'form.direct.hint':
       'Ваши данные сверху переносятся — печатать дважды не нужно. Для Instagram я кладу текст в буфер обмена: там сообщение нельзя заполнить заранее.',
     'form.direct.copied': 'Текст скопирован — вставьте его в чат Instagram.',
+    'form.direct.shortcut': 'Ctrl + V',
+    'form.direct.paste.title': 'Ваши данные скопированы',
+    'form.direct.paste.text':
+      'Instagram не может заполнить сообщение заранее. Ваши данные в буфере обмена — сейчас откроется чат, вставьте текст с помощью {shortcut}.',
+    'form.direct.paste.mobile': 'На телефоне: удерживайте поле ввода и выберите «Вставить».',
+    'form.direct.paste.manual': 'Ваш браузер не разрешил копирование. Выделите текст ниже и скопируйте его сами — он уже выделен.',
+    'form.direct.paste.ok': 'Дальше в Instagram',
+    'form.direct.paste.cancel': 'Отменить',
     'form.sending': 'Отправляем …',
     'form.success': 'Спасибо! Ваш запрос получен. Отвечу в течение 24 часов.',
     'form.error': 'К сожалению, не получилось. Напишите мне, пожалуйста, напрямую на почту.',
