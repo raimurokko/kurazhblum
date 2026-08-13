@@ -333,9 +333,9 @@ graue Marke **„Bild folgt“** (`imagePending`) für Stellen, an denen noch ga
 keine Aufnahme existiert — dort wird bewusst auch kein `<img>` erzeugt, damit
 der Browser keine 404 holt.
 
-Die Kategoriekacheln Dopamin und Rosen stammen weiterhin aus Bildschirmfotos
-mit 1125 px. Sie tragen keine Marke mehr; wer sie ersetzen will, findet den
-Hinweis nur noch hier.
+Seit dem 14.08.2026 sind auch Dopamin und Rosen freigestellt — aus den
+hochauflösenden Originalen, nicht mehr aus den 1125-px-Bildschirmfotos. Alle
+vier Kategoriekacheln kommen damit aus derselben Verarbeitung.
 
 > **Endungen prüfen.** Die Fotoskripte schreiben `.webp`; frühere Zwischenstufen
 > waren `.png`. Zeigt eine Referenz auf die falsche Endung, verschwindet das
@@ -513,8 +513,6 @@ folgt“** statt eines Verweises ins Leere:
 - Instagram: Die sechs Kacheln zeigen vorläufig Aufnahmen aus dem Laufwerk und
   verlinken auf das Profil, nicht auf einzelne Beiträge. Sobald Gala eine eigene
   Auswahl exportiert, gehören die Bilder und die `permalink`-Adressen ersetzt.
-- Höher aufgelöste Kategoriekacheln für Dopamin und Rosen (bislang 1125 px,
-  ohne sichtbare Marke).
 - Fotos für Rosen pur und Mono-Hortensie. Beide tragen „Bild folgt“; im
   Laufwerk liegt für keinen von beiden etwas Passendes.
 - Bilder für Strauß, Designerverpackung und Vase im Konfigurator. Korb und

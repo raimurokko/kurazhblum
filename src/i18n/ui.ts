@@ -730,7 +730,7 @@ export const ui = {
     'home.hero.kicker': 'Floral atelier in Berlin',
     'home.hero.title': 'Flowers that create a moment.',
     'home.hero.text':
-      'Hand-tied bouquets, wedding florals and event styling — from a small Berlin atelier, with a Ukrainian hand.',
+      'Hand-tied bouquets, wedding florals and event styling — from a small Berlin atelier, with a Ukrainian touch.',
     'home.hero.cta': 'Choose a Bouquet',
     'home.hero.cta2': 'Event Decoration Request',
 
