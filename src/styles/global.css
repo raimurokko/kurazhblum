@@ -580,6 +580,17 @@ label {
   pointer-events: none;
 }
 
+/*
+  „Bild folgt“ — es gibt noch gar keine Aufnahme, nicht bloß eine zu kleine.
+  Ruhiger als die Platzhalter-Marke: Gold ist der Ruf nach Ersatz, dies hier
+  ist eine Zusage. Beides gleich laut zu setzen, hieße den Unterschied
+  einzuebnen, auf den es beim Aufräumen ankommt.
+*/
+.platzhalter-marke--folgt {
+  border-color: var(--line);
+  color: var(--cream-3);
+}
+
 /* Feld mit unpassender Eingabe. Nur die Kante färben — rote Schrift auf
    dunklem Grund fällt unter den Kontrastwert. */
 .input--fehler {

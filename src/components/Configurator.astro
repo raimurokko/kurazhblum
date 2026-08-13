@@ -6,6 +6,7 @@ import {
   EXTRAS,
   MIN_ORDER_DELIVERY,
   PRESENTATION_FROM,
+  PRESENTATION_IMAGE,
   PRESENTATION_SURCHARGE,
   formatPrice,
   imagesFor,
@@ -151,6 +152,19 @@ const minDate = tomorrow.toISOString().slice(0, 10);
               checked={index === 0}
               disabled={surchargeFor(presentation, startSize) === null}
             />
+            <span class="ph choice-bild">
+              {PRESENTATION_IMAGE[presentation] ? (
+                <img
+                  src={asset(PRESENTATION_IMAGE[presentation]!)}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  onerror="this.remove()"
+                />
+              ) : (
+                <span class="choice-folgt">{_('common.imagepending')}</span>
+              )}
+            </span>
             <span class="choice-title">{_(`cfg.presentation.${presentation}` as UiKey)}</span>
             <span class="choice-desc">{_(`cfg.presentation.${presentation}.desc` as UiKey)}</span>
             <span class="choice-price">{priceLabel(presentation, startSize)}</span>
@@ -375,6 +389,42 @@ const minDate = tomorrow.toISOString().slice(0, 10);
 
   .cfg-row .field {
     margin-bottom: 0;
+  }
+
+  /*
+     Quadratische Vorschau je Präsentationsform. Klein gehalten und in px
+     statt rem: Bei 150 % Textgröße wüchse sie sonst mit und schöbe die fünf
+     Formen bei 320 px aus der Zeile.
+  */
+  .choice-bild {
+    display: block;
+    position: relative;
+    aspect-ratio: 1;
+    width: 100%;
+    max-width: 96px;
+    margin-bottom: var(--space-2);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .choice-bild img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .choice-folgt {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 0 0.4em;
+    color: var(--cream-3);
+    font-size: 0.56rem;
+    letter-spacing: 0.12em;
+    text-align: center;
+    text-transform: uppercase;
+    opacity: 0.75;
   }
 
   .choice--inline {

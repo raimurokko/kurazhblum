@@ -40,6 +40,8 @@ export interface Category {
   image?: string;
   /** Vorläufige Aufnahme: blendet die sichtbare Platzhalter-Marke ein. */
   imagePlaceholder?: boolean;
+  /** Es gibt noch gar kein Foto — siehe `imagePending` beim Strauß. */
+  imagePending?: boolean;
 }
 
 export interface Bouquet {
@@ -85,6 +87,16 @@ export interface Bouquet {
    * markiert, damit niemand vergisst, es zu ersetzen.
    */
   imagePlaceholder?: boolean;
+  /**
+   * Es gibt noch **gar kein** Foto — nicht zu verwechseln mit
+   * `imagePlaceholder`, wo eines da ist, nur zu klein. Dann bleibt `images`
+   * leer, es wird kein `<img>` erzeugt (sonst holte der Browser bei jedem
+   * Aufruf eine 404), und auf der Kachel steht sichtbar „Bild folgt“.
+   *
+   * Absichtlich sichtbar statt still: Ein leerer Kasten sieht nach Fehler aus,
+   * eine Marke nach Zusage. Und niemand vergisst, das Foto nachzuliefern.
+   */
+  imagePending?: boolean;
   featured?: boolean;
   /** Nur in bestimmten Monaten (1–12) verfügbar; leer = ganzjährig. */
   season?: number[];
@@ -109,8 +121,27 @@ export const PRESENTATION_SURCHARGE: Record<
   bouquet: { m: 0, l: 1500, xl: 2000, fixed: 0 },
   premium: { m: 1500, l: 2500, xl: 3500, fixed: 1500 },
   basket: { m: 1500, l: 2000, xl: 3000, fixed: 1500 },
-  box: { m: 1500, l: 2000, xl: 3000, fixed: 1500 },
+  // Am 13.08.2026 um je 10 € angehoben: Die Hutschachtel ist im Einkauf
+  // teurer als der Korb und liegt jetzt durchgehend 10 € darüber, statt
+  // sich seinen Preis zu teilen.
+  box: { m: 2500, l: 3000, xl: 4000, fixed: 2500 },
   vase: { m: 2000, l: 4000, xl: null, fixed: 2000 },
+};
+
+/**
+ * Beispielfoto je Präsentationsform, freigestellt wie die Produktbilder.
+ *
+ * Bisher standen die fünf Formen nur als Text da — „Hutschachtel, mit
+ * Wasserquelle“ lässt jede sich etwas anderes vorstellen, und die Form kostet
+ * bis zu 40 € Aufpreis. Ein Bild beantwortet das, ein Satz nicht.
+ *
+ * Wo nichts steht, bleibt die Kachel leer und trägt sichtbar „Bild folgt“;
+ * wählbar ist die Form trotzdem. Nichts hier zu erfinden ist wichtiger als
+ * eine vollständige Reihe: Wer eine Vase abgebildet sieht, die er dann nicht
+ * bekommt, hat ein Versprechen bezahlt.
+ */
+export const PRESENTATION_IMAGE: Partial<Record<PresentationKey, string>> = {
+  box: '/images/presentations/hutschachtel.webp',
 };
 
 /**
@@ -311,6 +342,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     slug: 'pfingstrosen',
+    image: '/images/categories/pfingstrosen.webp',
     name: { de: 'Pfingstrosen', uk: 'Півонії', en: 'Peonies', ru: 'Пионы' },
     blurb: {
       de: 'Nur zur Saison — von Mai bis Anfang Juni.',
@@ -333,6 +365,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     slug: 'trocken',
+    imagePending: true,
     name: {
       de: 'Trockenblumen',
       uk: 'Сухоцвіти',
@@ -493,7 +526,8 @@ export const BOUQUETS: Bouquet[] = [
     category: 'rosen',
     priceOnRequest: true,
     presentations: ['bouquet', 'premium', 'box', 'vase'],
-    images: ['/images/products/rosen-pur.jpg'],
+    images: [],
+    imagePending: true,
     name: { de: 'Rosen pur', uk: 'Тільки троянди', en: 'Roses only', ru: 'Только розы' },
     blurb: {
       de: 'Eine Sorte, eine Farbe — zeitlose Klassik, nichts Überflüssiges.',
@@ -521,7 +555,6 @@ export const BOUQUETS: Bouquet[] = [
     priceOnRequest: true,
     presentations: ['bouquet', 'premium', 'box', 'vase'],
     images: ['/images/products/pfingstrosen-wolke.webp'],
-    imagePlaceholder: true,
     name: {
       de: 'Pfingstrosen',
       uk: 'Півонії',
@@ -552,7 +585,16 @@ export const BOUQUETS: Bouquet[] = [
     category: 'hortensien',
     priceOnRequest: true,
     presentations: ['bouquet', 'premium', 'basket', 'vase'],
-    images: ['/images/products/hortensie-solo.jpg'],
+    /*
+      ⚠️ TODO: Foto fehlt weiterhin — die Datei gibt es nicht, das Bild
+      verschwindet stillschweigend. Aus dem Laufwerk passt keine Aufnahme:
+      `hortensie-calla-blau.webp` liegt zwar freigestellt bereit, zeigt aber
+      eine blaue Hortensie mit Callas und Rittersporn. Das ist weder mono noch
+      eine der hier genannten Farben. Gebraucht wird eine reine Hortensie in
+      Weiß, Salbei oder Altrosa.
+    */
+    images: [],
+    imagePending: true,
     name: {
       de: 'Mono-Hortensie',
       uk: 'Моно-гортензія',
@@ -583,7 +625,8 @@ export const BOUQUETS: Bouquet[] = [
     category: 'trocken',
     priceOnRequest: true,
     presentations: ['bouquet', 'premium', 'box', 'vase'],
-    images: ['/images/products/trocken-atelier.jpg'],
+    images: [],
+    imagePending: true,
     name: {
       de: 'Trockenblumen',
       uk: 'Сухоцвіти',

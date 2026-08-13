@@ -11,9 +11,35 @@ export interface WorkshopFormat {
   location: I18nText;
   /** Preis pro Person; fehlt er, ist das Format nur auf Anfrage buchbar. */
   price?: Cents;
+  /**
+   * Gesamtpreis nach Personenzahl, wo die Stunde geteilt werden kann. Der
+   * Betrag ist die **Summe für die ganze Gruppe**, nicht der Anteil je Person —
+   * beim Einzelunterricht steigt er degressiv, weil Gala dieselbe Stunde hält.
+   *
+   * Die Stufenbezeichnung steht als Text daneben, statt zur Laufzeit gebildet
+   * zu werden: Ukrainisch und Russisch beugen das Zählwort nach der Zahl
+   * („1 человек“, „2 человека“), und eine Pluralregel im Code wäre für drei
+   * feste Stufen viel Apparat für wenig Nutzen.
+   *
+   * Wo eine Staffel steht, zeigt die Seite sie statt des Einzelpreises.
+   */
+  priceScale?: { label: I18nText; price: Cents }[];
   /** Nur-Anfrage-Formate (Firmen, mobile Workshops) haben keinen Festpreis. */
   inquiryOnly?: boolean;
   image?: string;
+  /**
+   * Stumme Videoschleife statt Standbild. Wo sie steht, tritt sie an die
+   * Stelle des Fotos — bei einem Kurs beantwortet Bewegung die eigentliche
+   * Frage („was mache ich da?“) besser als jedes Standbild.
+   */
+  video?: { src: string; poster: string; duration: string };
+  /**
+   * Es gibt noch kein Foto. Dann bleibt `image` leer, es wird kein `<img>`
+   * erzeugt, und auf der Kachel steht sichtbar „Bild folgt“. Vorher standen
+   * hier vier `.jpg`-Verweise auf Dateien, die es nie gab — vier stille 404
+   * je Seitenaufruf.
+   */
+  imagePending?: boolean;
 }
 
 export interface WorkshopDate {
@@ -29,7 +55,7 @@ export const WORKSHOP_FORMATS: WorkshopFormat[] = [
   {
     slug: 'basics',
     price: 8500,
-    image: '/images/workshops/basics.jpg',
+    video: { src: '/videos/grundkurs.mp4', poster: '/videos/grundkurs.jpg', duration: 'PT8S' },
     name: {
       de: 'Grundkurs: Strauß binden',
       uk: 'Базовий курс: збирання букета',
@@ -86,7 +112,7 @@ export const WORKSHOP_FORMATS: WorkshopFormat[] = [
     // den Anlass, der Beschreibungstext den Junggesellinnenabschied.
     slug: 'freundinnen',
     price: 8500,
-    image: '/images/workshops/freundinnen.jpg',
+    imagePending: true,
     name: {
       de: 'Blumenabend für Freundinnen',
       uk: 'Квітковий вечір для подруг',
@@ -137,14 +163,30 @@ export const WORKSHOP_FORMATS: WorkshopFormat[] = [
   {
     slug: 'privat',
     /*
-      ⚠️ TODO: Der Betrag ist unverändert, seine Bedeutung nicht. Bisher galten
-      249 € für bis zu zwei Personen; Gala schreibt jetzt „цена указана за
-      человека“ — also pro Person. Damit kostet dieselbe Stunde zu zweit das
-      Doppelte. Einen neuen Betrag hat sie nicht genannt, und einen zu erfinden
-      wäre falsch. Vor dem Livegang bestätigen lassen.
+      Am 13.08.2026 entschieden: 249 € gelten für eine Person, jede weitere
+      kostet weniger. Damit ist die Frage beantwortet, die Galas Satz
+      „цена указана за человека“ aufgeworfen hatte — pro Person genommen hätte
+      dieselbe Stunde zu zweit das Doppelte gekostet.
+
+      Die 249 € sind Galas Zahl. Die beiden Stufen darüber (429 € / 579 €) sind
+      im Projekt festgelegt und bei ihr noch gegenzuzeichnen.
     */
     price: 24900,
-    image: '/images/workshops/privat.jpg',
+    priceScale: [
+      {
+        label: { de: '1 Person', uk: '1 особа', en: '1 person', ru: '1 человек' },
+        price: 24900,
+      },
+      {
+        label: { de: '2 Personen', uk: '2 особи', en: '2 people', ru: '2 человека' },
+        price: 42900,
+      },
+      {
+        label: { de: '3 Personen', uk: '3 особи', en: '3 people', ru: '3 человека' },
+        price: 57900,
+      },
+    ],
+    imagePending: true,
     name: {
       de: 'Einzelunterricht',
       uk: 'Індивідуальне заняття',
@@ -158,10 +200,10 @@ export const WORKSHOP_FORMATS: WorkshopFormat[] = [
       ru: 'Два часа только для вас, тема на ваш выбор.',
     },
     description: {
-      de: 'Zwei Stunden nur für Sie — wenn Ihnen Unterricht unter vier Augen mehr liegt als eine Gruppe. Ein Einzelkurs für Anfängerinnen und Anfänger, auf eine bestimmte Technik zugeschnitten, nach Ihrer Anfrage und Ihrem Ziel. Auf Wunsch halte ich die Stunde auch zu zweit; der Preis gilt pro Person.',
-      uk: 'Дві години лише для вас — якщо формат навчання один на один підходить вам більше, ніж група. Індивідуальний курс для початківців на конкретну техніку, під ваш запит і вашу мету. За бажанням проведу заняття і для двох; ціна вказана за людину.',
-      en: 'Two hours for you alone — if one-to-one teaching suits you better than a group. An individual course for beginners, built around a specific technique, your request and your goal. On request I hold the session for two; the price is per person.',
-      ru: 'Два часа только для вас — если вам больше подходит формат обучения один на один, чем в группе. Индивидуальный курс для новичков на конкретную технику, под индивидуальный запрос и цель. Могу провести занятие для двоих по вашему желанию, цена указана за человека.',
+      de: 'Zwei Stunden nur für Sie — wenn Ihnen Unterricht unter vier Augen mehr liegt als eine Gruppe. Ein Einzelkurs für Anfängerinnen und Anfänger, auf eine bestimmte Technik zugeschnitten, nach Ihrer Anfrage und Ihrem Ziel. Auf Wunsch halte ich die Stunde zu zweit oder zu dritt; jede weitere Person kostet dann weniger.',
+      uk: 'Дві години лише для вас — якщо формат навчання один на один підходить вам більше, ніж група. Індивідуальний курс для початківців на конкретну техніку, під ваш запит і вашу мету. За бажанням проведу заняття для двох або трьох; кожна наступна особа коштує дешевше.',
+      en: 'Two hours for you alone — if one-to-one teaching suits you better than a group. An individual course for beginners, built around a specific technique, your request and your goal. On request I hold the session for two or three; each further person costs less.',
+      ru: 'Два часа только для вас — если вам больше подходит формат обучения один на один, чем в группе. Индивидуальный курс для новичков на конкретную технику, под индивидуальный запрос и цель. По желанию проведу занятие для двоих или троих; каждый следующий участник стоит дешевле.',
     },
     included: [
       {
@@ -171,10 +213,10 @@ export const WORKSHOP_FORMATS: WorkshopFormat[] = [
         ru: 'Тема и цветы по договорённости',
       },
       {
-        de: 'Preis pro Person, auch zu zweit möglich',
-        uk: 'Ціна за людину, можливо і вдвох',
-        en: 'Price per person, also possible for two',
-        ru: 'Цена за человека, возможно и вдвоём',
+        de: 'Auch zu zweit oder zu dritt — jede weitere Person günstiger',
+        uk: 'Можна вдвох або втрьох — кожна наступна особа дешевше',
+        en: 'Also for two or three — each further person costs less',
+        ru: 'Можно вдвоём или втроём — каждый следующий дешевле',
       },
       {
         de: 'Termin flexibel, auch abends',
@@ -189,7 +231,7 @@ export const WORKSHOP_FORMATS: WorkshopFormat[] = [
   {
     slug: 'mobil',
     inquiryOnly: true,
-    image: '/images/workshops/mobil.jpg',
+    imagePending: true,
     // „Bei Ihnen“ klang, als käme Gala zu jemandem nach Hause. Sie kommt zur
     // Veranstaltung — der Titel sagt das jetzt.
     name: {

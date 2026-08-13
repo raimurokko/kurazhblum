@@ -64,15 +64,22 @@ const featured = BOUQUETS.filter((b) => b.featured).slice(0, 4);
                   class:list={['ph', 'cat-ph', category.image && 'cat-ph--frei']}
                   data-label={t(category.name, lang)}
                 >
-                  <img
-                    src={asset(category.image ?? `/images/categories/${category.slug}.jpg`)}
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                    onerror="this.remove()"
-                  />
+                  {category.image && (
+                    <img
+                      src={asset(category.image)}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      onerror="this.remove()"
+                    />
+                  )}
                   {category.imagePlaceholder && (
                     <span class="platzhalter-marke">{_('common.placeholder')}</span>
+                  )}
+                  {category.imagePending && (
+                    <span class="platzhalter-marke platzhalter-marke--folgt">
+                      {_('common.imagepending')}
+                    </span>
                   )}
                 </div>
                 <h3 class="cat-name">{t(category.name, lang)}</h3>
@@ -108,7 +115,6 @@ const featured = BOUQUETS.filter((b) => b.featured).slice(0, 4);
     <div class="wrap split-inner">
       <div class="ph split-media" data-label={_('home.weddings.kicker')}>
         <img src={asset('/images/weddings/hero.webp')} alt="" loading="lazy" decoding="async" onerror="this.remove()" />
-        <span class="platzhalter-marke">{_('common.placeholder')}</span>
       </div>
       <div>
         <span class="kicker">{_('home.weddings.kicker')}</span>
@@ -124,7 +130,6 @@ const featured = BOUQUETS.filter((b) => b.featured).slice(0, 4);
     <div class="wrap split-inner split-inner--reverse">
       <div class="ph split-media split-media--frei" data-label={_('home.workshops.kicker')}>
         <img src={asset('/images/workshops/teaser.webp')} alt="" loading="lazy" decoding="async" onerror="this.remove()" />
-        <span class="platzhalter-marke">{_('common.placeholder')}</span>
       </div>
       <div>
         <span class="kicker">{_('home.workshops.kicker')}</span>

@@ -1,7 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import InstagramGrid from '../../components/InstagramGrid.astro';
-import { asset, localePaths, path, t, type I18nText, type Locale } from '../../i18n/config';
+import LoopVideo from '../../components/LoopVideo.astro';
+import { localePaths, path, t, type I18nText, type Locale } from '../../i18n/config';
 import { useTranslations } from '../../i18n/ui';
 import { site } from '../../data/site';
 
@@ -96,8 +97,22 @@ const facts: { label: I18nText; value: I18nText }[] = [
       </div>
 
       <figure class="about-figure">
+        {/*
+          Statt eines Porträts die Arbeit selbst. Das ist kein Notbehelf: Diese
+          Seite beschreibt bewusst nur die Arbeitsweise, weil Galas Geschichte
+          nicht erfunden wurde — ein Video der Hände am Werktisch zeigt genau
+          das und nimmt ihr die Entscheidung nicht ab, ob ihr Gesicht auf die
+          Website kommt.
+        */}
         <div class="ph about-ph" data-label={site.nameFull}>
-          <img src={asset("/images/atelier/portrait.jpg")} alt="" loading="lazy" decoding="async" onerror="this.remove()" />
+          <LoopVideo
+            src="/videos/atelier.mp4"
+            poster="/videos/atelier.jpg"
+            name={_('video.atelier.name')}
+            description={_('video.atelier.desc')}
+            uploadDate="2026-08-13"
+            duration="PT6S"
+          />
         </div>
       </figure>
     </div>

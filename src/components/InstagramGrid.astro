@@ -31,7 +31,11 @@ const _ = useTranslations(lang);
           <li>
             <a href={post.permalink} target="_blank" rel="noopener" class="ig-item">
               <div class="ph ig-ph" data-label={`@${site.instagram}`}>
-                <img src={asset(post.image)} alt={t(post.alt, lang)} loading="lazy" decoding="async" onerror="this.remove()" />
+                {post.image ? (
+                  <img src={asset(post.image)} alt={t(post.alt, lang)} loading="lazy" decoding="async" onerror="this.remove()" />
+                ) : (
+                  <span class="platzhalter-marke platzhalter-marke--folgt">{_('common.imagepending')}</span>
+                )}
               </div>
               {post.isReel && (
                 <span class="ig-reel" aria-hidden="true">

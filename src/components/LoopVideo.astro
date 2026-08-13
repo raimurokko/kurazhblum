@@ -1,0 +1,150 @@
+---
+/**
+ * Stumme Videoschleife mit Posterbild.
+ *
+ * Warum selbst gehostet und nicht eingebettet: Ein YouTube- oder Vimeo-Rahmen
+ * öffnet beim Seitenaufruf eine Verbindung zu Google oder Meta. Das bricht die
+ * Entscheidung, auf der diese Website steht — selbst gehostete Schriften,
+ * lokale Bilder, kein Cookie-Banner —, und würde das Banner nachträglich
+ * nötig machen.
+ *
+ * Drei Dinge, die hier nicht verhandelbar sind:
+ *
+ * 1. **`autoplay` steht nicht im Markup.** Es wird erst per Skript gesetzt,
+ *    und nur wenn weder `prefers-reduced-motion` noch die Klasse
+ *    `a11y-motion` gesetzt ist. Die CSS-Regel in `a11y.css` deckelt bloß
+ *    Animationen und Übergänge — ein `<video autoplay>` liefe davon
+ *    unbeeindruckt weiter. Dieselbe Falle wie `behavior: 'smooth'`.
+ * 2. **`preload="none"` und Posterbild.** Das Poster ist der sichtbare
+ *    Erstinhalt; das Video lädt erst, wenn es wirklich abgespielt wird. Ein
+ *    Video, das den Largest Contentful Paint stellt, kostet Rangplätze.
+ * 3. **Keine Tonspur.** Sie wird beim Aufbereiten entfernt — das halbiert das
+ *    Gewicht, erspart Untertitel und ist ohnehin die einzige Form von
+ *    Autoplay, die Browser zulassen.
+ *
+ * Der `VideoObject`-Block macht das Video für Suchmaschinen überhaupt erst
+ * sichtbar. Für Antwortmaschinen zählt er wenig — die lesen `description`,
+ * nicht das Bild. Deshalb gehört dort ein Satz hin, der eine echte Frage
+ * beantwortet, kein Schlagwort.
+ */
+import { asset } from '../i18n/config';
+
+interface Props {
+  src: string;
+  poster: string;
+  /** Kurzname des Videos für die strukturierten Daten. */
+  name: string;
+  /** Ein Satz, der beschreibt, was zu sehen ist — der eigentliche SEO-Anteil. */
+  description: string;
+  /** ISO-Datum der Aufnahme bzw. Veröffentlichung. */
+  uploadDate: string;
+  /** Dauer nach ISO 8601, z. B. `PT8S`. */
+  duration: string;
+  class?: string;
+}
+
+const { src, poster, name, description, uploadDate, duration, class: klasse } = Astro.props;
+
+const videoUrl = new URL(asset(src), Astro.site).href;
+const posterUrl = new URL(asset(poster), Astro.site).href;
+
+const videoJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoObject',
+  name,
+  description,
+  uploadDate,
+  duration,
+  thumbnailUrl: posterUrl,
+  contentUrl: videoUrl,
+};
+---
+
+<video
+  class:list={['loopvideo', klasse]}
+  src={asset(src)}
+  poster={asset(poster)}
+  preload="none"
+  muted
+  loop
+  playsinline
+  aria-label={description}
+></video>
+
+<script type="application/ld+json" is:inline set:html={JSON.stringify(videoJsonLd)} />
+
+<script>
+  /*
+    Erst hier entscheidet sich, ob überhaupt etwas läuft. Beide Quellen zählen:
+    die Systemeinstellung und der Schalter im Barrierefreiheits-Panel. Ist eine
+    von beiden gesetzt, bleibt das Posterbild stehen — es ist dann kein
+    Notbehelf, sondern das Bild.
+  */
+  function ruhe(): boolean {
+    return (
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      document.documentElement.classList.contains('a11y-motion')
+    );
+  }
+
+  const videos = [...document.querySelectorAll<HTMLVideoElement>('.loopvideo')];
+
+  function anwenden(): void {
+    for (const video of videos) {
+      if (ruhe()) {
+        video.pause();
+        video.removeAttribute('autoplay');
+        continue;
+      }
+      // Erst laden, wenn das Video auch zu sehen ist — sonst holt jede Seite
+      // anderthalb Megabyte für etwas, das unter dem Falz liegt.
+      if (!video.dataset.sichtbar) continue;
+      video.play().catch(() => {
+        /* Der Browser darf ablehnen (Datensparmodus, Akku). Poster bleibt. */
+      });
+    }
+  }
+
+  const beobachter = new IntersectionObserver(
+    (eintraege) => {
+      for (const eintrag of eintraege) {
+        const video = eintrag.target as HTMLVideoElement;
+        if (eintrag.isIntersecting) {
+          video.dataset.sichtbar = 'ja';
+        } else {
+          delete video.dataset.sichtbar;
+          video.pause();
+        }
+      }
+      anwenden();
+    },
+    { rootMargin: '200px' },
+  );
+
+  for (const video of videos) beobachter.observe(video);
+
+  // Der Schalter im Panel wirkt sofort, nicht erst beim nächsten Aufruf.
+  new MutationObserver(anwenden).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class'],
+  });
+  window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', anwenden);
+</script>
+
+<style>
+  /*
+     Absolut im `.ph`-Kasten, genau wie die Bilder dort. Mit bloßem
+     `height: 100%` löst die Höhe nicht gegen die `aspect-ratio`-Fläche auf:
+     Das Video behielte sein eigenes Hochformat, würde 250 px höher als sein
+     Container und säße oben statt mittig. `overflow: hidden` am Elternteil
+     verdeckt das — der Ausschnitt wäre trotzdem der falsche.
+  */
+  .loopvideo {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>

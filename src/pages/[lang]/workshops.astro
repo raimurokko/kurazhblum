@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import InquiryForm from '../../components/InquiryForm.astro';
+import LoopVideo from '../../components/LoopVideo.astro';
 import { asset, localePaths, t, type Locale } from '../../i18n/config';
 import { useTranslations } from '../../i18n/ui';
 import { formatPrice } from '../../data/shop';
@@ -99,13 +100,30 @@ const dates = upcomingDates().map((entry) => ({
           WORKSHOP_FORMATS.map((format) => (
             <article class="panel format">
               <div class="ph format-ph" data-label={t(format.name, lang)}>
-                <img
-                  src={format.image ? asset(format.image) : undefined}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                  onerror="this.remove()"
-                />
+                {format.video && (
+                  <LoopVideo
+                    src={format.video.src}
+                    poster={format.video.poster}
+                    name={_('video.grundkurs.name')}
+                    description={_('video.grundkurs.desc')}
+                    uploadDate="2026-08-13"
+                    duration={format.video.duration}
+                  />
+                )}
+                {format.image && (
+                  <img
+                    src={asset(format.image)}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    onerror="this.remove()"
+                  />
+                )}
+                {format.imagePending && (
+                  <span class="platzhalter-marke platzhalter-marke--folgt">
+                    {_('common.imagepending')}
+                  </span>
+                )}
               </div>
               <h3>{t(format.name, lang)}</h3>
               <p class="muted">{t(format.description, lang)}</p>
@@ -119,12 +137,32 @@ const dates = upcomingDates().map((entry) => ({
                   <dt>{_('workshops.location')}</dt>
                   <dd>{t(format.location, lang)}</dd>
                 </div>
-                {format.price && (
-                  <div>
-                    <dt>{_('workshops.perperson')}</dt>
-                    <dd>{formatPrice(format.price, lang)}</dd>
-                  </div>
-                )}
+                {
+                  /*
+                    Wo eine Staffel steht, tritt sie an die Stelle des
+                    Einzelpreises: „pro Person“ wäre daneben falsch — die
+                    Beträge gelten für die ganze Gruppe.
+                  */
+                  format.priceScale ? (
+                    <div>
+                      <dt>{_('workshops.price')}</dt>
+                      <dd>
+                        <ul class="price-scale">
+                          {format.priceScale.map((step) => (
+                            <li>
+                              {t(step.label, lang)} — {formatPrice(step.price, lang)}
+                            </li>
+                          ))}
+                        </ul>
+                      </dd>
+                    </div>
+                  ) : format.price ? (
+                    <div>
+                      <dt>{_('workshops.perperson')}</dt>
+                      <dd>{formatPrice(format.price, lang)}</dd>
+                    </div>
+                  ) : null
+                }
               </dl>
 
               <p class="field-label format-inc">{_('workshops.included')}</p>
@@ -253,6 +291,16 @@ const dates = upcomingDates().map((entry) => ({
   .format-meta dd {
     margin: 0;
     text-align: right;
+  }
+
+  /* Jede Stufe auf einer eigenen Zeile — nebeneinander bricht die Staffel
+     bei 320 px und 150 % Textgröße aus der Karte. */
+  .price-scale {
+    list-style: none;
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0;
   }
 
   .format-inc {

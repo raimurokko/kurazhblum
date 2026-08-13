@@ -57,7 +57,9 @@ const productJsonLd = {
   '@type': 'Product',
   name,
   description: t(bouquet.description, lang),
-  image: new URL(asset(bouquet.images[0]), Astro.site).href,
+  // Ohne Foto lieber gar kein `image` als eines, das es nicht gibt:
+  // Ein toter Verweis in den strukturierten Daten ist schlechter als keiner.
+  image: bouquet.images[0] ? new URL(asset(bouquet.images[0]), Astro.site).href : undefined,
   brand: { '@type': 'Brand', name: 'KURAZHBLUM' },
   offers: bouquet.priceOnRequest
     ? undefined
@@ -78,7 +80,13 @@ const productJsonLd = {
 };
 ---
 
-<BaseLayout lang={lang} title={name} description={blurb} route={`shop/${bouquet.slug}`} image={bouquet.images[0]}>
+<BaseLayout
+  lang={lang}
+  title={name}
+  description={blurb}
+  route={`shop/${bouquet.slug}`}
+  image={bouquet.images[0]}
+>
   <section class="section">
     <div class="wrap">
       <p class="crumb">
@@ -88,17 +96,22 @@ const productJsonLd = {
       <div class="detail">
         <div class="detail-media">
           <div class="ph detail-ph" data-label={name}>
-            <img
-              data-product-image
-              src={asset(bouquet.images[0])}
-              alt={name}
-              width="1000"
-              height="1250"
-              fetchpriority="high"
-              decoding="async"
-              onerror="this.remove()"
-            />
+            {bouquet.images[0] && (
+              <img
+                data-product-image
+                src={asset(bouquet.images[0])}
+                alt={name}
+                width="1000"
+                height="1250"
+                fetchpriority="high"
+                decoding="async"
+                onerror="this.remove()"
+              />
+            )}
             {bouquet.imagePlaceholder && <span class="platzhalter-marke">{_('common.placeholder')}</span>}
+            {bouquet.imagePending && (
+              <span class="platzhalter-marke platzhalter-marke--folgt">{_('common.imagepending')}</span>
+            )}
           </div>
 
           {

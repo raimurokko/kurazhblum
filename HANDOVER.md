@@ -10,7 +10,7 @@ fürs Weiterarbeiten in `AGENTS.md`.
 
 | | |
 | :--- | :--- |
-| Stand | Commit `53c1623`, 13.08.2026 |
+| Stand | Commit `55820c2`, 13.08.2026 |
 | Repository | <https://github.com/raimurokko/kurazhblum> |
 | Vorschau | <https://raimurokko.github.io/kurazhblum/> |
 | Umfang | 113 Seiten, 4 Sprachen, 8 Sträuße, 283 Textschlüssel je Sprache, 47 Quelldateien |
@@ -32,8 +32,8 @@ Entwicklungsarbeit.
 | Stammdaten, WhatsApp, Impressum | fertig | Halyna Zharuk, Storkower Straße, § 19 UStG |
 | Barrierefreiheit | fertig | Panel, Erklärung, geprüft bei 320 px und 150 % |
 | Veröffentlichung auf GitHub Pages | fertig | Baut bei jedem Push automatisch |
-| Produktfotos | teilweise | 4 Sträuße und 3 Kategorien bebildert, 4 Fotos vorläufig markiert |
-| Preise | teilweise | Größen, Verpackung, Zonen und Fenster bestätigt; drei Lücken siehe § 12 |
+| Produktfotos | teilweise | 6 Sträuße und 4 Kategorien bebildert; wo nichts da ist, steht sichtbar „Bild folgt“ |
+| Preise | teilweise | Größen, Verpackung, Zonen und Fenster bestätigt; eine Lücke siehe § 12 |
 | Stripe-Zugang | **offen** | Ohne Schlüssel keine Kasse — der Rest der Website läuft |
 | Rechtstexte | **ungeprüft** | Entwürfe mit sichtbaren Lücken, anwaltlich prüfen lassen |
 | Domain und E-Mail | **offen** | Gala legt beides noch an |
@@ -66,13 +66,14 @@ In dieser Reihenfolge. Nur die ersten beiden blockieren den Verkauf.
    Galas aktuelle — sie schafft sich eine eigene Geschäftsnummer an, dann sind
    `phone`, `phoneHref` und `whatsapp` gemeinsam zu ändern.
 
-4. **Drei Preisangaben bestätigen lassen** — siehe § 12. Sie stehen im Code als
-   TODO markiert, weil sie geraten wären, wenn niemand fragt.
+4. **Preisangaben gegenzeichnen lassen** — siehe § 12. Einzelunterricht und
+   Hutschachtel sind entschieden, gehen aber über Galas eigene Angaben hinaus.
+   Offen bleiben die Einzelpreise für Bogen, Tischgestaltung und Fotozone.
 
-5. **Fotos ersetzen.** Vier Aufnahmen sind sichtbar als „Platzhalter“ markiert
-   (nur 1125 px). Es fehlen ganz: zwei Kategoriekacheln, das Atelierporträt,
-   sechs Instagram-Bilder, vier Workshop-Fotos, drei Saisonbeispiele und ein
-   zweites Hochzeitsmotiv.
+5. **Fotos nachliefern.** Nichts davon blockiert den Verkauf, alles ist auf der
+   Seite sichtbar markiert: „Platzhalter“ in Gold, wo eine Aufnahme zu klein
+   ist, „Bild folgt“ in Grau, wo noch keine da ist. Die vollständige Liste
+   steht in § 12.
 
 6. **Galas Geschichte schreiben.** Die Atelier-Seite beschreibt bewusst nur die
    Arbeitsweise. Der eigene Werdegang wurde nicht erfunden.
@@ -235,7 +236,7 @@ Browser wie serverseitig.
 | Strauß | gratis | + 15 € | + 20 € |
 | Designerverpackung | + 15 € | + 25 € | + 35 € |
 | Korb | ab 15 € | ab 20 € | ab 30 € |
-| Hutschachtel | ab 15 € | ab 20 € | ab 30 € |
+| Hutschachtel | ab 25 € | ab 30 € | ab 40 € |
 | Vase | ab 20 € | ab 40 € | — |
 
 Korb, Schachtel und Vase sind **Ab-Preise** (`PRESENTATION_FROM`): Das Gefäß
@@ -449,20 +450,26 @@ wenn niemand sie kennt.
 
 ## 12. Offene Fragen an Gala
 
-**Diese drei kosten Geld, wenn sie falsch stehen.** Sie sind im Code als TODO
-markiert, damit sie niemand für bestätigt hält:
+Am 13.08.2026 entschieden — Gala sollte beides noch gegenzeichnen, weil die
+Beträge über ihren eigenen Angaben hinausgehen:
 
-- **Einzelunterricht: 249 € gelten jetzt pro Person.** Bisher war das der Preis
-  für bis zu zwei Personen; Gala schreibt „цена указана за человека“. Der
-  Betrag ist unverändert, seine Bedeutung nicht — zu zweit kostet dieselbe
-  Stunde damit das Doppelte. Einen neuen Betrag hat sie nicht genannt.
+- **Einzelunterricht: 249 € für eine Person, danach degressiv** — 429 € zu
+  zweit, 579 € zu dritt. Damit ist Galas Satz „цена указана за человека“
+  aufgelöst: Pro Person genommen hätte dieselbe Stunde zu zweit das Doppelte
+  gekostet. Die 249 € sind ihre Zahl, die beiden Stufen darüber nicht.
+- **Hutschachtel: je Größe 10 € mehr** — ab 25 / 30 / 40 €. Sie liegt damit
+  durchgehend 10 € über dem Korb, statt sich seinen Preis zu teilen.
+- **Höchstwert statt Summe im Anfrageformular: bestätigt.** Die Rechenart
+  bleibt, auch wenn Gala später Einzelpreise nennt.
+
+**Offen, weil nur Gala es sagen kann:**
+
 - **Einzelpreise für Bogen, Tischgestaltung und Fotozone.** Das Anfrageformular
   koppelt das Budget an die gewählten Leistungen und rechnet dafür mit dem
-  **Höchstwert** der Untergrenzen, nicht mit ihrer Summe — was ein Bogen
-  zusätzlich zur Tischgestaltung kostet, hat sie nie gesagt, und es zu addieren
-  wäre eine erfundene Zahl.
-- **Hutschachtel bei L und XL.** Auf Ansage wie der Korb gesetzt (20 / 30 €),
-  von Gala nicht bestätigt.
+  **Höchstwert** der Untergrenzen — was ein Bogen zusätzlich zur
+  Tischgestaltung kostet, hat sie nie gesagt, und es zu addieren wäre eine
+  erfundene Zahl. Sobald die echten Beträge vorliegen, gehören sie nach
+  `LEISTUNG_MINDESTBUDGET`; die Rechenart bleibt davon unberührt.
 
 **Angaben, die noch fehlen:**
 
@@ -472,14 +479,32 @@ markiert, damit sie niemand für bestätigt hält:
 - Sitzplatzzahlen der Workshops (acht ist geschätzt)
 - Ihre eigene Geschichte für die Atelier-Seite
 
-**Fotos:**
+**Fotos** — Stand 13.08.2026, nach dem Durchgang durch Galas Laufwerk:
 
-- Höher aufgelöste Aufnahmen für die vier markierten Platzhalter
-- Kategoriekacheln für Pfingstrosen und Trockenblumen
-- Atelierporträt, Instagram-Auswahl, vier Workshop-Fotos
-- Produktfotos für Rosen pur, Mono-Hortensie, Trockenblumen
-- Ein zweites Hochzeitsmotiv — derzeit läuft dasselbe Foto auf Startseite und
-  Veranstaltungsseite
+Neu eingesetzt sind Pfingstrosen (Produkt und Kategoriekachel), der
+Hochzeits-Hero mit der Trauung am See, der Workshop-Teaser und ein Foto der
+Hutschachtel im Konfigurator. Alles Übrige trägt jetzt die Marke **„Bild
+folgt“** statt eines Verweises ins Leere:
+
+- Produktfotos für Rosen pur, Mono-Hortensie, Trockenblumen. Im Laufwerk liegt
+  nichts Passendes — die einzige Hortensienaufnahme ist blau und mit Callas
+  gemischt, das Produkt verlangt eine reine in Weiß, Salbei oder Altrosa.
+- Vier Workshop-Fotos, je eines pro Format. Die vorhandenen Aufnahmen stammen
+  alle aus derselben Session; sie auf vier Formate zu verteilen hieße, vier
+  verschiedene Kurse mit demselben Tisch zu bebildern.
+- Atelierporträt. Es gibt nur ein Video, in dem eine Person zu sehen ist — ob
+  ihr Gesicht auf die Website kommt, entscheidet Gala.
+- Instagram-Auswahl, sechs Bilder.
+- Höher aufgelöste Kategoriekacheln für Dopamin, Rosen und Hortensien; diese
+  drei tragen weiterhin die Platzhalter-Marke.
+- Bilder für Strauß, Designerverpackung, Korb und Vase im Konfigurator.
+- Ein zweites Hochzeitsmotiv sowie Tischgestaltung im Saal. Material dafür
+  liegt bereit (`hochzeit-bogen-seitlich-2022`, `tisch-saal-1941`), es fehlt
+  aber der Platz im Markup — beide Seiten haben je nur eine Bildfläche.
+
+> **Zwei Marken, zwei Bedeutungen.** „Platzhalter“ in Gold heißt: Ein Foto ist
+> da, aber zu klein. „Bild folgt“ in Grau heißt: Es gibt noch keins. Wer beides
+> gleich behandelt, verliert den Unterschied, auf den es beim Aufräumen ankommt.
 
 **Offene Baustellen im Code:**
 

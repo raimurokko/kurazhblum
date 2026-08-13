@@ -12,14 +12,19 @@ const { lang, bouquet } = Astro.props;
 const _ = useTranslations(lang);
 const name = t(bouquet.name, lang);
 const href = path(lang, 'shop', bouquet.slug);
-const image = asset(bouquet.images[0]);
+// Ohne Foto kein `<img>`: Ein Verweis ins Leere holt bei jedem Aufruf eine
+// 404, und `onerror` räumt sie nur optisch weg.
+const image = bouquet.images[0] ? asset(bouquet.images[0]) : undefined;
 ---
 
 <article class="product">
   <a class="product-media" href={href} tabindex="-1" aria-hidden="true">
     <div class="ph product-ph" data-label={name}>
-      <img src={image} alt="" loading="lazy" decoding="async" onerror="this.remove()" />
+      {image && <img src={image} alt="" loading="lazy" decoding="async" onerror="this.remove()" />}
       {bouquet.imagePlaceholder && <span class="platzhalter-marke">{_('common.placeholder')}</span>}
+      {bouquet.imagePending && (
+        <span class="platzhalter-marke platzhalter-marke--folgt">{_('common.imagepending')}</span>
+      )}
     </div>
   </a>
 

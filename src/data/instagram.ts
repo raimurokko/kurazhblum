@@ -18,7 +18,12 @@ import type { I18nText } from '../i18n/config';
 export interface InstagramPost {
   id: string;
   permalink: string;
-  image: string;
+  /**
+   * Fehlt das Bild, zeigt die Kachel „Bild folgt“ statt einen Verweis ins
+   * Leere abzusetzen. Die sechs Beiträge sind bislang Beispiele — die echte
+   * Auswahl exportiert Gala aus Instagram.
+   */
+  image?: string;
   alt: I18nText;
   isReel?: boolean;
 }
@@ -27,7 +32,6 @@ export const INSTAGRAM_POSTS: InstagramPost[] = [
   {
     id: 'ph-1',
     permalink: 'https://www.instagram.com/kurazhblum_berlin/',
-    image: '/images/instagram/01.jpg',
     alt: {
       de: 'Strauß aus Pfingstrosen und Ranunkeln auf der Werkbank',
       uk: 'Букет із півоній та ранункулюсів на робочому столі',
@@ -38,7 +42,6 @@ export const INSTAGRAM_POSTS: InstagramPost[] = [
   {
     id: 'ph-2',
     permalink: 'https://www.instagram.com/kurazhblum_berlin/',
-    image: '/images/instagram/02.jpg',
     isReel: true,
     alt: {
       de: 'Reel: ein Strauß entsteht in der Spiraltechnik',
@@ -50,7 +53,6 @@ export const INSTAGRAM_POSTS: InstagramPost[] = [
   {
     id: 'ph-3',
     permalink: 'https://www.instagram.com/kurazhblum_berlin/',
-    image: '/images/instagram/03.jpg',
     alt: {
       de: 'Hochzeitstisch mit weißer Tischfloristik',
       uk: 'Весільний стіл із білою флористикою',
@@ -61,7 +63,6 @@ export const INSTAGRAM_POSTS: InstagramPost[] = [
   {
     id: 'ph-4',
     permalink: 'https://www.instagram.com/kurazhblum_berlin/',
-    image: '/images/instagram/04.jpg',
     alt: {
       de: 'Unboxing einer Hutschachtel mit Rosen',
       uk: 'Розпакування капелюшної коробки з трояндами',
@@ -72,7 +73,6 @@ export const INSTAGRAM_POSTS: InstagramPost[] = [
   {
     id: 'ph-5',
     permalink: 'https://www.instagram.com/kurazhblum_berlin/',
-    image: '/images/instagram/05.jpg',
     isReel: true,
     alt: {
       de: 'Reel: Workshop im Atelier, acht Teilnehmerinnen binden Sträuße',
@@ -84,7 +84,6 @@ export const INSTAGRAM_POSTS: InstagramPost[] = [
   {
     id: 'ph-6',
     permalink: 'https://www.instagram.com/kurazhblum_berlin/',
-    image: '/images/instagram/06.jpg',
     alt: {
       de: 'Dopamin-Strauß in kräftigen Farben',
       uk: 'Дофаміновий букет у яскравих кольорах',
