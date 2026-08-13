@@ -330,11 +330,11 @@ export const ui = {
 
     // — Weg A: selbst zusammenstellen —
     'build.kicker': 'Strauß zusammenstellen',
-    'build.title': 'Sagen Sie mir, was hineinsoll.',
+    'build.title': 'Sagen Sie mir, was hinein soll.',
     'build.intro':
       'Wählen Sie unten aus, was Ihnen vorschwebt. Am Ende schicken Sie mir die Auswahl mit einem Klick — ich prüfe die Verfügbarkeit für Ihren Wunschtermin und melde mich mit einer verbindlichen Zusage zurück.',
     'build.why':
-      'Warum nicht direkt bestellen? Weil ich kein Lager habe. Was heute frisch ist, entscheidet der Markt am Morgen — ein Warenkorb würde Ihnen etwas versprechen, das ich nicht halten kann.',
+      'Warum stehen hier keine einzelnen Blumen mit Preis? Weil ich jeden Morgen frisch einkaufe. So bekommen Sie, was an Ihrem Tag am schönsten ist — bunt, frisch und nach Ihrer Stimmung zusammengestellt.',
     'build.flowers': 'Blumen',
     'build.flowers.hint': 'Mehrfachauswahl. Was nicht dabei ist, schreiben Sie einfach dazu.',
     'build.flowers.own': 'Etwas anderes im Sinn?',
@@ -681,7 +681,7 @@ export const ui = {
     'build.intro':
       'Оберіть нижче те, що вам уявляється. Наприкінці надішлете мені вибір одним кліком — я перевірю наявність на вашу дату й повернуся з підтвердженням.',
     'build.why':
-      'Чому не замовити одразу? Бо я не маю складу. Що свіже сьогодні, вирішує вранішній ринок — кошик пообіцяв би вам те, чого я не можу гарантувати.',
+      'Чому тут немає окремих квітів із цінами? Бо я щоранку купую свіжі. Так ви отримуєте те, що найкраще саме у ваш день — яскраво, свіжо і за вашим настроєм.',
     'build.flowers': 'Квіти',
     'build.flowers.hint': 'Можна кілька. Чого немає в списку — просто допишіть.',
     'build.flowers.own': 'Маєте на думці щось інше?',
@@ -1027,7 +1027,7 @@ export const ui = {
     'build.intro':
       'Pick what you have in mind below. At the end you send me the selection with one click — I check availability for your date and come back with a firm confirmation.',
     'build.why':
-      'Why not order straight away? Because I keep no stock. What is fresh today is decided at the morning market — a shopping cart would promise you something I cannot guarantee.',
+      'Why are there no individual flowers with prices here? Because I buy fresh every morning. That way you get what is at its best on your day — colourful, fresh and put together to suit your mood.',
     'build.flowers': 'Flowers',
     'build.flowers.hint': 'Pick several. Anything missing, just write it in.',
     'build.flowers.own': 'Something else in mind?',
@@ -1373,7 +1373,7 @@ export const ui = {
     'build.intro':
       'Выберите ниже то, что вам представляется. В конце отправите мне выбор одним кликом — я проверю наличие на вашу дату и вернусь с подтверждением.',
     'build.why':
-      'Почему нельзя заказать сразу? Потому что у меня нет склада. Что свежо сегодня, решает утренний рынок — корзина пообещала бы вам то, чего я не могу гарантировать.',
+      'Почему здесь нет отдельных цветов с ценами? Потому что я каждое утро покупаю свежие. Так вы получаете то, что лучше всего именно в ваш день — ярко, свежо и по вашему настроению.',
     'build.flowers': 'Цветы',
     'build.flowers.hint': 'Можно несколько. Чего нет в списке — просто допишите.',
     'build.flowers.own': 'Есть что-то другое на примете?',

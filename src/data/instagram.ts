@@ -29,66 +29,79 @@ export interface InstagramPost {
 }
 
 export const INSTAGRAM_POSTS: InstagramPost[] = [
+  /*
+    Sechs Aufnahmen aus Galas Laufwerk, keine abgerufenen Beiträge: Das
+    Instagram-CDN blockt fremde Domains, und selbst wenn nicht, wäre jeder
+    Aufruf eine Verbindung zu Meta. Die Kacheln zeigen deshalb Arbeiten aus dem
+    Atelier und verlinken auf das Profil, nicht auf einzelne Beiträge.
+
+    ⚠️ TODO: Sobald Gala eine eigene Auswahl exportiert, diese hier ersetzen und
+    `permalink` auf die echten Beiträge zeigen lassen.
+  */
   {
-    id: 'ph-1',
+    id: 'ig-1',
     permalink: 'https://www.instagram.com/kurazhblum_berlin/',
+    image: '/images/instagram/01.webp',
     alt: {
-      de: 'Strauß aus Pfingstrosen und Ranunkeln auf der Werkbank',
-      uk: 'Букет із півоній та ранункулюсів на робочому столі',
-      en: 'Bouquet of peonies and ranunculus on the workbench',
-      ru: 'Букет из пионов и ранункулюсов на рабочем столе',
+      de: 'Brautstrauß aus weißen Pfingstrosen, Orchideen und Eukalyptus',
+      uk: 'Букет нареченої з білих півоній, орхідей та евкаліпта',
+      en: 'Bridal bouquet of white peonies, orchids and eucalyptus',
+      ru: 'Букет невесты из белых пионов, орхидей и эвкалипта',
     },
   },
   {
-    id: 'ph-2',
+    id: 'ig-2',
     permalink: 'https://www.instagram.com/kurazhblum_berlin/',
-    isReel: true,
+    image: '/images/instagram/02.webp',
     alt: {
-      de: 'Reel: ein Strauß entsteht in der Spiraltechnik',
-      uk: 'Reel: букет збирається спіральною технікою',
-      en: 'Reel: a bouquet coming together in spiral technique',
-      ru: 'Reel: букет собирается спиральной техникой',
+      de: 'Pastellfarbenes Tischgesteck für eine Feier im Saal',
+      uk: 'Пастельна композиція на стіл для святкування в залі',
+      en: 'Pastel table arrangement for a celebration in a hall',
+      ru: 'Пастельная композиция на стол для торжества в зале',
     },
   },
   {
-    id: 'ph-3',
+    id: 'ig-3',
     permalink: 'https://www.instagram.com/kurazhblum_berlin/',
+    image: '/images/instagram/03.webp',
     alt: {
-      de: 'Hochzeitstisch mit weißer Tischfloristik',
-      uk: 'Весільний стіл із білою флористикою',
-      en: 'Wedding table with white florals',
-      ru: 'Свадебный стол с белой флористикой',
+      de: 'Blumenbogen mit hellem Chiffon vor blauem Himmel',
+      uk: 'Квіткова арка зі світлим шифоном на тлі блакитного неба',
+      en: 'Floral arch with light chiffon against a blue sky',
+      ru: 'Цветочная арка со светлым шифоном на фоне голубого неба',
     },
   },
   {
-    id: 'ph-4',
+    id: 'ig-4',
     permalink: 'https://www.instagram.com/kurazhblum_berlin/',
+    image: '/images/instagram/04.webp',
     alt: {
-      de: 'Unboxing einer Hutschachtel mit Rosen',
-      uk: 'Розпакування капелюшної коробки з трояндами',
-      en: 'Unboxing a hat box of roses',
-      ru: 'Распаковка шляпной коробки с розами',
+      de: 'Ansteckblumen entstehen auf dem Werktisch',
+      uk: 'Бутоньєрки народжуються на робочому столі',
+      en: 'Buttonholes taking shape on the workbench',
+      ru: 'Бутоньерки рождаются на рабочем столе',
     },
   },
   {
-    id: 'ph-5',
+    id: 'ig-5',
     permalink: 'https://www.instagram.com/kurazhblum_berlin/',
-    isReel: true,
+    image: '/images/instagram/05.webp',
     alt: {
-      de: 'Reel: Workshop im Atelier, acht Teilnehmerinnen binden Sträuße',
-      uk: 'Reel: майстер-клас в ательє, вісім учасниць збирають букети',
-      en: 'Reel: workshop at the atelier, eight participants tying bouquets',
-      ru: 'Reel: мастер-класс в ателье, восемь участниц собирают букеты',
+      de: 'Rosen und Nelken in einer weißen Hutschachtel',
+      uk: 'Троянди та гвоздики у білій капелюшній коробці',
+      en: 'Roses and carnations in a white hat box',
+      ru: 'Розы и гвоздики в белой шляпной коробке',
     },
   },
   {
-    id: 'ph-6',
+    id: 'ig-6',
     permalink: 'https://www.instagram.com/kurazhblum_berlin/',
+    image: '/images/instagram/06.webp',
     alt: {
-      de: 'Dopamin-Strauß in kräftigen Farben',
-      uk: 'Дофаміновий букет у яскравих кольорах',
-      en: 'Dopamine bouquet in strong colours',
-      ru: 'Дофаминовый букет в ярких цветах',
+      de: 'Weiße Pfingstrosen, fast pur gebunden',
+      uk: 'Білі півонії, зібрані майже чисто',
+      en: 'White peonies, tied almost pure',
+      ru: 'Белые пионы, собранные почти чисто',
     },
   },
 ];

@@ -505,7 +505,9 @@ folgt“** statt eines Verweises ins Leere:
   Kurse mit demselben Tisch zu bebildern.
 - Atelierporträt. Es gibt nur ein Video, in dem eine Person zu sehen ist — ob
   ihr Gesicht auf die Website kommt, entscheidet Gala.
-- Instagram-Auswahl, sechs Bilder.
+- Instagram: Die sechs Kacheln zeigen vorläufig Aufnahmen aus dem Laufwerk und
+  verlinken auf das Profil, nicht auf einzelne Beiträge. Sobald Gala eine eigene
+  Auswahl exportiert, gehören die Bilder und die `permalink`-Adressen ersetzt.
 - Höher aufgelöste Kategoriekacheln für Dopamin und Rosen (bislang 1125 px,
   ohne sichtbare Marke).
 - Fotos für Rosen pur und Mono-Hortensie. Beide tragen „Bild folgt“; im

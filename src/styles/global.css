@@ -249,6 +249,21 @@ hr {
   grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
 }
 
+/*
+  Genau zwei Spalten. `grid--2` füllt mit `auto-fit` auf und setzt bei vier
+  Karten drei nebeneinander und eine allein darunter — eine abgebrochene Reihe.
+  Wo die Anzahl gerade ist, ist das Paar die ruhigere Aufteilung.
+*/
+.grid--paar {
+  grid-template-columns: 1fr;
+}
+
+@media (width >= 46rem) {
+  .grid--paar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .grid--3 {
   grid-template-columns: repeat(auto-fill, minmax(min(17rem, 100%), 1fr));
 }
@@ -504,6 +519,25 @@ label {
 
 .choices--row {
   grid-template-columns: repeat(auto-fit, minmax(min(9rem, 100%), 1fr));
+}
+
+/*
+  Für ungerade Anzahlen: zwei Spalten, und das letzte Element nimmt die ganze
+  Breite, statt als Rest neben einer Lücke zu stehen. Bei fünf Leistungen im
+  46-rem-Formular ergibt `choices--row` sonst vier und eine.
+*/
+.choices--paar {
+  grid-template-columns: 1fr;
+}
+
+@media (width >= 34rem) {
+  .choices--paar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .choices--paar > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
 }
 
 .choice {
