@@ -11,8 +11,10 @@ import {
   categoryBySlug,
   formatPrice,
   hasSizes,
+  imagesFor,
   isOrderable,
   lowestPrice,
+  sizesOf,
 } from '../../../data/shop';
 
 export function getStaticPaths() {
@@ -30,6 +32,25 @@ const related = bouquetsByCategory(bouquet.category)
   .filter((entry) => entry.slug !== bouquet.slug)
   .concat(BOUQUETS.filter((entry) => entry.featured && entry.category !== bouquet.category))
   .slice(0, 3);
+
+/*
+  Galerie. Gala hat den Dopamin-Strauß in M und L je zweimal fotografiert und
+  die Päonienrosen ebenfalls — bislang sah niemand die zweite Aufnahme, weil
+  jeder Aufrufer nur `images[0]` nahm. Bei einem Strauß, der nie gleich
+  aussieht, ist die zweite Ansicht aber genau das Argument.
+
+  Aufgebaut je Größe, weil `imagesBySize` das so vorgibt: M hat andere Fotos
+  als XL. Ohne Größenstaffel liegt alles unter der Pseudo-Größe `fixed`, damit
+  das Skript nur einen Fall kennt.
+*/
+const sizes = sizesOf(bouquet);
+const galerie: Record<string, string[]> = sizes.length
+  ? Object.fromEntries(sizes.map((size) => [size, imagesFor(bouquet, size).map((bild) => asset(bild))]))
+  : { fixed: bouquet.images.map((bild) => asset(bild)) };
+
+const startGroesse = sizes[0] ?? 'fixed';
+/** Nur zeigen, wenn es in irgendeiner Größe wirklich mehr als ein Foto gibt. */
+const hatGalerie = Object.values(galerie).some((bilder) => bilder.length > 1);
 
 const productJsonLd = {
   '@context': 'https://schema.org',
@@ -79,6 +100,29 @@ const productJsonLd = {
             />
             {bouquet.imagePlaceholder && <span class="platzhalter-marke">{_('common.placeholder')}</span>}
           </div>
+
+          {
+            hatGalerie && (
+              <div class="galerie" data-galerie role="group" aria-label={_('product.gallery')}>
+                {Object.entries(galerie).flatMap(([size, bilder]) =>
+                  bilder.length > 1
+                    ? bilder.map((bild, index) => (
+                        <button
+                          type="button"
+                          class="galerie-thumb"
+                          data-thumb
+                          data-size={size}
+                          hidden={size !== startGroesse}
+                          aria-pressed={index === 0 ? 'true' : 'false'}
+                        >
+                          <img src={bild} alt="" loading="lazy" decoding="async" onerror="this.remove()" />
+                        </button>
+                      ))
+                    : [],
+                )}
+              </div>
+            )
+          }
         </div>
 
         <div class="detail-info">
@@ -187,6 +231,49 @@ const productJsonLd = {
     border-radius: var(--radius-lg);
   }
 
+  /* Miniaturen. px statt rem, weil sie sonst mit der eingestellten Textgröße
+     mitwachsen und bei 320 px das Layout sprengen — dieselbe Falle wie im
+     Formularraster. Ein einzelnes Foto zeigt gar keine Leiste. */
+  .galerie {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+
+  .galerie-thumb {
+    width: 72px;
+    height: 90px;
+    flex: 0 0 auto;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--ink-3);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.3s var(--ease);
+  }
+
+  .galerie-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .galerie-thumb[aria-pressed='true'] {
+    border-color: var(--gold-lit);
+  }
+
+  .galerie-thumb:hover {
+    border-color: var(--line-strong);
+  }
+
+  .galerie-thumb:focus-visible {
+    outline: 2px solid var(--gold-lit);
+    outline-offset: 3px;
+  }
+
   .detail-ph img {
     position: absolute;
     inset: 0;
@@ -272,3 +359,68 @@ const productJsonLd = {
     }
   }
 </style>
+
+<script>
+  /*
+    Bildergalerie der Produktseite.
+
+    Alle Miniaturen stehen serverseitig im Markup, je eine Gruppe pro Größe;
+    das Skript blendet nur um. Das ist kein Umweg, sondern Notwendigkeit:
+    Astros Scoped-CSS hängt an einem `data-astro-cid`-Attribut, das per
+    `createElement` erzeugte Knöpfe nicht bekommen — sie stünden ungestylt und
+    bildschirmfüllend da. Nebenbei funktioniert die Galerie so auch ohne
+    JavaScript für die vorausgewählte Größe.
+
+    Zwei Skripte schreiben auf dasselbe <img>: Der Konfigurator tauscht es beim
+    Größenwechsel, weil Gala M, L und XL einzeln fotografiert hat. Beide
+    schreiben denselben Wert — die Galerie setzt beim Wechsel ebenfalls auf das
+    erste Foto der neuen Größe zurück. Wer bei L die zweite Ansicht offen hatte
+    und auf XL wechselt, sähe sonst ein Foto, das es in XL gar nicht gibt.
+  */
+  const galerie = document.querySelector<HTMLElement>('[data-galerie]');
+  const hauptbild = document.querySelector<HTMLImageElement>('[data-product-image]');
+
+  if (galerie && hauptbild) {
+    const thumbs = [...galerie.querySelectorAll<HTMLElement>('[data-thumb]')];
+
+    function markiere(aktiv: HTMLElement | null): void {
+      for (const thumb of thumbs) {
+        thumb.setAttribute('aria-pressed', thumb === aktiv ? 'true' : 'false');
+      }
+    }
+
+    function zeige(thumb: HTMLElement): void {
+      const quelle = thumb.querySelector('img')?.getAttribute('src');
+      if (!quelle || !hauptbild) return;
+      hauptbild.setAttribute('src', quelle);
+      hauptbild.removeAttribute('srcset');
+      markiere(thumb);
+    }
+
+    function fuerGroesse(size: string): void {
+      let erster: HTMLElement | null = null;
+      for (const thumb of thumbs) {
+        const passt = thumb.dataset.size === size;
+        thumb.hidden = !passt;
+        if (passt && !erster) erster = thumb;
+      }
+      // Eine Leiste mit einem einzigen Knopf hilft niemandem.
+      galerie!.hidden = erster === null;
+      markiere(erster);
+    }
+
+    galerie.addEventListener('click', (event) => {
+      const thumb = (event.target as HTMLElement).closest<HTMLElement>('[data-thumb]');
+      if (thumb) zeige(thumb);
+    });
+
+    for (const eingabe of document.querySelectorAll<HTMLInputElement>('input[name="size"]')) {
+      eingabe.addEventListener('change', () => {
+        if (eingabe.checked) fuerGroesse(eingabe.value);
+      });
+    }
+
+    const gewaehlt = document.querySelector<HTMLInputElement>('input[name="size"]:checked');
+    fuerGroesse(gewaehlt?.value ?? 'fixed');
+  }
+</script>

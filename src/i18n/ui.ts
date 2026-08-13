@@ -273,6 +273,7 @@ export const ui = {
     'shop.seasonal':
       'Saisonale Blumen: Sollten diese nicht verfügbar sein, bieten wir eine möglichst ähnliche Alternative an. Für weitere Informationen kontaktieren Sie bitte unseren Kundenservice.',
     'product.variants': 'Andere Stückzahlen, Größen und Längen binde ich auf Anfrage.',
+    'product.gallery': 'Weitere Ansichten',
     'product.length': 'Länge',
     'product.onesize': 'Nur in einer Ausführung',
     'product.discount': 'Zehn Prozent günstiger, weil ich die Blumen wähle.',
@@ -569,6 +570,7 @@ export const ui = {
     'shop.seasonal':
       'Сезонні квіти: у разі їх відсутності ми запропонуємо максимально схожу альтернативу. Деталі уточнюйте у менеджера.',
     'product.variants': 'Інші кількості, розміри та довжини роблю на замовлення.',
+    'product.gallery': 'Інші ракурси',
     'product.length': 'Довжина',
     'product.onesize': 'Лише в одному виконанні',
     'product.discount': 'На десять відсотків дешевше, бо квіти обираю я.',
@@ -862,6 +864,7 @@ export const ui = {
     'shop.seasonal':
       'Seasonal flowers: if unavailable, we will offer the closest possible alternative. Please contact our manager for more information.',
     'product.variants': 'Other counts, sizes and lengths on request.',
+    'product.gallery': 'More views',
     'product.length': 'Length',
     'product.onesize': 'One version only',
     'product.discount': 'Ten per cent less, because I choose the flowers.',
@@ -1155,6 +1158,7 @@ export const ui = {
     'shop.seasonal':
       'Сезонные цветы: при их отсутствии мы предложим максимально похожую альтернативу. Подробности уточняйте у менеджера.',
     'product.variants': 'Другие количества, размеры и длины — на заказ.',
+    'product.gallery': 'Другие ракурсы',
     'product.length': 'Длина',
     'product.onesize': 'Только в одном исполнении',
     'product.discount': 'На десять процентов дешевле, потому что цветы выбираю я.',
